@@ -1,0 +1,1186 @@
+/* ==========================================================================
+   11. ARCHIVE (Act 3) — sticky scroll, 6 flip cards
+   ========================================================================== */
+.act-archive {
+  max-width: none;
+  padding: 0;
+  /* Container is tall: one viewport per card = 8 viewport-heights, plus a
+     small entry buffer so the first and last cards rest visibly. The sticky
+     viewport sits below the fixed topbar so cards never get clipped. */
+  position: relative;
+  height: calc((100vh - var(--topbar-h)) * 6.2);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
+    linear-gradient(180deg, #2a211b 0%, #1c1612 55%, #16110e 100%);
+  color: #ece6d9;
+  isolation: isolate;
+}
+@media (max-width: 880px) {
+  .act-archive { height: calc(100vh * 6.2); }
+}
+
+.archive-viewport {
+  position: sticky;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1600px;
+}
+@media (max-width: 880px) {
+  .archive-viewport { top: 0; height: 100vh; }
+}
+
+.archive-label {
+  position: absolute;
+  top: 30px;
+  left: 32px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.32em;
+  color: rgba(236, 230, 217, 0.55);
+  text-transform: uppercase;
+}
+
+.archive-skip {
+  position: absolute;
+  top: 30px;
+  right: 32px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  color: rgba(236, 230, 217, 0.5);
+  transition: color 0.25s ease;
+  text-transform: uppercase;
+}
+.archive-skip:hover { color: #ece6d9; }
+
+.archive-plate-num {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.28em;
+  color: rgba(236, 230, 217, 0.58);
+}
+.archive-plate-num .sep {
+  color: rgba(232, 227, 216, 0.25);
+  margin: 0 8px;
+}
+.archive-plate-num strong { font-weight: 500; color: #e8e3d8; }
+
+.card-stack {
+  position: relative;
+  width: min(1560px, 82vw);
+  height: min(860px, 88vh);
+  max-height: 900px;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: opacity 0.22s var(--ease-out), transform 0.24s var(--ease-out);
+  opacity: 0;
+  pointer-events: none;
+  /* Default position: slid off to the right */
+  transform: translateX(60%) scale(0.9) rotateY(0);
+}
+
+.card.is-prev {
+  opacity: 0;
+  transform: translateX(-60%) scale(0.9) rotateY(0);
+}
+
+.card.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1) rotateY(0);
+}
+
+.card.is-active.is-flipped {
+  transform: translateX(0) scale(1) rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: linear-gradient(162deg, #221d18 0%, #15110e 100%);
+  box-shadow:
+    0 50px 90px -24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(236, 230, 217, 0.07) inset;
+}
+
+.card-front {
+  padding: 42px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vh, 20px);
+  min-height: 0;
+}
+.card-front-dual-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr);
+  gap: clamp(16px, 2.2vw, 30px);
+  align-items: stretch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.card-front-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.card-front-visual {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+.card-back  { transform: rotateY(180deg); background: #0e0b08; display: flex; align-items: center; justify-content: center; }
+
+/* Media-first front layout for cards that should attract via demo video. */
+.card-front-media {
+  margin-top: 0;
+  border: 1px solid rgba(232, 184, 79, 0.24);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #080605;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: clamp(150px, 28vh, 340px);
+  aspect-ratio: 16 / 9;
+}
+.card-front-media iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.card-front-media-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.82);
+  background: rgba(0, 0, 0, 0.62);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.card-friction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding: 5px 11px;
+  border: 1px solid rgba(232, 184, 79, 0.45);
+  border-radius: 2px;
+  background: rgba(232, 184, 79, 0.04);
+}
+.card-friction .ftag-key {
+  color: rgba(232, 184, 79, 0.6);
+}
+.card-friction .ftag-arrow { opacity: 0.6; }
+
+.card-name {
+  font-family: var(--serif);
+  font-size: clamp(44px, 6.4vw, 64px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  color: #f5f1e8;
+  margin-bottom: 18px;
+}
+
+.card-desc {
+  font-size: 16.5px;
+  line-height: 1.62;
+  color: rgba(236, 230, 217, 0.8);
+  max-width: 520px;
+  margin-bottom: auto;
+}
+.card-desc a {
+  color: rgba(232, 184, 79, 0.9);
+  text-decoration: underline;
+  text-decoration-color: rgba(232, 184, 79, 0.35);
+  text-underline-offset: 3px;
+}
+.card-desc a:hover { color: var(--amber-hot); }
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.card[data-plate="2"] .card-desc,
+.card[data-plate="5"] .card-desc {
+  margin-bottom: 12px;
+  max-width: 44ch;
+}
+.card[data-plate="2"] .card-footer,
+.card[data-plate="5"] .card-footer {
+  margin-top: 8px;
+}
+
+.card-status {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  padding: 4px 11px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.status-live       { background: rgba(60, 140, 80, 0.2);   color: #a2d9b0; border: 1px solid rgba(162, 217, 176, 0.35); }
+.status-beta       { background: rgba(200, 130, 50, 0.18); color: #e8b680; border: 1px solid rgba(232, 182, 128, 0.35); }
+.status-testflight { background: rgba(60, 120, 200, 0.18); color: #9fc2e8; border: 1px solid rgba(159, 194, 232, 0.35); }
+.status-interest   { background: rgba(130, 110, 180, 0.16); color: #c9b8e8; border: 1px solid rgba(201, 184, 232, 0.38); }
+.status-demo       { background: rgba(150, 90, 180, 0.18); color: #d2a8e0; border: 1px solid rgba(210, 168, 224, 0.35); }
+.status-private    { background: rgba(140, 140, 140, 0.15); color: #b8b4ab; border: 1px solid rgba(184, 180, 171, 0.3); }
+
+.card-flip-hint {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  color: rgba(236, 230, 217, 0.5);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.card-flip-hint .key {
+  border: 1px solid rgba(236, 230, 217, 0.35);
+  border-radius: 2px;
+  padding: 2px 7px;
+  font-size: 10.5px;
+}
+
+/* Card back content variants */
+.card-back-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+}
+
+.card-back-open {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(236, 230, 217, 0.72);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 5px 11px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 5;
+}
+.card-back-open:hover { color: var(--amber); }
+
+.card-back-meta {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(236, 230, 217, 0.58);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 11px;
+  border-radius: 2px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 4;
+}
+
+/* Back-of-card flip pill — always clickable, always visible. Sits above the
+   iframe so a 3-minute Loom can never trap the reader on the back face. */
+.card-back-flip {
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(236, 230, 217, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 6px 12px;
+  border: 1px solid rgba(232, 184, 79, 0.35);
+  border-radius: 2px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 6;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  cursor: none;
+}
+.card-back-flip:hover { color: var(--amber); border-color: var(--amber); }
+.card-back-flip .key {
+  border: 1px solid rgba(236, 230, 217, 0.4);
+  border-radius: 2px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+
+/* Spec sheet card-back — substantive content for non-iframe projects */
+.card-spec {
+  width: 100%;
+  height: 100%;
+  padding: 54px 52px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: rgba(242, 239, 232, 0.92);
+  text-align: left;
+}
+
+/* Progressive reveal: hide card-back contents until the card is actually
+   flipped, then fade them in section-by-section so the reader builds the
+   picture instead of getting a wall of text. Delays are tuned to start
+   right as the 0.7s flip is finishing. */
+.card-back .reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.22s var(--ease-out), transform 0.24s var(--ease-out);
+}
+.card.is-flipped .card-back .reveal { opacity: 1; transform: translateY(0); }
+
+/* Stagger steps relative to flip end (~0.55s into the flip) */
+.card.is-flipped .card-back .reveal-1 { transition-delay: 0.55s; }
+.card.is-flipped .card-back .reveal-2 { transition-delay: 0.70s; }
+.card.is-flipped .card-back .reveal-3 { transition-delay: 0.85s; }
+.card.is-flipped .card-back .reveal-4 { transition-delay: 1.00s; }
+.card.is-flipped .card-back .reveal-5 { transition-delay: 1.20s; }
+.card.is-flipped .card-back .reveal-6 { transition-delay: 1.40s; }
+
+/* When unflipping, snap everything back instantly so the next flip animates fresh */
+.card:not(.is-flipped) .card-back .reveal { transition-duration: 0s; transition-delay: 0s; }
+.spec-title {
+  font-family: var(--serif);
+  font-size: 42px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.spec-sub {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.78);
+  max-width: 48ch;
+}
+.spec-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+              rgba(232, 184, 79, 0.5),
+              rgba(232, 184, 79, 0.05));
+  margin: 4px 0 0;
+}
+.spec-list {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  column-gap: 20px;
+  row-gap: 11px;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.spec-list dt {
+  color: rgba(232, 184, 79, 0.75);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.spec-list dd {
+  color: rgba(245, 241, 232, 0.86);
+  letter-spacing: 0.02em;
+}
+.spec-note {
+  margin-top: auto;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.55);
+  padding-top: 20px;
+  border-top: 1px dashed rgba(236, 230, 217, 0.2);
+  max-width: 36ch;
+}
+
+@media (max-width: 640px) {
+  .card-spec { padding: 38px 32px 36px; gap: 14px; }
+  .spec-title { font-size: 32px; }
+  .spec-list { grid-template-columns: 96px 1fr; font-size: 11.5px; column-gap: 14px; }
+}
+
+/* ==========================================================================
+   Split card-back — video (or app mockup) + notes side-by-side.
+   Lets the reader watch without losing the "try app" CTA, and leaves room
+   for a persistent flip-back pill that iframes can't swallow.
+   ========================================================================== */
+.card-split {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  background: #0e0b08;
+}
+.card-split-media {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  border-right: 1px solid rgba(236, 230, 217, 0.08);
+}
+.card-split-media iframe,
+.card-split-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.card-split-info {
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: rgba(245, 241, 232, 0.88);
+  overflow: auto;
+}
+.card-split-info::-webkit-scrollbar { width: 4px; }
+.card-split-info::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+
+.card-split-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.7);
+}
+.card-split-title {
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.card-split-sub {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: rgba(245, 241, 232, 0.78);
+}
+.card-split-list {
+  list-style: none;
+  display: grid;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: rgba(245, 241, 232, 0.82);
+}
+.card-split-list li { padding-left: 16px; position: relative; line-height: 1.45; }
+.card-split-list li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--amber);
+  font-weight: 700;
+}
+.card-split-cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1a1411;
+  background: var(--amber);
+  padding: 12px 16px;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: none;
+}
+.card-split-cta:hover { background: var(--amber-hot); transform: translateY(-1px); }
+.card-split-note {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.5);
+  padding-top: 10px;
+  border-top: 1px dashed rgba(236, 230, 217, 0.2);
+}
+
+@media (max-width: 780px) {
+  .card-split { grid-template-columns: 1fr; grid-template-rows: 180px 1fr; }
+  .card-split-media { border-right: none; border-bottom: 1px solid rgba(236, 230, 217, 0.08); }
+  .card-split-info { padding: 22px 22px 18px; gap: 10px; }
+  .card-split-title { font-size: 28px; }
+}
+
+/* ==========================================================================
+   iPhone mockup — shows the real Nod app screenshot inside a premium-feeling
+   phone bezel, with a subtle amber sweep to keep the preview alive. The
+   authentic screenshot reads a lot better than a CSS redraw with emojis.
+   ========================================================================== */
+.phone-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 22px;
+  padding: 22px 26px 24px 28px;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(232, 184, 79, 0.1), transparent 55%),
+    linear-gradient(180deg, #15110e 0%, #0c0907 100%);
+  align-items: stretch;
+  overflow: hidden;
+}
+.phone {
+  position: relative;
+  width: 210px;
+  height: 425px;
+  border-radius: 36px;
+  padding: 6px;
+  background: linear-gradient(148deg, #3c342b 0%, #1a1611 45%, #0a0806 100%);
+  box-shadow:
+    0 22px 40px -18px rgba(0, 0, 0, 0.8),
+    0 0 0 1px #2a2520 inset,
+    0 0 0 2.5px #060504 inset,
+    0 0 24px rgba(232, 184, 79, 0.08);
+  align-self: center;
+  flex-shrink: 0;
+}
+/* Fake side buttons on the left & right rail for a touch of realism */
+.phone::before,
+.phone::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, #2a2520, #0a0806);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.phone::before { /* left volume + ringer cluster */
+  left: -1.5px;
+  top: 80px;
+  width: 2px;
+  height: 26px;
+  box-shadow:
+    0 36px 0 #1d1915,
+    0 70px 0 #1d1915;
+}
+.phone::after { /* right power button */
+  right: -1.5px;
+  top: 110px;
+  width: 2px;
+  height: 46px;
+}
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #0a0908;
+  isolation: isolate;
+}
+/* Omit the fake Dynamic Island — it stole vertical space from the real UI art. */
+.phone-notch { display: none; }
+
+.phone-statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 34px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 18px 6px;
+  font-family: 'SF Pro Text', var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  z-index: 7;
+  pointer-events: none;
+}
+.phone-statusbar .bar-right { display: inline-flex; gap: 5px; align-items: center; }
+.phone-statusbar .bar-right svg { display: block; height: 10px; width: auto; }
+.phone-statusbar .battery {
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 2.5px;
+  padding: 1px;
+}
+.phone-statusbar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1px;
+}
+.phone-statusbar .battery-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #3bb34a;
+  border-radius: 1px;
+}
+
+/* The actual screen content — authentic app screenshot */
+.phone-screen-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Ambient amber sweep that slides across the Snap / Decode / Trust region
+   once the card is visible, so the preview never feels frozen. */
+.phone-glow {
+  position: absolute;
+  top: 0;
+  left: -30%;
+  bottom: 40%;
+  width: 40%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+                rgba(232, 184, 79, 0.25) 0%,
+                rgba(232, 184, 79, 0) 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  z-index: 6;
+}
+.card.is-flipped .phone-glow {
+  animation: phoneSweep 1.8s var(--ease-in-out) 0.08s 1 both;
+}
+
+/* In-phone tappable regions (screenshot is static; buttons explain the loop). */
+.nod-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+.nod-hotspot {
+  position: absolute;
+  pointer-events: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+.nod-hotspot:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+.nod-hotspot--feast { left: 4%;  bottom: 19%; width: 30%; height: 21%; }
+.nod-hotspot--agent { left: 35%; bottom: 19%; width: 30%; height: 21%; }
+.nod-hotspot--solo  { left: 66%; bottom: 19%; width: 30%; height: 21%; }
+
+.nod-callout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  margin: 0;
+  padding: 6px 10px 7px;
+  font-family: var(--sans);
+  font-size: 10px;
+  line-height: 1.35;
+  color: rgba(245, 241, 232, 0.93);
+  background: rgba(6, 5, 4, 0.94);
+  border-top: 1px solid rgba(232, 184, 79, 0.3);
+  pointer-events: none;
+}
+@keyframes phoneSweep {
+  0%   { left: -30%; opacity: 0; }
+  15%  { opacity: 0.85; }
+  60%  { opacity: 0.85; }
+  85%  { opacity: 0; }
+  100% { left: 120%; opacity: 0; }
+}
+
+/* Disclaimer strip below the phone */
+.phone-caption {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.45);
+  text-align: center;
+  white-space: nowrap;
+}
+.phone-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Side notes to the right of the phone */
+.phone-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 52px;
+  color: rgba(245, 241, 232, 0.88);
+  overflow: hidden;
+  align-self: center;
+}
+.phone-notes .card-split-title { font-size: 30px; }
+.phone-notes .card-split-sub { font-size: 15.5px; line-height: 1.62; }
+.phone-notes .card-split-list { font-size: 14px; gap: 8px; }
+
+/* Fast interactive prototype panel for Nod (in-card demo mode). */
+.nod-demo-panel {
+  margin-top: 10px;
+  border: 1px solid rgba(232, 184, 79, 0.24);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.nod-demo-head {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.75);
+}
+.nod-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.nod-demo-btn {
+  border: 1px solid rgba(232, 184, 79, 0.34);
+  background: rgba(232, 184, 79, 0.06);
+  color: rgba(245, 241, 232, 0.9);
+  padding: 6px 10px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nod-demo-btn.is-active {
+  background: rgba(232, 184, 79, 0.2);
+  border-color: var(--amber);
+  color: #fff;
+}
+.nod-demo-out {
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(245, 241, 232, 0.86);
+}
+.nod-demo-out strong { color: var(--amber); font-weight: 500; }
+
+/* CyberTao front — animated stone visual hook. */
+.cybertao-stone-stage {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: clamp(160px, 30vh, 320px);
+  aspect-ratio: 16 / 7;
+  border: 1px solid rgba(232, 184, 79, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0;
+  background:
+    radial-gradient(ellipse at 50% -40%, rgba(48, 138, 136, 0.24), transparent 62%),
+    linear-gradient(180deg, #0e0b08 0%, #080605 100%);
+}
+.cybertao-stone {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: clamp(110px, 34%, 220px);
+  aspect-ratio: 1.52 / 1;
+  height: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 50% 44% 48% 52% / 46% 56% 44% 54%;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(112, 186, 178, 0.46), rgba(39, 64, 62, 0.8) 52%, rgba(13, 18, 20, 0.96) 100%);
+  box-shadow:
+    0 26px 42px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(99, 170, 162, 0.26) inset,
+    0 0 42px rgba(77, 148, 141, 0.24);
+}
+.cybertao-ring {
+  position: absolute;
+  left: 50%;
+  top: 23%;
+  width: clamp(150px, 44%, 300px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 1px solid rgba(91, 167, 160, 0.36);
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+}
+.card[data-plate="5"]:hover .cybertao-stone,
+.card[data-plate="5"].is-flipped .cybertao-stone {
+  animation: stoneFloat 1.1s var(--ease-in-out) 1;
+}
+.card[data-plate="5"]:hover .cybertao-ring,
+.card[data-plate="5"].is-flipped .cybertao-ring {
+  animation: stoneRing 1.1s var(--ease-in-out) 1;
+}
+.cybertao-stone-copy {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.1vw, 25px);
+  line-height: 1.12;
+  color: rgba(226, 236, 246, 0.86);
+  text-align: right;
+}
+
+@media (max-width: 980px) {
+  .card-front-dual-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(150px, 34vh);
+  }
+}
+@keyframes stoneFloat {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-3deg) scale(1); filter: blur(0px); }
+  50%      { transform: translate(-50%, -56%) rotate(2deg) scale(1.03); filter: blur(0.2px); }
+}
+@keyframes stoneRing {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.94); opacity: 0.6; }
+  50%      { transform: translate(-50%, -50%) scale(1.04); opacity: 0.9; }
+}
+
+/* CyberTao back — real embed plus localized overload blur pulse. */
+.cybertao-overload {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 48% 46%, rgba(224, 244, 255, 0.18), rgba(62, 120, 140, 0.08) 26%, rgba(0,0,0,0) 64%);
+  filter: blur(0px);
+}
+.card[data-plate="5"].is-flipped .cybertao-overload {
+  animation: cybertaoOverload 1.05s ease-out 1;
+}
+@keyframes cybertaoOverload {
+  0%   { opacity: 0; filter: blur(0px); }
+  18%  { opacity: 0.8; filter: blur(8px); }
+  60%  { opacity: 0.35; filter: blur(3px); }
+  100% { opacity: 0; filter: blur(0px); }
+}
+
+@media (max-width: 780px) {
+  .phone-stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding: 20px; gap: 16px; }
+  .phone { width: 180px; height: 360px; }
+  .phone-notes { padding-right: 0; }
+}
+
+/* ==========================================================================
+   Smart Airport card back — walkthrough video LEFT, live HF Space + copy RIGHT
+   (Gradio on *.hf.space embeds more reliably than huggingface.co/embed in
+   some browsers.)
+   ========================================================================== */
+.demo-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.22fr;
+  background: #0e0b08;
+  overflow: hidden;
+}
+.demo-stage.demo-stage-how {
+  grid-template-columns: 1fr;
+}
+.demo-side-video {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px 14px;
+  background: #0a0806;
+  border-right: 1px solid rgba(232, 184, 79, 0.18);
+  min-height: 0;
+}
+.demo-side-video-frame {
+  position: relative;
+  flex: 1;
+  min-height: 140px;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 184, 79, 0.25);
+  background: #111;
+}
+.demo-side-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.demo-side-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 14px;
+  min-height: 0;
+  overflow: auto;
+  color: rgba(245, 241, 232, 0.88);
+}
+.demo-side-detail::-webkit-scrollbar { width: 4px; }
+.demo-side-detail::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+
+.demo-live-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(170px, 26vh, 260px);
+  border: 1px solid rgba(232, 184, 79, 0.22);
+  border-radius: 3px;
+  background: #000;
+  overflow: hidden;
+}
+.demo-live-panel .demo-label {
+  position: static;
+  margin: 8px 10px 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.demo-live-frame {
+  position: relative;
+  flex: 1;
+  min-height: clamp(130px, 20vh, 200px);
+}
+.demo-live-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+.demo-open-tab {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.85);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 5px 10px;
+  margin: 2px auto 8px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 2px;
+  border: 1px solid rgba(232, 184, 79, 0.25);
+  align-self: center;
+}
+.demo-open-tab:hover { color: var(--amber-hot); border-color: var(--amber); }
+
+.demo-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.65);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px 9px;
+  border-radius: 2px;
+  z-index: 4;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.demo-label .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6ad178;
+  box-shadow: 0 0 6px rgba(106, 209, 120, 0.6);
+}
+.demo-label.is-pending .dot { background: var(--amber); }
+
+.demo-video-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.55);
+  flex-shrink: 0;
+}
+.demo-video-youtube {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(232, 184, 79, 0.8);
+  text-decoration: none;
+  align-self: flex-start;
+}
+.demo-video-youtube:hover { color: var(--amber-hot); }
+
+.demo-sec-kicker {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.7);
+}
+.demo-sec-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.demo-sec-sub {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.78);
+}
+.demo-metrics {
+  display: flex;
+  gap: 12px;
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+.demo-metrics .m {
+  flex: 1;
+  padding: 10px 10px;
+  border: 1px solid rgba(232, 184, 79, 0.3);
+  border-radius: 3px;
+  background: rgba(232, 184, 79, 0.04);
+}
+.demo-metrics .m-big {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--amber);
+  line-height: 1;
+}
+.demo-metrics .m-lbl {
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.6);
+  margin-top: 4px;
+}
+.demo-links {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.demo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.85);
+  border: 1px solid rgba(245, 241, 232, 0.25);
+  padding: 7px 11px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.demo-link:hover { color: var(--amber); border-color: var(--amber); background: rgba(232, 184, 79, 0.08); }
+
+@media (max-width: 780px) {
+  .demo-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(200px, 36vh) 1fr;
+  }
+  .demo-side-video {
+    border-right: none;
+    border-bottom: 1px solid rgba(232, 184, 79, 0.18);
+  }
+  .demo-side-detail { padding: 14px 14px 12px; }
+}
+
+/* Archive card navigation buttons on edges */
+.archive-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(232, 227, 216, 0.22);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(232, 227, 216, 0.75);
+  font-family: var(--mono);
+  font-size: 14px;
+  z-index: 5;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.3s ease, border-color 0.25s ease, color 0.25s ease;
+  opacity: 0.7;
+  cursor: none;
+}
+.archive-nav:hover { opacity: 1; border-color: rgba(232, 227, 216, 0.5); color: #f2efe8; }
+.archive-nav.prev { left: 32px; }
+.archive-nav.next { right: 32px; }
+.archive-nav[disabled] { opacity: 0.2; pointer-events: none; }

@@ -1,0 +1,278 @@
+/* ==========================================================================
+   12. CODA (Act 4: Background / Now / Contact / Footer)
+   ========================================================================== */
+.bg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 44px;
+}
+.bg-item-label {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.bg-item-value {
+  font-size: 17px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+.now-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.now-list li {
+  display: flex;
+  gap: 16px;
+  font-size: 17px;
+  color: var(--ink-2);
+  align-items: baseline;
+  line-height: 1.55;
+}
+.now-list li::before {
+  content: '→';
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.writing-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.writing-item {
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.writing-item:last-child { border-bottom: 1px solid var(--border); }
+.writing-item-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.writing-item-sub {
+  margin-top: 8px;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 760px;
+}
+.writing-item-link {
+  display: inline-flex;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+}
+.writing-item-link:hover { color: var(--accent); border-color: var(--accent); }
+
+.interest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.interest-flip-card {
+  position: relative;
+  min-height: 360px;
+  perspective: 1400px;
+}
+.interest-flip-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.24s var(--ease-out);
+}
+.interest-flip-card.is-flipped .interest-flip-inner { transform: rotateY(180deg); }
+.interest-flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24px 45px -28px rgba(0, 0, 0, 0.35);
+}
+.interest-front {
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(232, 184, 79, 0.08), transparent 56%),
+    linear-gradient(150deg, #1c1511 0%, #120d0b 100%);
+  padding: 20px 18px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.interest-back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(232, 184, 79, 0.14), transparent 50%),
+    linear-gradient(180deg, #19120e 0%, #120d0a 100%);
+  color: rgba(245, 241, 232, 0.9);
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+}
+.interest-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.interest-name {
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-size: 36px;
+  line-height: 0.95;
+  letter-spacing: -0.012em;
+}
+.interest-desc {
+  margin-top: 12px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.interest-meta {
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.interest-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.interest-list li::before { content: '· '; color: var(--amber); }
+.interest-flip-hint {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.interest-back .interest-flip-hint { opacity: 0.8; }
+.interest-flip-btn {
+  margin-top: auto;
+  align-self: flex-start;
+  border: 1px solid rgba(232, 184, 79, 0.38);
+  background: rgba(232, 184, 79, 0.08);
+  color: rgba(245, 241, 232, 0.92);
+  padding: 7px 10px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: none;
+}
+.interest-flip-btn:hover { border-color: var(--amber); color: var(--amber-hot); }
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.contact-link {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 3px;
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.contact-link:hover { color: var(--accent); border-color: var(--accent); }
+
+.coda-footer {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.coda-footer-summary .good   { color: var(--accent); }
+.coda-footer-summary .waiting { color: var(--ink-3); }
+
+/* ==========================================================================
+   13. MOBILE
+   ========================================================================== */
+@media (max-width: 620px) {
+  .act-hero { padding: 48px 20px 64px; }
+  .act { padding: 72px 20px; }
+  .manifesto-grid { grid-template-columns: 1fr; }
+  .bg-grid { grid-template-columns: 1fr; }
+  .interest-grid { grid-template-columns: 1fr; }
+  .interest-flip-card { min-height: 320px; }
+
+  .card-stack { width: 95vw; height: min(74vh, 700px); max-height: 720px; }
+  .card-front { padding: 30px 26px; }
+  .card-name { font-size: clamp(36px, 10vw, 52px); }
+  .archive-nav.prev { left: 14px; }
+  .archive-nav.next { right: 14px; }
+  .archive-label, .archive-skip { font-size: 9px; }
+  .archive-label { left: 20px; top: 22px; }
+  .archive-skip { right: 20px; top: 22px; }
+
+  .thread-map { font-size: 12px; }
+}
+
+/* ==========================================================================
+   14. REDUCED MOTION + NO-JS FALLBACK
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  :root { --vignette: 0; }
+  body { transition: none !important; animation: none !important; }
+  .cursor, .vignette, .grain-film, .grain-paper, .gate { display: none !important; }
+  body { cursor: auto; }
+  .card-back .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+  .act-archive { height: auto; background: var(--paper); color: var(--ink); }
+  .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; perspective: none; }
+  .archive-label, .archive-skip, .archive-plate-num, .archive-nav { display: none; }
+  .card-stack { width: 100%; max-width: 640px; height: auto; display: flex; flex-direction: column; gap: 24px; }
+  .card { position: static; opacity: 1; pointer-events: auto; transform: none; }
+  .card.is-flipped { transform: none; }
+  .card-face { position: static; height: auto; }
+  .card-back { display: none; }
+}
+
+/* When JS has not loaded yet, show everything (progressive enhancement) */
+html:not(.js) body { cursor: auto; }
+html:not(.js) .gate { display: none; }
+html:not(.js) .cursor, html:not(.js) .vignette, html:not(.js) .grain-film, html:not(.js) .grain-paper { display: none; }
+html:not(.js) .act-archive { height: auto; background: var(--paper); color: var(--ink); }
+html:not(.js) .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; }
+html:not(.js) .archive-label, html:not(.js) .archive-skip,
+html:not(.js) .archive-plate-num, html:not(.js) .archive-nav { display: none; }
+html:not(.js) .card-stack { width: 100%; max-width: 640px; height: auto; display: flex; flex-direction: column; gap: 24px; }
+html:not(.js) .card { position: static; opacity: 1; pointer-events: auto; transform: none; }
+html:not(.js) .card-face { position: static; height: auto; }
+html:not(.js) .card-back { display: none; }
