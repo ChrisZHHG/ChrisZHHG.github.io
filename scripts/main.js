@@ -12,6 +12,7 @@ import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
 import { initInterestFlips } from './features/interests.js';
 import { initThreadJumps, initScrollSpy, initBeforeUnloadFade } from './features/navigation.js';
 import { runSmokeChecks } from './features/smoke.js';
+import { renderDebugHealthBadge } from './features/debugBadge.js';
 
 document.documentElement.classList.add('js');
 const health = createHealthMonitor();
@@ -42,8 +43,13 @@ safeInit('interests', () => initInterestFlips(Audio), hooks);
 safeInit('thread-jumps', () => initThreadJumps(Archive), hooks);
 safeInit('scroll-spy', () => initScrollSpy(), hooks);
 safeInit('beforeunload', () => initBeforeUnloadFade(), hooks);
-safeInit('smoke', () => runSmokeChecks(), hooks);
-health.report();
+const smoke = safeInit('smoke', () => runSmokeChecks(), hooks);
+const status = health.report();
+safeInit('debug-badge', () => renderDebugHealthBadge({
+  enabled: health.debug,
+  healthStatus: status,
+  smokeStatus: smoke || window.__smoke,
+}), hooks);
 
 // Keep root imported and referenced for future state vars
 void root;

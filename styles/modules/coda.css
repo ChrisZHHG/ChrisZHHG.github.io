@@ -276,3 +276,37 @@ html:not(.js) .card-stack { width: 100%; max-width: 640px; height: auto; display
 html:not(.js) .card { position: static; opacity: 1; pointer-events: auto; transform: none; }
 html:not(.js) .card-face { position: static; height: auto; }
 html:not(.js) .card-back { display: none; }
+
+/* Debug-only runtime health badge (injected by JS when debug=1). */
+.debug-health-badge {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 12000;
+  min-width: 168px;
+  padding: 9px 10px 8px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.45;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(245, 241, 232, 0.3);
+  background: rgba(15, 12, 10, 0.84);
+  color: rgba(245, 241, 232, 0.9);
+  pointer-events: none;
+}
+.debug-health-badge.is-healthy {
+  border-color: rgba(122, 211, 130, 0.42);
+  box-shadow: 0 0 0 1px rgba(122, 211, 130, 0.12) inset;
+}
+.debug-health-badge.is-degraded {
+  border-color: rgba(237, 130, 115, 0.5);
+  box-shadow: 0 0 0 1px rgba(237, 130, 115, 0.16) inset;
+}
+.debug-health-badge-title {
+  margin-bottom: 4px;
+  color: var(--amber);
+}
