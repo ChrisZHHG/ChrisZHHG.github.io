@@ -17,7 +17,7 @@
   --ink:     #0f0f0f;
   --ink-2:   #3a3a3a;
   --ink-3:   #7a766e;
-  --paper:   #f8f6f1;
+  --paper:   #f1ece2;
   /* Archive: warm deep-umber instead of cold pure black — reads like a
      gallery print room at low light, not a generic dark theme. */
   --archive:   #1a1411;
@@ -45,7 +45,7 @@
   /* Layout */
   --sidebar-w: 230px;
   --topbar-h: 52px;
-  --content-max: 780px;
+  --content-max: 860px;
 }
 
 /* ==========================================================================
@@ -106,7 +106,7 @@ strong { font-weight: 500; }
   flex-direction: column;
   gap: 28px;
   border-right: 1px solid var(--border);
-  background: rgba(248, 246, 241, 0.92);
+  background: rgba(241, 236, 226, 0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
@@ -223,7 +223,7 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border);
-  background: rgba(248, 246, 241, 0.86);
+  background: rgba(241, 236, 226, 0.86);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
@@ -260,6 +260,7 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   max-width: var(--content-max);
   margin: 0 auto;
   padding: 96px 24px;
+  color: #171410;
 }
 
 .act-hero {
@@ -654,15 +655,15 @@ body.stage-archive .vignette {
      small entry buffer so the first and last cards rest visibly. The sticky
      viewport sits below the fixed topbar so cards never get clipped. */
   position: relative;
-  height: calc((100vh - var(--topbar-h)) * 9);
+  height: calc((100vh - var(--topbar-h)) * 6.2);
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.055), transparent 62%),
-    linear-gradient(180deg, #1a1411 0%, #13100d 55%, #0f0b09 100%);
+    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
+    linear-gradient(180deg, #2a211b 0%, #1c1612 55%, #16110e 100%);
   color: #ece6d9;
   isolation: isolate;
 }
 @media (max-width: 880px) {
-  .act-archive { height: calc(100vh * 9); }
+  .act-archive { height: calc(100vh * 6.2); }
 }
 
 .archive-viewport {
@@ -722,9 +723,9 @@ body.stage-archive .vignette {
 
 .card-stack {
   position: relative;
-  width: min(1460px, 76vw);
-  height: min(820px, 84vh);
-  max-height: 860px;
+  width: min(1560px, 82vw);
+  height: min(860px, 88vh);
+  max-height: 900px;
 }
 
 .card {
@@ -1698,6 +1699,46 @@ body.stage-archive .vignette {
 }
 .writing-item-link:hover { color: var(--accent); border-color: var(--accent); }
 
+.interest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.interest-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.35);
+  padding: 18px 18px 16px;
+}
+.interest-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.interest-name {
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.interest-desc {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.interest-meta {
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
 .contact-links {
   display: flex;
   flex-wrap: wrap;
@@ -1739,6 +1780,7 @@ body.stage-archive .vignette {
   .act { padding: 72px 20px; }
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
+  .interest-grid { grid-template-columns: 1fr; }
 
   .card-stack { width: 95vw; height: min(74vh, 700px); max-height: 720px; }
   .card-front { padding: 30px 26px; }
@@ -1819,19 +1861,21 @@ html:not(.js) .card-back { display: none; }
     <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
     <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>What I build</span></a>
     <div class="toc-section">Work</div>
-    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>Eight plates</span></a>
+    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>Core work · 5 plates</span></a>
+    <a href="#interests" data-toc="interests"><span class="toc-num">02</span><span>Interests · 3 projects</span></a>
     <div class="toc-section">More</div>
-    <a href="#background" data-toc="background"><span class="toc-num">02</span><span>Background</span></a>
-    <a href="#now" data-toc="now"><span class="toc-num">03</span><span>Now</span></a>
-    <a href="#writing" data-toc="writing"><span class="toc-num">04</span><span>Writing</span></a>
-    <a href="#contact" data-toc="contact"><span class="toc-num">05</span><span>Contact</span></a>
+    <a href="#background" data-toc="background"><span class="toc-num">03</span><span>Background</span></a>
+    <a href="#now" data-toc="now"><span class="toc-num">04</span><span>Now</span></a>
+    <a href="#writing" data-toc="writing"><span class="toc-num">05</span><span>Writing</span></a>
+    <a href="#contact" data-toc="contact"><span class="toc-num">06</span><span>Contact</span></a>
   </nav>
   <div class="sidebar-footer">
     <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
-      <span class="audio-label">sound · on</span>
+      <span class="audio-label">sound · off</span>
     </button>
+    <a href="https://x.com/home" target="_blank" rel="noopener">X ↗</a>
     <a href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub ↗</a>
-    <a href="https://linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="https://www.linkedin.com/in/chris-zhang-562b0558/" target="_blank" rel="noopener">LinkedIn ↗</a>
   </div>
 </aside>
 
@@ -1842,6 +1886,7 @@ html:not(.js) .card-back { display: none; }
   </span>
   <div class="topbar-actions">
     <a href="#archive">Work</a>
+    <a href="#interests">Interests</a>
     <a href="#contact">Get in touch</a>
   </div>
 </header>
@@ -1909,16 +1954,17 @@ html:not(.js) .card-back { display: none; }
       front and you already know which invoice it tears up.
     </p>
 
-    <ul class="thread-map" aria-label="How the work maps to the manifesto">
+    <ul class="thread-map" aria-label="How the core work maps to the manifesto">
       <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a> · a live counter in your editor</li>
       <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">Smart Airport</a> · a Transformer + PPO for the tarmac</li>
       <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a> · six windows collapsed into one run</li>
       <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a> · scan, decide in 30 s, eat</li>
       <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a> · an essay site, not a tool</li>
-      <li><span class="thread-tag">Road-test booking lottery</span> → <a href="#archive" data-jump="6">FlashSlot</a> · personal tool · ICBC slot watcher</li>
-      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="7">FFP</a> · personal tracker · miles &amp; status</li>
-      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="8">Pedalling</a> · personal essay · repo, no public site yet</li>
     </ul>
+    <p class="manifesto-body" style="margin-top:18px; margin-bottom:0;">
+      Core work above is what I would put on a resume first.
+      Personal builds and ongoing writing live in <a href="#interests" style="text-decoration:underline; text-decoration-color:rgba(232,184,79,0.35);">Interests</a> below.
+    </p>
   </section>
 
   <!-- =====================================================================
@@ -1927,7 +1973,7 @@ html:not(.js) .card-back { display: none; }
   <section class="act act-archive" id="archive" aria-label="Archive of projects">
     <div class="archive-viewport">
 
-      <div class="archive-label">The Archive — 8 Plates</div>
+      <div class="archive-label">Core Work — 5 Plates</div>
       <a class="archive-skip" href="#background">skip archive ↓</a>
 
       <button class="archive-nav prev" type="button" aria-label="Previous plate" data-role="prev">‹</button>
@@ -1975,7 +2021,7 @@ html:not(.js) .card-back { display: none; }
               </dl>
               <div class="spec-note reveal reveal-5">Press <span style="color:var(--amber)">F</span> again to flip back</div>
             </div>
-            <div class="card-back-meta reveal reveal-6">01 / 08 · DevValue</div>
+            <div class="card-back-meta reveal reveal-6">01 / 05 · DevValue</div>
           </div>
         </article>
 
@@ -2054,7 +2100,7 @@ html:not(.js) .card-back { display: none; }
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">02 / 08 · Smart Airport</div>
+            <div class="card-back-meta reveal reveal-3">02 / 05 · Smart Airport</div>
           </div>
         </article>
 
@@ -2106,7 +2152,7 @@ html:not(.js) .card-back { display: none; }
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">03 / 08 · Cleanroll</div>
+            <div class="card-back-meta reveal reveal-3">03 / 05 · Cleanroll</div>
           </div>
         </article>
 
@@ -2184,7 +2230,7 @@ html:not(.js) .card-back { display: none; }
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">04 / 08 · Nod</div>
+            <div class="card-back-meta reveal reveal-3">04 / 05 · Nod</div>
           </div>
         </article>
 
@@ -2218,136 +2264,7 @@ html:not(.js) .card-back { display: none; }
                     referrerpolicy="no-referrer"
                     sandbox="allow-scripts allow-same-origin"></iframe>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">05 / 08 · CyberTao</div>
-          </div>
-        </article>
-
-        <!-- Plate 06 — ICBC FlashSlot -->
-        <article class="card" data-plate="6">
-          <div class="card-face card-front">
-            <div class="card-friction">
-              <span class="ftag-key">Interest</span>
-              <span class="ftag-arrow">→</span>
-              <span class="ftag-name">Road-test booking lottery</span>
-            </div>
-            <div class="card-name">FlashSlot</div>
-            <p class="card-desc">
-              ICBC releases road-test slots in unpredictable bursts. Refreshing
-              the page is a part-time job. FlashSlot watches the booking flow
-              for me and pings my phone the second a seat opens in my window.
-            </p>
-            <div class="card-footer">
-              <span class="card-status status-interest">Personal</span>
-              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
-            </div>
-          </div>
-          <div class="card-face card-back">
-            <div class="card-spec">
-              <div class="spec-title reveal reveal-1">FlashSlot</div>
-              <div class="spec-sub reveal reveal-2">
-                A tiny headless watcher for ICBC's road-test booking. It logs
-                in, scans the calendar for open slots within my allowed window,
-                dedupes what it has already told me, and pushes a notification
-                when something new shows up. Hours saved → attention returned.
-              </div>
-              <div class="spec-divider reveal reveal-3"></div>
-              <dl class="spec-list reveal reveal-4">
-                <dt>Role</dt><dd>Personal agent · runs on my own machine</dd>
-                <dt>Watches</dt><dd>ICBC booking calendar, filtered by centre + date range</dd>
-                <dt>Alerts</dt><dd>Phone push the moment a new slot appears</dd>
-                <dt>Stack</dt><dd>Python · Playwright · cron · Pushover</dd>
-                <dt>Status</dt><dd>Private · used for my own license path</dd>
-              </dl>
-              <div class="spec-note reveal reveal-5">The manifesto in one file: notice the friction → build the tool → get your attention back.</div>
-            </div>
-            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-6">06 / 08 · FlashSlot</div>
-          </div>
-        </article>
-
-        <!-- Plate 07 — FFP -->
-        <article class="card" data-plate="7">
-          <div class="card-face card-front">
-            <div class="card-friction">
-              <span class="ftag-key">Interest</span>
-              <span class="ftag-arrow">→</span>
-              <span class="ftag-name">Points programs sprawl</span>
-            </div>
-            <div class="card-name">FFP</div>
-            <p class="card-desc">
-              A private backend that tracks miles, status, and expiries
-              across Aeroplan, Marriott, Hilton, IHG, and Amex MR — so I
-              never lose a balance to a spreadsheet again.
-            </p>
-            <div class="card-footer">
-              <span class="card-status status-interest">Private</span>
-              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
-            </div>
-          </div>
-          <div class="card-face card-back">
-            <div class="card-spec">
-              <div class="spec-title reveal reveal-1">FFP</div>
-              <div class="spec-sub reveal reveal-2">
-                One quiet place for every loyalty balance, with alerts that
-                actually matter: expiry, devaluation, transfer-bonus windows.
-                Single-tenant on purpose.
-              </div>
-              <div class="spec-divider reveal reveal-3"></div>
-              <dl class="spec-list reveal reveal-4">
-                <dt>Programs</dt><dd>Aeroplan · Marriott · Hilton · IHG · Amex MR</dd>
-                <dt>Alerts</dt><dd>Expiry · devaluation · bonus windows</dd>
-                <dt>Stack</dt><dd>FastAPI · Postgres · scheduled jobs</dd>
-                <dt>Status</dt><dd>Private · single-tenant</dd>
-              </dl>
-              <div class="spec-note reveal reveal-5">Happy to give a walkthrough over coffee</div>
-            </div>
-            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-6">07 / 08 · FFP</div>
-          </div>
-        </article>
-
-        <!-- Plate 08 — Pedalling -->
-        <article class="card"
-                 data-plate="8">
-          <div class="card-face card-front">
-            <div class="card-friction">
-              <span class="ftag-key">Interest</span>
-              <span class="ftag-arrow">→</span>
-              <span class="ftag-name">Drift in my own story</span>
-            </div>
-            <div class="card-name">Pedalling</div>
-            <p class="card-desc">
-              An interactive essay about the route from auditor to builder.
-              Four cities, four chapters, one through-line: the friction
-              I noticed each time, and what I built to remove it. Manuscript
-              and prototype code live in a repo — there is no public microsite
-              yet; this card is the showroom until something ships at /pedalling.
-            </p>
-            <div class="card-footer">
-              <span class="card-status status-interest">Drafting</span>
-              <span class="card-flip-hint"><span class="key">F</span> flip for outline</span>
-            </div>
-          </div>
-          <div class="card-face card-back">
-            <div class="card-spec">
-              <div class="spec-title reveal reveal-1">Pedalling</div>
-              <div class="spec-sub reveal reveal-2">
-                A four-chapter route map. Each chapter pairs a city with a
-                shift in how I work — the kind of shift that ends up in the
-                next project on this archive.
-              </div>
-              <div class="spec-divider reveal reveal-3"></div>
-              <dl class="spec-list reveal reveal-4">
-                <dt>Ch. 1</dt><dd>Chongqing — learning to question the rule book</dd>
-                <dt>Ch. 2</dt><dd>Toronto — eight years inside Big 4 audit</dd>
-                <dt>Ch. 3</dt><dd>Boston — learning to build, not only check</dd>
-                <dt>Ch. 4</dt><dd>Vancouver — now</dd>
-                <dt>Deploy</dt><dd>No hosted site yet · writing + code in private iteration</dd>
-              </dl>
-              <div class="spec-note reveal reveal-5">When /pedalling goes live, this card will deep-link there first.</div>
-            </div>
-            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-6">08 / 08 · Pedalling</div>
+            <div class="card-back-meta reveal reveal-3">05 / 05 · CyberTao</div>
           </div>
         </article>
 
@@ -2356,8 +2273,32 @@ html:not(.js) .card-back { display: none; }
       <div class="archive-plate-num">
         <strong data-role="plate-current">01</strong>
         <span class="sep">/</span>
-        <span>08</span>
+        <span>05</span>
       </div>
+    </div>
+  </section>
+
+  <section class="act" id="interests" aria-label="Interests">
+    <p class="section-label">Interests</p>
+    <div class="interest-grid">
+      <article class="interest-card">
+        <div class="interest-kicker">Personal Tool</div>
+        <div class="interest-name">FlashSlot</div>
+        <p class="interest-desc">ICBC road-test watcher that scans openings and sends alerts as soon as a slot appears in my target window.</p>
+        <div class="interest-meta">Python · Playwright · Pushover</div>
+      </article>
+      <article class="interest-card">
+        <div class="interest-kicker">Personal System</div>
+        <div class="interest-name">FFP</div>
+        <p class="interest-desc">Single-tenant loyalty tracker across Aeroplan, Marriott, Hilton, IHG, and Amex MR with expiry/devaluation reminders.</p>
+        <div class="interest-meta">FastAPI · Postgres · cron</div>
+      </article>
+      <article class="interest-card">
+        <div class="interest-kicker">Long-form Writing</div>
+        <div class="interest-name">Pedalling</div>
+        <p class="interest-desc">In-progress narrative: auditor to builder, four cities, and how each transition shaped what I build now.</p>
+        <div class="interest-meta">Draft · repo only (no public site yet)</div>
+      </article>
     </div>
   </section>
 
@@ -2432,7 +2373,8 @@ html:not(.js) .card-back { display: none; }
   <section class="act" id="contact" aria-label="Contact">
     <p class="section-label">Contact</p>
     <div class="contact-links">
-      <a class="contact-link" href="https://linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="contact-link" href="https://x.com/home" target="_blank" rel="noopener">X</a>
+      <a class="contact-link" href="https://www.linkedin.com/in/chris-zhang-562b0558/" target="_blank" rel="noopener">LinkedIn</a>
       <a class="contact-link" href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub</a>
       <a class="contact-link" href="mailto:zhang.hange@northeastern.edu">Email</a>
     </div>
@@ -2470,7 +2412,7 @@ function setVar(name, value) { root.style.setProperty(name, value); }
    ========================================================================== */
 const Audio = (() => {
   let ctx = null;
-  let muted = false;
+  let muted = true;
   let noiseBuffer = null;
 
   function ensure() {
@@ -2528,6 +2470,7 @@ const Audio = (() => {
 
   function toggle() {
     muted = !muted;
+    if (!muted) ensure();
     const btn = document.querySelector('.audio-toggle');
     if (btn) {
       btn.querySelector('.audio-label').textContent = muted ? 'sound · off' : 'sound · on';
@@ -2710,7 +2653,7 @@ const FocalPlane = (() => {
     if (prefersReducedMotion) return;
     if (pulseT) clearTimeout(pulseT);
     cursorEl.classList.add('is-flash');
-    Audio.lockChime();
+    /* Keep passive hover/focus effects silent. */
     pulseT = setTimeout(() => cursorEl.classList.remove('is-flash'), 220);
   }
   function unlock() {
@@ -2761,8 +2704,7 @@ const Capture = {
   function dismiss() {
     if (dismissed) return;
     dismissed = true;
-    Audio.ensure();
-    Audio.softTick();
+    /* Gate exits silently; no desynced cue on first click. */
     gate.classList.add('is-leaving');
     body.classList.remove('is-gated');
     try { localStorage.setItem(VISIT_KEY, '1'); } catch (_) {}
@@ -2801,7 +2743,7 @@ const Archive = (() => {
     });
     current = idx;
     if (plateNum) plateNum.textContent = String(idx + 1).padStart(2, '0');
-    Audio.softTick();
+    /* Scroll progress changes cards often — keep this silent. */
     /* On the first time any card shows for >1.5s, mark archive captured */
     scheduleArchiveCapture();
     /* Lazy-load iframe on cards when reached */
@@ -2827,7 +2769,7 @@ const Archive = (() => {
     const active = cards[current];
     if (!active) return;
     active.classList.toggle('is-flipped');
-    Audio.shutter();
+    if (!Audio.muted) Audio.shutter();
     /* Mark archive captured on first flip */
     Capture.markFrame('archive');
   }
@@ -3022,9 +2964,7 @@ window.addEventListener('beforeunload', () => {
 /* ==========================================================================
    Unlock audio context on first interaction (Safari/iOS autoplay policy)
    ========================================================================== */
-['pointerdown', 'keydown', 'touchstart'].forEach(ev => {
-  window.addEventListener(ev, () => Audio.ensure(), { once: true });
-});
+/* Audio context now initializes lazily when user enables sound. */
 </script>
 
 </body>
