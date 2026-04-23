@@ -812,6 +812,13 @@ body.stage-archive .vignette {
   max-width: 520px;
   margin-bottom: auto;
 }
+.card-desc a {
+  color: rgba(232, 184, 79, 0.9);
+  text-decoration: underline;
+  text-decoration-color: rgba(232, 184, 79, 0.35);
+  text-underline-offset: 3px;
+}
+.card-desc a:hover { color: var(--amber-hot); }
 
 .card-footer {
   display: flex;
@@ -1363,12 +1370,33 @@ body.stage-archive .vignette {
 }
 .demo-stage .demo-primary iframe {
   position: absolute;
-  inset: 0;
+  top: 40px;
+  left: 0;
+  right: 0;
+  bottom: 34px;
   width: 100%;
-  height: 100%;
   border: 0;
   background: #000;
 }
+.demo-open-tab {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.85);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 2px;
+  border: 1px solid rgba(232, 184, 79, 0.25);
+}
+.demo-open-tab:hover { color: var(--amber-hot); border-color: var(--amber); }
 .demo-stage .demo-primary-poster {
   position: absolute;
   inset: 0;
@@ -1459,6 +1487,28 @@ body.stage-archive .vignette {
 .demo-secondary::-webkit-scrollbar { width: 4px; }
 .demo-secondary::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
 
+.demo-video-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.demo-video-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.55);
+}
+.demo-video-youtube {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(232, 184, 79, 0.8);
+  text-decoration: none;
+  align-self: flex-start;
+}
+.demo-video-youtube:hover { color: var(--amber-hot); }
+
 .demo-video-tile {
   position: relative;
   display: block;
@@ -1470,7 +1520,7 @@ body.stage-archive .vignette {
   border: 1px solid rgba(232, 184, 79, 0.25);
   text-decoration: none;
   color: inherit;
-  cursor: none;
+  cursor: default;
 }
 .demo-video-tile iframe {
   position: absolute;
@@ -1950,10 +2000,11 @@ html:not(.js) .card-back { display: none; }
             </div>
             <div class="card-name">Smart Airport</div>
             <p class="card-desc">
-              Capstone with Vancouver Airport (YVR). A Transformer forecasts
-              each aircraft's energy demand and a PPO policy schedules the
-              chargers — end-to-end ML for the physical infrastructure that
-              keeps gates running.
+              YVR eGSE charging dispatch: a Transformer forecasts demand, PPO
+              policies schedule AC and non-AC fleets. Training pipeline with DVC
+              + MLflow; the same FastAPI inference stack ships as a
+              <a href="https://huggingface.co/spaces/Devil02047/smart-airport-demo" target="_blank" rel="noopener">Hugging Face Space</a>
+              for a full-day plan sim.
             </p>
             <div class="card-footer">
               <span class="card-status status-demo">Capstone</span>
@@ -1962,45 +2013,41 @@ html:not(.js) .card-back { display: none; }
           </div>
           <div class="card-face card-back">
             <div class="demo-stage reveal reveal-2">
-              <!-- Primary: live demo, embedded. Users hit this first. -->
+              <!-- Primary: Hugging Face Space (same FastAPI inference as production). -->
               <div class="demo-primary">
-                <span class="demo-label is-pending" data-role="demo-label">
+                <span class="demo-label" data-role="demo-label">
                   <span class="dot"></span>
-                  Live demo · pending deploy
+                  Live demo · Hugging Face Space
                 </span>
-                <!-- When a hosted demo URL is ready, swap the poster for:
-                     <iframe data-src="YOUR_DEMO_URL" ...></iframe> -->
-                <div class="demo-primary-poster">
-                  <span class="poster-kicker">Live demo</span>
-                  <div class="poster-hed">Transformer + PPO, on YVR's gate schedule.</div>
-                  <div class="poster-meta">
-                    Interactive sim coming with the capstone release.<br>
-                    Code + write-up live on GitHub today.
-                  </div>
-                  <a class="poster-cta" href="https://github.com/PCBZ/Smart_Airport" target="_blank" rel="noopener">Open repo ↗</a>
-                </div>
+                <iframe title="Smart Airport — interactive charging dispatch demo (Hugging Face Space)"
+                  data-src="https://huggingface.co/spaces/Devil02047/smart-airport-demo/embed"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <a class="demo-open-tab" href="https://huggingface.co/spaces/Devil02047/smart-airport-demo" target="_blank" rel="noopener">Open Space in new tab ↗</a>
               </div>
 
-              <!-- Secondary: video preview + notes, parallel to the demo. -->
+              <!-- Secondary: walkthrough video + context, parallel to the demo. -->
               <div class="demo-secondary">
-                <div class="demo-sec-kicker">YVR · MS Capstone · 2026</div>
-                <div class="demo-sec-title">Smart Airport</div>
+                <div class="demo-sec-kicker">Vancouver Airport Authority · MS Capstone</div>
+                <div class="demo-sec-title">eGSE charging optimization</div>
                 <div class="demo-sec-sub">
-                  Two models run together: a Transformer predicts per-aircraft
-                  energy need, a PPO agent picks charger + timeslot so every
-                  ground-support unit is ready when the gate needs it.
+                  Preprocessing and feature engineering on flight, fleet,
+                  charger, and spatial data → Transformer demand forecasting →
+                  Gymnasium env + PPO (Stable-Baselines3) for AC / non-AC
+                  dispatch. Artifacts versioned in DVC; experiments in MLflow.
+                  Online inference: FastAPI + Uvicorn; demo UI on Spaces.
                 </div>
 
-                <!-- Parallel option: watch the walkthrough. -->
-                <a class="demo-video-tile" data-role="demo-video"
-                   href="https://github.com/PCBZ/Smart_Airport"
-                   target="_blank" rel="noopener"
-                   aria-label="Watch the walkthrough video (coming soon)">
-                  <div class="video-poster">
-                    <span class="play-btn" aria-hidden="true">▶</span>
-                    <span class="video-label">Watch walkthrough</span>
+                <div class="demo-video-wrap">
+                  <span class="demo-video-label">Walkthrough (optional)</span>
+                  <div class="demo-video-tile" data-role="demo-video">
+                    <iframe title="Smart Airport — project walkthrough (YouTube)"
+                      data-src="https://www.youtube.com/embed/7ae8t7nckHY?rel=0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen></iframe>
                   </div>
-                </a>
+                  <a class="demo-video-youtube" href="https://youtu.be/7ae8t7nckHY" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+                </div>
 
                 <div class="demo-metrics">
                   <div class="m"><div class="m-big">90<span style="font-size:14px">%</span></div><div class="m-lbl">Gate coverage</div></div>
@@ -2009,7 +2056,8 @@ html:not(.js) .card-back { display: none; }
 
                 <div class="demo-links">
                   <a class="demo-link" href="https://github.com/PCBZ/Smart_Airport" target="_blank" rel="noopener">GitHub ↗</a>
-                  <a class="demo-link" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn post ↗</a>
+                  <a class="demo-link" href="https://huggingface.co/spaces/Devil02047/smart-airport-demo" target="_blank" rel="noopener">HF Space ↗</a>
+                  <a class="demo-link" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn ↗</a>
                 </div>
               </div>
             </div>
