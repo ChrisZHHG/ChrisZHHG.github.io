@@ -909,58 +909,41 @@
 .cybertao-stone-stage {
   position: relative;
   width: 100%;
-  flex: 1 1 auto;
-  min-height: clamp(170px, 31vh, 330px);
+  min-height: 210px;
   aspect-ratio: 16 / 7;
   border: 1px solid rgba(232, 184, 79, 0.2);
   border-radius: 3px;
   overflow: hidden;
-  margin-top: 0;
+  margin-top: 14px;
   background:
-    radial-gradient(ellipse at 52% -18%, rgba(48, 138, 136, 0.18), transparent 64%),
-    radial-gradient(ellipse at 52% 74%, rgba(47, 150, 127, 0.2), transparent 62%),
+    radial-gradient(ellipse at 50% -40%, rgba(48, 138, 136, 0.24), transparent 62%),
     linear-gradient(180deg, #0e0b08 0%, #080605 100%);
-}
-.cybertao-stone-stage::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 31%;
-  width: clamp(170px, 50%, 350px);
-  aspect-ratio: 1 / 1;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1px solid rgba(109, 194, 176, 0.16);
-  box-shadow: 0 0 1px rgba(109, 194, 176, 0.3);
-  opacity: 0.66;
 }
 .cybertao-stone {
   position: absolute;
   left: 50%;
-  top: 72%;
-  width: clamp(140px, 42%, 285px);
-  aspect-ratio: 1.82 / 1;
-  height: auto;
+  top: 58%;
+  width: 164px;
+  height: 108px;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
+  border-radius: 50% 44% 48% 52% / 46% 56% 44% 54%;
   background:
-    radial-gradient(ellipse at 50% 32%, rgba(48, 58, 64, 0.44), rgba(15, 17, 20, 0.95) 64%, rgba(6, 7, 9, 0.99) 100%);
+    radial-gradient(circle at 38% 30%, rgba(112, 186, 178, 0.46), rgba(39, 64, 62, 0.8) 52%, rgba(13, 18, 20, 0.96) 100%);
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.64),
-    0 0 0 1px rgba(79, 164, 148, 0.24) inset,
-    0 0 66px rgba(63, 189, 150, 0.24);
+    0 26px 42px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(99, 170, 162, 0.26) inset,
+    0 0 42px rgba(77, 148, 141, 0.24);
 }
 .cybertao-ring {
   position: absolute;
   left: 50%;
-  top: 31%;
-  width: clamp(170px, 50%, 350px);
-  height: auto;
-  aspect-ratio: 1 / 1;
+  top: 23%;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
-  border: 1px solid rgba(91, 167, 160, 0.1);
+  border: 1px solid rgba(91, 167, 160, 0.36);
   transform: translate(-50%, -50%);
-  opacity: 0.3;
+  opacity: 0.8;
 }
 .card[data-plate="5"]:hover .cybertao-stone,
 .card[data-plate="5"].is-flipped .cybertao-stone {
@@ -974,11 +957,11 @@
   position: absolute;
   left: 14px;
   right: 14px;
-  bottom: 10px;
+  bottom: 12px;
   font-family: var(--serif);
-  font-size: clamp(17px, 1.9vw, 23px);
+  font-size: 25px;
   line-height: 1.12;
-  color: rgba(226, 236, 246, 0.74);
+  color: rgba(226, 236, 246, 0.86);
   text-align: right;
 }
 
