@@ -1693,11 +1693,44 @@ button, a, input, textarea { cursor: none; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
-.interest-card {
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.35);
-  padding: 18px 18px 16px;
+.interest-flip-card {
+  position: relative;
+  min-height: 360px;
+  perspective: 1400px;
+}
+.interest-flip-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease-out);
+}
+.interest-flip-card.is-flipped .interest-flip-inner { transform: rotateY(180deg); }
+.interest-flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24px 45px -28px rgba(0, 0, 0, 0.35);
+}
+.interest-front {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.5) 0%, rgba(245, 239, 226, 0.86) 100%);
+  padding: 20px 18px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.interest-back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(232, 184, 79, 0.14), transparent 50%),
+    linear-gradient(180deg, #19120e 0%, #120d0a 100%);
+  color: rgba(245, 241, 232, 0.9);
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
 }
 .interest-kicker {
   font-family: var(--mono);
@@ -1709,24 +1742,58 @@ button, a, input, textarea { cursor: none; }
 .interest-name {
   margin-top: 10px;
   font-family: var(--serif);
-  font-size: 32px;
-  line-height: 1;
-  letter-spacing: -0.01em;
+  font-size: 36px;
+  line-height: 0.95;
+  letter-spacing: -0.012em;
 }
 .interest-desc {
-  margin-top: 10px;
-  font-size: 15px;
+  margin-top: 12px;
+  font-size: 15.5px;
   line-height: 1.6;
   color: var(--ink-2);
 }
 .interest-meta {
-  margin-top: 12px;
+  margin-top: auto;
+  padding-top: 14px;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
+.interest-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.interest-list li::before { content: '· '; color: var(--amber); }
+.interest-flip-hint {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.interest-back .interest-flip-hint { opacity: 0.8; }
+.interest-flip-btn {
+  margin-top: auto;
+  align-self: flex-start;
+  border: 1px solid rgba(232, 184, 79, 0.38);
+  background: rgba(232, 184, 79, 0.08);
+  color: rgba(245, 241, 232, 0.92);
+  padding: 7px 10px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: none;
+}
+.interest-flip-btn:hover { border-color: var(--amber); color: var(--amber-hot); }
 
 .contact-links {
   display: flex;
@@ -1770,6 +1837,7 @@ button, a, input, textarea { cursor: none; }
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
   .interest-grid { grid-template-columns: 1fr; }
+  .interest-flip-card { min-height: 320px; }
 
   .card-stack { width: 95vw; height: min(74vh, 700px); max-height: 720px; }
   .card-front { padding: 30px 26px; }
@@ -2270,23 +2338,65 @@ html:not(.js) .card-back { display: none; }
   <section class="act" id="interests" aria-label="Interests">
     <p class="section-label">Interests</p>
     <div class="interest-grid">
-      <article class="interest-card">
-        <div class="interest-kicker">Personal Tool</div>
-        <div class="interest-name">FlashSlot</div>
-        <p class="interest-desc">ICBC road-test watcher that scans openings and sends alerts as soon as a slot appears in my target window.</p>
-        <div class="interest-meta">Python · Playwright · Pushover</div>
+      <article class="interest-flip-card" data-role="interest-card">
+        <div class="interest-flip-inner">
+          <div class="interest-flip-face interest-front">
+            <div class="interest-kicker">Personal Tool</div>
+            <div class="interest-name">FlashSlot</div>
+            <p class="interest-desc">ICBC road-test watcher that scans openings and sends alerts as soon as a slot appears in my target window.</p>
+            <div class="interest-meta">Python · Playwright · Pushover</div>
+            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+          </div>
+          <div class="interest-flip-face interest-back">
+            <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">FlashSlot · Details</div>
+            <ul class="interest-list">
+              <li>Polls calendar windows and dedupes stale alerts.</li>
+              <li>Personal agent to remove repetitive booking refresh loops.</li>
+              <li>Runs privately on my own infra.</li>
+            </ul>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+          </div>
+        </div>
       </article>
-      <article class="interest-card">
-        <div class="interest-kicker">Personal System</div>
-        <div class="interest-name">FFP</div>
-        <p class="interest-desc">Single-tenant loyalty tracker across Aeroplan, Marriott, Hilton, IHG, and Amex MR with expiry/devaluation reminders.</p>
-        <div class="interest-meta">FastAPI · Postgres · cron</div>
+      <article class="interest-flip-card" data-role="interest-card">
+        <div class="interest-flip-inner">
+          <div class="interest-flip-face interest-front">
+            <div class="interest-kicker">Personal System</div>
+            <div class="interest-name">FFP</div>
+            <p class="interest-desc">Single-tenant loyalty tracker across Aeroplan, Marriott, Hilton, IHG, and Amex MR with expiry/devaluation reminders.</p>
+            <div class="interest-meta">FastAPI · Postgres · cron</div>
+            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+          </div>
+          <div class="interest-flip-face interest-back">
+            <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">FFP · Details</div>
+            <ul class="interest-list">
+              <li>Tracks loyalty balances in one quiet dashboard.</li>
+              <li>Alerts on expiry, transfer-bonus windows, and devaluation risk.</li>
+              <li>Single-tenant by design.</li>
+            </ul>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+          </div>
+        </div>
       </article>
-      <article class="interest-card">
-        <div class="interest-kicker">Long-form Writing</div>
-        <div class="interest-name">Pedalling</div>
-        <p class="interest-desc">In-progress narrative: auditor to builder, four cities, and how each transition shaped what I build now.</p>
-        <div class="interest-meta">Draft · repo only (no public site yet)</div>
+      <article class="interest-flip-card" data-role="interest-card">
+        <div class="interest-flip-inner">
+          <div class="interest-flip-face interest-front">
+            <div class="interest-kicker">Long-form Writing</div>
+            <div class="interest-name">Pedalling</div>
+            <p class="interest-desc">In-progress narrative: auditor to builder, four cities, and how each transition shaped what I build now.</p>
+            <div class="interest-meta">Draft · repo only (no public site yet)</div>
+            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+          </div>
+          <div class="interest-flip-face interest-back">
+            <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">Pedalling · Details</div>
+            <ul class="interest-list">
+              <li>Four chapters: Chongqing, Toronto, Boston, Vancouver.</li>
+              <li>Focus: decisions, trade-offs, and identity shift in work.</li>
+              <li>Publishing path: writing first, then dedicated microsite.</li>
+            </ul>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+          </div>
+        </div>
       </article>
     </div>
   </section>
@@ -2891,6 +3001,34 @@ const Archive = (() => {
       e.stopPropagation();
       const k = btn.dataset.nod;
       if (copy[k]) el.textContent = copy[k];
+    });
+  });
+})();
+
+/* Interest cards — same flip behavior style as work cards. */
+(function InterestFlips() {
+  const cards = Array.from(document.querySelectorAll('[data-role="interest-card"]'));
+  if (!cards.length) return;
+
+  function flip(card) {
+    card.classList.toggle('is-flipped');
+    if (!Audio.muted) {
+      const onFlipMotionDone = (e) => {
+        if (e.propertyName !== 'transform') return;
+        Audio.shutter();
+      };
+      card.querySelector('.interest-flip-inner')?.addEventListener('transitionend', onFlipMotionDone, { once: true });
+    }
+  }
+
+  cards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('[data-role="interest-flip-back"]')) {
+        flip(card);
+        return;
+      }
+      if (e.target.closest('a, button')) return;
+      flip(card);
     });
   });
 })();
