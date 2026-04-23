@@ -1,0 +1,12 @@
+/* ==========================================================================
+   BELLOWS MOTION TOKENS
+   --bellows-t : written by scripts/core/bellows.js (sinusoidal oscillator,
+                 amplitude 0–0.02, period ~6s). Drives the breathing scale
+                 of .bellows in bellows.css.
+   --iris-t    : written by scripts/core/iris.js (0 = closed, 1 = open).
+                 Reserved for the Chunk D′ iris transition system.
+   ========================================================================== */
+:root {
+  --bellows-t: 0;
+  --iris-t:    1;
+}

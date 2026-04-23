@@ -9,12 +9,9 @@
      viewport sits below the fixed topbar so cards never get clipped. */
   position: relative;
   height: calc((100vh - var(--topbar-h)) * 6.2);
-  /* Base uses sky-6/7 tokens so this section stays in the correct tunnel
-     luminance band when entering from Act 4 (sky-5). The amber radial stays
-     as gallery-spotlight overlay. */
   background:
     radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
-    linear-gradient(180deg, var(--sky-7, #3a3026) 0%, var(--sky-6, #2f2720) 100%);
+    linear-gradient(180deg, #3a3026 0%, #2f2720 100%);
   color: #ece6d9;
   isolation: isolate;
 }

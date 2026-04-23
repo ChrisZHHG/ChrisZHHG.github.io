@@ -1,4 +1,6 @@
-/* CSS module manifest: ordered imports for deterministic cascade. */
+/* CSS module manifest — ordered imports for deterministic cascade. */
+@import url('./modules/tunnel.css');
 @import url('./modules/foundation.css');
+@import url('./modules/bellows.css');
 @import url('./modules/archive.css');
 @import url('./modules/coda.css');

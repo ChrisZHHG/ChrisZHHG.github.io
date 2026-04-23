@@ -1,0 +1,115 @@
+/* ==========================================================================
+   BELLOWS PROSCENIUM
+   The observer's head stays inside the camera throughout Acts 1–5.
+
+   Design principle: the bellows is an edge frame, NOT a center obstruction.
+   Content fills ~80% of the viewport; the dark accordion-fold edges occupy
+   only the outer 12–15%. The viewer sees clearly — they are focused,
+   not blinded.
+
+   Three CSS layers stacked via z-index 30:
+     1. .bellows         — layered inset box-shadows (the folds + depth)
+     2. .bellows::before — rib texture pattern (masked to edges only)
+     3. .bellows::after  — hard corner anchors (chamfered leather housing)
+
+   Breathing: --bellows-t (0→0.02) from bellows.js drives a ±1.5% scale
+   pulse. Imperceptible as deliberate motion; physiologically alive.
+   ========================================================================== */
+
+.bellows {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+
+  /* Breathing: very subtle scale, synced to sinusoidal oscillator */
+  transform: scale(calc(1 + var(--bellows-t, 0) * 1.5));
+  transform-origin: center center;
+  will-change: transform;
+
+  /* Six inset shadow layers build the accordion-fold depth illusion.
+     Layer 0: hard leather frame edge (solid 14px).
+     Layers 1–5: progressively softer fold shadows fading toward center.
+     Center of viewport is fully transparent — content shows through. */
+  box-shadow:
+    inset 0 0   0px  14px #0c0906,                   /* leather frame */
+    inset 0 0  55px  14px rgba(10,  8,  5, 0.92),    /* fold 1 */
+    inset 0 0  95px  20px rgba(10,  8,  5, 0.70),    /* fold 2 */
+    inset 0 0 135px  28px rgba(10,  8,  5, 0.46),    /* fold 3 */
+    inset 0 0 175px  36px rgba(10,  8,  5, 0.26),    /* fold 4 */
+    inset 0 0 215px  44px rgba(10,  8,  5, 0.11);    /* soft vignette */
+}
+
+/* Accordion rib texture — subtle repeating ridge lines, visible only at
+   edges. The radial mask hides the pattern in the content area so text
+   is never cluttered by the texture. */
+.bellows::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      transparent 0px, transparent 15px,
+      rgba(0, 0, 0, 0.055) 15px, rgba(0, 0, 0, 0.055) 17px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 15px,
+      rgba(0, 0, 0, 0.055) 15px, rgba(0, 0, 0, 0.055) 17px
+    );
+  /* Mask: transparent at center (72% × 68% ellipse), full opacity at edges */
+  mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 50%,
+    transparent 62%,
+    rgba(0, 0, 0, 0.5) 76%,
+    black 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 50%,
+    transparent 62%,
+    rgba(0, 0, 0, 0.5) 76%,
+    black 100%
+  );
+}
+
+/* Hard corner anchors: the chamfered leather housing corners.
+   Post-1900 bellows used chamfered corners to prevent light-leak pinholing
+   (ref: licm.org.uk — Camera Anatomy: Bellows Cameras). */
+.bellows::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 20% 20% at   0%   0%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
+    radial-gradient(ellipse 20% 20% at 100%   0%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
+    radial-gradient(ellipse 20% 20% at   0% 100%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
+    radial-gradient(ellipse 20% 20% at 100% 100%, rgba(5, 4, 3, 0.92) 0%, transparent 100%);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+/* Below 768px: collapse to a single soft radial vignette only.
+   No rib texture, no breathing — preserve battery and simplicity. */
+@media (max-width: 768px) {
+  .bellows {
+    transform: none;
+    box-shadow:
+      inset 0 0   0px   8px #0c0906,
+      inset 0 0  40px   8px rgba(10, 8, 5, 0.85),
+      inset 0 0  80px  16px rgba(10, 8, 5, 0.52),
+      inset 0 0 120px  24px rgba(10, 8, 5, 0.22);
+  }
+  .bellows::before { display: none; }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+/* Freeze the bellows at its neutral state. The frame is still visible
+   as a dark edge vignette — just not breathing. */
+@media (prefers-reduced-motion: reduce) {
+  .bellows {
+    transform: none;
+    will-change: auto;
+  }
+}

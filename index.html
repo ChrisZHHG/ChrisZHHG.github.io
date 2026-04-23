@@ -36,6 +36,11 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain-paper" aria-hidden="true"></div>
 
+<!-- Bellows proscenium: fixed dark edge frame, always present Acts 1–5.
+     Content fills the center; the bellows is the camera housing around it.
+     Breathing driven by --bellows-t from scripts/core/bellows.js. -->
+<div class="bellows" aria-hidden="true"></div>
+
 <!-- First-visit gate (JS toggles body.is-gated; removed by localStorage on subsequent visits) -->
 <div class="gate" data-role="gate" aria-hidden="true">
   <div class="gate-line">Time is currency.</div>

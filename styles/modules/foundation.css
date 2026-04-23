@@ -49,24 +49,15 @@ html {
 }
 
 body {
-  background: linear-gradient(
-    180deg,
-    #18120f 0%,
-    #15100d 28%,
-    #120d0b 58%,
-    #17110e 100%
-  );
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 17.5px;
   line-height: 1.62;
   overflow-x: hidden;
   cursor: none;
-  transition: background 0.24s var(--ease-out), color 0.24s var(--ease-out);
+  transition: color 0.24s var(--ease-out);
 }
-
-/* First-visit gate stays dark until user dismisses it */
-body.is-gated      { background: var(--ink); color: #f2efe8; }
 
 /* Device without fine pointer falls back to native cursor */
 @media (pointer: coarse) {
