@@ -317,8 +317,7 @@
   margin-bottom: 12px;
   max-width: 44ch;
 }
-.card[data-plate="2"] .card-footer,
-.card[data-plate="5"] .card-footer {
+.card[data-plate="2"] .card-footer {
   margin-top: 8px;
 }
 
@@ -909,6 +908,7 @@
 .cybertao-stone-stage {
   position: relative;
   width: 100%;
+  flex: 0 0 auto;
   min-height: 210px;
   aspect-ratio: 16 / 7;
   border: 1px solid rgba(232, 184, 79, 0.2);
@@ -919,6 +919,7 @@
     radial-gradient(ellipse at 50% -40%, rgba(48, 138, 136, 0.24), transparent 62%),
     linear-gradient(180deg, #0e0b08 0%, #080605 100%);
 }
+.card[data-plate="5"] .card-footer { margin-top: auto; }
 .cybertao-stone {
   position: absolute;
   left: 50%;
