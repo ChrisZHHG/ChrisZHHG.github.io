@@ -2,6 +2,7 @@ export function renderDebugHealthBadge({ enabled, healthStatus, smokeStatus }) {
   if (!enabled) return;
 
   const failedInits = Array.isArray(healthStatus?.failed) ? healthStatus.failed.length : 0;
+  const skippedInits = Array.isArray(healthStatus?.skipped) ? healthStatus.skipped.length : 0;
   const smokeFailed = Array.isArray(smokeStatus?.failed) ? smokeStatus.failed.length : 0;
   const degraded = failedInits > 0 || smokeFailed > 0;
 
@@ -14,6 +15,7 @@ export function renderDebugHealthBadge({ enabled, healthStatus, smokeStatus }) {
   badge.innerHTML = `
     <div class="debug-health-badge-title">runtime · ${state}</div>
     <div class="debug-health-badge-row">init failed: ${failedInits}</div>
+    <div class="debug-health-badge-row">init skipped: ${skippedInits}</div>
     <div class="debug-health-badge-row">smoke failed: ${smokeFailed}</div>
   `;
 

@@ -1,8 +1,9 @@
 import { setVar, lerp } from '../lib/env.js';
+import { SkipInitError } from '../lib/safe.js';
 
-export function initCursor({ Stage, FocalPlane, isCoarsePointer, prefersReducedMotion }) {
+export function initCursor({ Stage, FocalPlane, isCoarsePointer, isReducedMotion }) {
   const el = document.querySelector('.cursor');
-  if (!el) return { velocity: () => 0, get x() { return 0; }, get y() { return 0; }, el: null };
+  if (!el) throw new SkipInitError('missing .cursor element');
 
   let x = window.innerWidth / 2;
   let y = window.innerHeight / 2;
@@ -31,7 +32,7 @@ export function initCursor({ Stage, FocalPlane, isCoarsePointer, prefersReducedM
   }
 
   function scheduleDwell() {
-    if (prefersReducedMotion || isCoarsePointer) return;
+    if (isReducedMotion() || isCoarsePointer) return;
     if (Stage.current === 'archive') return;
     if (dwellTimer) return;
     dwellTimer = setTimeout(() => {
@@ -61,25 +62,34 @@ export function initCursor({ Stage, FocalPlane, isCoarsePointer, prefersReducedM
     if (Math.hypot(dx, dy) > STILL_THRESHOLD) resetDwell();
   }
 
-  window.addEventListener('mousemove', (e) => moveTo(e.clientX, e.clientY), { passive: true });
+  const onMouseMove = (e) => moveTo(e.clientX, e.clientY);
+  window.addEventListener('mousemove', onMouseMove, { passive: true });
 
   const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .demo-link, .demo-video-tile, .poster-cta, .nod-hotspot, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
-  document.addEventListener('mouseover', (e) => {
+  const onMouseOver = (e) => {
     if (e.target.closest(hoverSelector)) el.classList.add('is-hover');
-  });
-  document.addEventListener('mouseout', (e) => {
+  };
+  const onMouseOut = (e) => {
     if (e.target.closest(hoverSelector)) el.classList.remove('is-hover');
-  });
+  };
+  document.addEventListener('mouseover', onMouseOver);
+  document.addEventListener('mouseout', onMouseOut);
 
+  const frameListeners = [];
   document.querySelectorAll('iframe').forEach((frame) => {
-    frame.addEventListener('mouseenter', () => setVar('--bracket-opacity', '0'));
-    frame.addEventListener('mouseleave', () => setVar('--bracket-opacity', '1'));
+    const onEnter = () => setVar('--bracket-opacity', '0');
+    const onLeave = () => setVar('--bracket-opacity', '1');
+    frame.addEventListener('mouseenter', onEnter);
+    frame.addEventListener('mouseleave', onLeave);
+    frameListeners.push([frame, onEnter, onLeave]);
   });
 
-  document.addEventListener('mouseleave', () => setVar('--bracket-opacity', '0'));
-  document.addEventListener('mouseenter', () => setVar('--bracket-opacity', '1'));
+  const onDocLeave = () => setVar('--bracket-opacity', '0');
+  const onDocEnter = () => setVar('--bracket-opacity', '1');
+  document.addEventListener('mouseleave', onDocLeave);
+  document.addEventListener('mouseenter', onDocEnter);
 
-  setInterval(() => {
+  const idleInterval = setInterval(() => {
     if (performance.now() - lastT > 180) scheduleDwell();
   }, 120);
 
@@ -88,5 +98,18 @@ export function initCursor({ Stage, FocalPlane, isCoarsePointer, prefersReducedM
     get x() { return x; },
     get y() { return y; },
     el,
+    dispose() {
+      window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseover', onMouseOver);
+      document.removeEventListener('mouseout', onMouseOut);
+      document.removeEventListener('mouseleave', onDocLeave);
+      document.removeEventListener('mouseenter', onDocEnter);
+      frameListeners.forEach(([frame, onEnter, onLeave]) => {
+        frame.removeEventListener('mouseenter', onEnter);
+        frame.removeEventListener('mouseleave', onLeave);
+      });
+      if (dwellTimer) clearTimeout(dwellTimer);
+      clearInterval(idleInterval);
+    },
   };
 }

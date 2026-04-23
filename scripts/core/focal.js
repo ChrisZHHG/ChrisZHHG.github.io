@@ -1,8 +1,8 @@
-export function createFocalPlane({ cursorEl, prefersReducedMotion }) {
+export function createFocalPlane({ cursorEl, isReducedMotion }) {
   let pulseTimer = null;
 
   function lock() {
-    if (prefersReducedMotion || !cursorEl) return;
+    if (isReducedMotion() || !cursorEl) return;
     if (pulseTimer) clearTimeout(pulseTimer);
     cursorEl.classList.add('is-flash');
     pulseTimer = setTimeout(() => cursorEl.classList.remove('is-flash'), 220);
@@ -19,5 +19,10 @@ export function createFocalPlane({ cursorEl, prefersReducedMotion }) {
 
   function onMotion() { unlock(); }
 
-  return { lock, unlock, onMotion };
+  return {
+    lock,
+    unlock,
+    onMotion,
+    dispose() { unlock(); },
+  };
 }

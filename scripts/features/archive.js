@@ -1,18 +1,20 @@
+import { SkipInitError } from '../lib/safe.js';
+
 export const Capture = {
   markFrame() {},
   maybeCaptureAtPoint() {},
 };
 
-export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
+export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
   const section = document.getElementById('archive');
   const stack = document.querySelector('[data-role="card-stack"]');
-  if (!section || !stack) return { setActive() {}, flipActive() {}, navigateTo() {} };
+  if (!section || !stack) throw new SkipInitError('missing archive section or card stack');
 
   const cards = Array.from(stack.querySelectorAll('.card'));
   const prevBtn = section.querySelector('[data-role="prev"]');
   const nextBtn = section.querySelector('[data-role="next"]');
   const plateNum = document.querySelector('[data-role="plate-current"]');
-  if (!cards.length) return { setActive() {}, flipActive() {}, navigateTo() {} };
+  if (!cards.length) throw new SkipInitError('no archive cards found');
 
   let current = -1;
   let inArchive = false;
@@ -76,7 +78,7 @@ export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
 
   function navigateTo(idx, source = 'programmatic') {
     idx = clamp(idx, 0, cards.length - 1);
-    if (prefersReducedMotion) { setActive(idx); return; }
+    if (isReducedMotion()) { setActive(idx); return; }
     if (source !== 'scroll' && !Audio.muted) Audio.softTick();
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
@@ -89,10 +91,12 @@ export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
     window.scrollTo({ top: targetY, behavior: 'smooth' });
   }
 
-  prevBtn?.addEventListener('click', () => navigateTo(current - 1, 'button'));
-  nextBtn?.addEventListener('click', () => navigateTo(current + 1, 'button'));
+  const onPrev = () => navigateTo(current - 1, 'button');
+  const onNext = () => navigateTo(current + 1, 'button');
+  prevBtn?.addEventListener('click', onPrev);
+  nextBtn?.addEventListener('click', onNext);
 
-  window.addEventListener('keydown', (e) => {
+  const onKeydown = (e) => {
     if (Stage.current !== 'archive') return;
     if (e.key === 'ArrowRight' || e.key === 'Right') { e.preventDefault(); navigateTo(current + 1, 'keyboard'); }
     else if (e.key === 'ArrowLeft' || e.key === 'Left') { e.preventDefault(); navigateTo(current - 1, 'keyboard'); }
@@ -100,16 +104,18 @@ export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
       e.preventDefault();
       flipActive();
     }
-  });
+  };
+  window.addEventListener('keydown', onKeydown);
 
   let touchStartX = 0;
   let touchStartY = 0;
-  stack.addEventListener('touchstart', (e) => {
+  const onTouchStart = (e) => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-  }, { passive: true });
+  };
+  stack.addEventListener('touchstart', onTouchStart, { passive: true });
 
-  stack.addEventListener('touchend', (e) => {
+  const onTouchEnd = (e) => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
     if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
@@ -118,10 +124,11 @@ export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
       if (e.target.closest('a, button')) return;
       flipActive();
     }
-  });
+  };
+  stack.addEventListener('touchend', onTouchEnd);
 
   function updateFromScroll() {
-    if (prefersReducedMotion) return;
+    if (isReducedMotion()) return;
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
     const topbarH = window.innerWidth > 880 ? 52 : 0;
@@ -145,10 +152,25 @@ export function initArchive({ Audio, Stage, prefersReducedMotion, clamp }) {
 
   window.addEventListener('scroll', updateFromScroll, { passive: true });
   window.addEventListener('resize', updateFromScroll);
-  setTimeout(() => {
+  const initTimer = setTimeout(() => {
     setActive(0);
     updateFromScroll();
   }, 50);
 
-  return { setActive, flipActive, navigateTo };
+  return {
+    setActive,
+    flipActive,
+    navigateTo,
+    dispose() {
+      clearTimeout(initTimer);
+      if (archiveDwellT) clearTimeout(archiveDwellT);
+      prevBtn?.removeEventListener('click', onPrev);
+      nextBtn?.removeEventListener('click', onNext);
+      window.removeEventListener('keydown', onKeydown);
+      window.removeEventListener('scroll', updateFromScroll);
+      window.removeEventListener('resize', updateFromScroll);
+      stack.removeEventListener('touchstart', onTouchStart);
+      stack.removeEventListener('touchend', onTouchEnd);
+    },
+  };
 }

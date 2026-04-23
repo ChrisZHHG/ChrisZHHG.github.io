@@ -78,6 +78,12 @@ export function createAudio() {
 
 export function initAudioToggle(Audio) {
   const btn = document.querySelector('.audio-toggle');
-  if (!btn) return;
-  btn.addEventListener('click', () => Audio.toggle());
+  if (!btn) return { status: 'skipped', reason: 'missing .audio-toggle' };
+  const onClick = () => Audio.toggle();
+  btn.addEventListener('click', onClick);
+  return {
+    dispose() {
+      btn.removeEventListener('click', onClick);
+    },
+  };
 }

@@ -1,18 +1,27 @@
 export function initThreadJumps(Archive) {
-  document.querySelectorAll('a[data-jump]').forEach((a) => {
-    a.addEventListener('click', (e) => {
+  const links = Array.from(document.querySelectorAll('a[data-jump]'));
+  const handlers = [];
+  links.forEach((a) => {
+    const onClick = (e) => {
       const n = parseInt(a.dataset.jump, 10);
       if (Number.isFinite(n)) {
         e.preventDefault();
         Archive.navigateTo(n - 1);
       }
-    });
+    };
+    a.addEventListener('click', onClick);
+    handlers.push([a, onClick]);
   });
+  return {
+    dispose() {
+      handlers.forEach(([a, onClick]) => a.removeEventListener('click', onClick));
+    },
+  };
 }
 
 export function initScrollSpy() {
   const tocLinks = Array.from(document.querySelectorAll('[data-role="toc"] a'));
-  if (!tocLinks.length) return;
+  if (!tocLinks.length) return { status: 'skipped', reason: 'missing toc links' };
 
   const map = new Map();
   tocLinks.forEach((a) => {
@@ -20,7 +29,7 @@ export function initScrollSpy() {
     const target = id && document.getElementById(id);
     if (target) map.set(target, a);
   });
-  if (!map.size) return;
+  if (!map.size) return { status: 'skipped', reason: 'missing toc targets' };
 
   const targets = Array.from(map.keys());
 
@@ -43,12 +52,24 @@ export function initScrollSpy() {
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);
   update();
+  return {
+    dispose() {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    },
+  };
 }
 
 export function initBeforeUnloadFade() {
-  window.addEventListener('beforeunload', () => {
+  const onBeforeUnload = () => {
     document.body.style.transition = 'filter 0.2s ease, opacity 0.2s ease';
     document.body.style.filter = 'blur(14px)';
     document.body.style.opacity = '0.3';
-  });
+  };
+  window.addEventListener('beforeunload', onBeforeUnload);
+  return {
+    dispose() {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    },
+  };
 }

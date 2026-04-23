@@ -6,5 +6,9 @@ export function createStage(body) {
     if (name === 'archive') body.classList.add('stage-archive');
     current = name;
   }
-  return { set, get current() { return current; } };
+  return {
+    set,
+    get current() { return current; },
+    dispose() {},
+  };
 }

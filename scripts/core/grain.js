@@ -1,4 +1,6 @@
 export function initGrain() {
+  const targets = Array.from(document.querySelectorAll('.grain-film, .grain-paper'));
+  if (!targets.length) return { status: 'skipped', reason: 'missing grain layers' };
   const size = 128;
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
@@ -14,8 +16,9 @@ export function initGrain() {
   }
   ctx.putImageData(img, 0, 0);
   const url = `url(${canvas.toDataURL('image/png')})`;
-  document.querySelectorAll('.grain-film, .grain-paper').forEach((el) => {
+  targets.forEach((el) => {
     el.style.backgroundImage = url;
     el.style.backgroundSize = `${size}px ${size}px`;
   });
+  return { dispose() {} };
 }

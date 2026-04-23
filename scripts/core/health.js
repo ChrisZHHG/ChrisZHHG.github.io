@@ -11,6 +11,7 @@ function isDebugEnabled() {
 export function createHealthMonitor() {
   const debug = isDebugEnabled();
   const ok = [];
+  const skipped = [];
   const failed = [];
 
   function onOk(name) {
@@ -23,15 +24,21 @@ export function createHealthMonitor() {
     if (debug) console.error(`[health] failed: ${name}`, error);
   }
 
+  function onSkip(name, reason) {
+    skipped.push({ name, reason: String(reason || 'skipped') });
+    if (debug) console.warn(`[health] skipped: ${name} (${reason || 'no reason'})`);
+  }
+
   function report() {
-    const status = { ok, failed, ts: Date.now() };
+    const status = { ok, skipped, failed, ts: Date.now() };
     window.__siteHealth = status;
     if (!debug) return status;
-    const mark = failed.length ? 'degraded' : 'healthy';
-    console.info(`[health] boot: ${mark} | ok=${ok.length} failed=${failed.length}`);
+    const mark = failed.length ? 'degraded' : (skipped.length ? 'partial' : 'healthy');
+    console.info(`[health] boot: ${mark} | ok=${ok.length} skipped=${skipped.length} failed=${failed.length}`);
+    if (skipped.length) console.table(skipped);
     if (failed.length) console.table(failed);
     return status;
   }
 
-  return { debug, onOk, onError, report };
+  return { debug, onOk, onSkip, onError, report };
 }

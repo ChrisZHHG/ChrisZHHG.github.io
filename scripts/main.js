@@ -1,4 +1,4 @@
-import { body, root, prefersReducedMotion, isCoarsePointer, clamp } from './lib/env.js';
+import { body, root, isCoarsePointer, clamp, createReducedMotionController } from './lib/env.js';
 import { safeInit } from './lib/safe.js';
 import { createAudio, initAudioToggle } from './core/audio.js';
 import { initGrain } from './core/grain.js';
@@ -16,33 +16,54 @@ import { renderDebugHealthBadge } from './features/debugBadge.js';
 
 document.documentElement.classList.add('js');
 const health = createHealthMonitor();
-const hooks = { onOk: health.onOk, onError: health.onError };
+const hooks = { onOk: health.onOk, onSkip: health.onSkip, onError: health.onError };
+const runtime = [];
+const reducedMotion = createReducedMotionController();
 
-const Audio = safeInit('audio:create', () => createAudio(), hooks) || {
+function trackDisposable(instance) {
+  if (instance && typeof instance.dispose === 'function') runtime.push(instance);
+  return instance;
+}
+
+const Audio = trackDisposable(safeInit('audio:create', () => createAudio(), hooks)) || {
   muted: true,
   shutter() {},
   softTick() {},
   lockChime() {},
   toggle() {},
+  dispose() {},
 };
 
-safeInit('audio:toggle', () => initAudioToggle(Audio), hooks);
-safeInit('grain', () => initGrain(), hooks);
+trackDisposable(safeInit('audio:toggle', () => initAudioToggle(Audio), hooks));
+trackDisposable(safeInit('grain', () => initGrain(), hooks));
 
-const Stage = safeInit('stage', () => createStage(body), hooks) || { current: 'paper', set() {} };
-const FocalPlane = safeInit('focal', () => createFocalPlane({ cursorEl: document.querySelector('.cursor'), prefersReducedMotion }), hooks) || { lock() {}, unlock() {}, onMotion() {} };
+const Stage = trackDisposable(safeInit('stage', () => createStage(body), hooks)) || { current: 'paper', set() {}, dispose() {} };
+const FocalPlane = trackDisposable(safeInit('focal', () => createFocalPlane({
+  cursorEl: document.querySelector('.cursor'),
+  isReducedMotion: reducedMotion.isReduced,
+}), hooks)) || { lock() {}, unlock() {}, onMotion() {}, dispose() {} };
 
-safeInit('cursor', () => initCursor({ Stage, FocalPlane, isCoarsePointer, prefersReducedMotion }), hooks);
-safeInit('gate', () => initGate({ body, prefersReducedMotion }), hooks);
+trackDisposable(safeInit('cursor', () => initCursor({
+  Stage,
+  FocalPlane,
+  isCoarsePointer,
+  isReducedMotion: reducedMotion.isReduced,
+}), hooks));
+trackDisposable(safeInit('gate', () => initGate({ body, isReducedMotion: reducedMotion.isReduced }), hooks));
 
-const Archive = safeInit('archive', () => initArchive({ Audio, Stage, prefersReducedMotion, clamp }), hooks) || { navigateTo() {} };
+const Archive = trackDisposable(safeInit('archive', () => initArchive({
+  Audio,
+  Stage,
+  isReducedMotion: reducedMotion.isReduced,
+  clamp,
+}), hooks)) || { navigateTo() {}, dispose() {} };
 
-safeInit('nod:hotspots', () => initNodHotspots(), hooks);
-safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks);
-safeInit('interests', () => initInterestFlips(Audio), hooks);
-safeInit('thread-jumps', () => initThreadJumps(Archive), hooks);
-safeInit('scroll-spy', () => initScrollSpy(), hooks);
-safeInit('beforeunload', () => initBeforeUnloadFade(), hooks);
+trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));
+trackDisposable(safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks));
+trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));
+trackDisposable(safeInit('thread-jumps', () => initThreadJumps(Archive), hooks));
+trackDisposable(safeInit('scroll-spy', () => initScrollSpy(), hooks));
+trackDisposable(safeInit('beforeunload', () => initBeforeUnloadFade(), hooks));
 const smoke = safeInit('smoke', () => runSmokeChecks(), hooks);
 const status = health.report();
 safeInit('debug-badge', () => renderDebugHealthBadge({
@@ -50,6 +71,14 @@ safeInit('debug-badge', () => renderDebugHealthBadge({
   healthStatus: status,
   smokeStatus: smoke || window.__smoke,
 }), hooks);
+
+window.__disposeSite = function disposeSiteRuntime() {
+  while (runtime.length) {
+    const item = runtime.pop();
+    try { item.dispose(); } catch (error) { console.error('[dispose]', error); }
+  }
+  try { reducedMotion.dispose(); } catch (error) { console.error('[dispose:motion]', error); }
+};
 
 // Keep root imported and referenced for future state vars
 void root;
