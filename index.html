@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Chris Zhang — Time is currency.</title>
 <meta name="description" content="Former Big 4 auditor turned builder. Building tools that eliminate friction so your attention flows toward what actually matters.">
-<meta name="theme-color" content="#0f0f0f">
+<meta name="theme-color" content="#14100d">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico">
+<link rel="canonical" href="https://chriszhang.me/">
+<script>
+/* Always prefer HTTPS on production domain to avoid browser "Not secure" UI. */
+if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+  location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
@@ -14,16 +23,16 @@
    1. TOKENS
    ========================================================================== */
 :root {
-  --ink:     #0f0f0f;
-  --ink-2:   #3a3a3a;
-  --ink-3:   #7a766e;
-  --paper:   #f1ece2;
+  --ink:     #ece6d9;
+  --ink-2:   #c8c0b3;
+  --ink-3:   #9a8f7f;
+  --paper:   #14100d;
   /* Archive: warm deep-umber instead of cold pure black — reads like a
      gallery print room at low light, not a generic dark theme. */
   --archive:   #1a1411;
   --archive-2: #13100d;
-  --accent:  #c8392b;
-  --border:  #e0ddd6;
+  --accent:  #d5a44a;
+  --border:  #2f2722;
   --border-dark: #2a2622;
 
   --mono:  'DM Mono', ui-monospace, SFMono-Regular, monospace;
@@ -63,11 +72,10 @@ html {
 body {
   background: linear-gradient(
     180deg,
-    #ebe3d4 0%,
-    #e5dbc9 24%,
-    #d9ccb6 48%,
-    #e3d8c8 72%,
-    #f1ece2 100%
+    #18120f 0%,
+    #15100d 28%,
+    #120d0b 58%,
+    #17110e 100%
   );
   color: var(--ink);
   font-family: var(--sans);
@@ -112,7 +120,7 @@ strong { font-weight: 500; }
   flex-direction: column;
   gap: 28px;
   border-right: 1px solid var(--border);
-  background: rgba(241, 236, 226, 0.92);
+  background: rgba(20, 16, 13, 0.94);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
@@ -224,7 +232,7 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border);
-  background: rgba(241, 236, 226, 0.86);
+  background: rgba(20, 16, 13, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
@@ -256,7 +264,7 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   max-width: var(--content-max);
   margin: 0 auto;
   padding: 96px 24px;
-  color: #171410;
+  color: var(--ink);
 }
 
 .act-hero {
@@ -564,7 +572,7 @@ button, a, input, textarea { cursor: none; }
   padding: 22px 22px 20px;
   transition: background 0.3s ease;
 }
-.manifesto-item:hover { background: #fbfaf5; }
+.manifesto-item:hover { background: #1b1511; }
 
 .manifesto-item-label {
   font-family: var(--mono);
@@ -1717,7 +1725,8 @@ button, a, input, textarea { cursor: none; }
 }
 .interest-front {
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.5) 0%, rgba(245, 239, 226, 0.86) 100%);
+    radial-gradient(ellipse at 18% 0%, rgba(232, 184, 79, 0.08), transparent 56%),
+    linear-gradient(150deg, #1c1511 0%, #120d0b 100%);
   padding: 20px 18px 18px;
   display: flex;
   flex-direction: column;
