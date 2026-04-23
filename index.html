@@ -36,31 +36,16 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain-paper" aria-hidden="true"></div>
 
-<!-- Bellows proscenium: viewfinder chrome (35mm-inspired).
-     Four corner L-brackets + four telemetry readouts + subtle warm glow.
-     All pointer-events:none; content below is fully unobstructed.
-     Readouts populated by scripts/core/viewfinder.js. -->
+<!-- Bellows proscenium: physical leather frame + corner brackets.
+     - .bellows__leather: tiled leather texture masked to show only at edges
+     - four amber L-brackets echo the cursor's viewfinder language
+     - pointer-events:none; content below is fully unobstructed. -->
 <div class="bellows" aria-hidden="true">
+  <div class="bellows__leather"></div>
   <span class="bellows__corner bellows__corner--tl"></span>
   <span class="bellows__corner bellows__corner--tr"></span>
   <span class="bellows__corner bellows__corner--bl"></span>
   <span class="bellows__corner bellows__corner--br"></span>
-  <div class="bellows__readout bellows__readout--tl">
-    <span class="bellows__line" data-viewfinder="act">ACT 01 · HERO</span>
-    <span class="bellows__line bellows__line--dim" data-viewfinder="res">0×0</span>
-  </div>
-  <div class="bellows__readout bellows__readout--tr">
-    <span class="bellows__line"><span class="bellows__rec-dot"></span><span data-viewfinder="timer">00:00</span></span>
-    <span class="bellows__line bellows__line--dim" data-viewfinder="fps">24 fps</span>
-  </div>
-  <div class="bellows__readout bellows__readout--bl">
-    <span class="bellows__line" data-viewfinder="scroll">SCROLL 0%</span>
-    <span class="bellows__line bellows__line--dim">CHRIS ZHANG · V6</span>
-  </div>
-  <div class="bellows__readout bellows__readout--br">
-    <span class="bellows__line" data-viewfinder="frame">FRAME 1 / 6</span>
-    <span class="bellows__line bellows__line--dim">F/2.8 · 1/125</span>
-  </div>
 </div>
 
 <!-- First-visit gate (JS toggles body.is-gated; removed by localStorage on subsequent visits) -->

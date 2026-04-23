@@ -1,11 +1,13 @@
 /* ==========================================================================
-   BELLOWS PROSCENIUM — Viewfinder chrome (35mm.vercel.app-inspired)
-   Design principle (corrected from dark-on-dark attempt):
-     - Do NOT try to darken already-dark backgrounds
-     - DO add low-contrast, additive UI chrome that reads as camera apparatus
-     - Mirror the cursor's viewfinder language at viewport scale: 4 corner
-       L-brackets, warm amber at low opacity, plus small monospace telemetry
-     - Content area is entirely untouched — full legibility preserved
+   BELLOWS PROSCENIUM — Physical leather frame + corner brackets
+   Design principle:
+     - The viewport sits inside a real folding-camera bellows: leather edges
+       with a feathered soft-focus transition into the clear content area.
+     - Four amber L-brackets at the corners echo the cursor's viewfinder
+       language — the ONLY HUD element retained (no readouts, no timecode,
+       no fps text; those belong to film-making sites, not to ours).
+     - Content area (center ~55% of the viewport) is entirely untouched for
+       full legibility.
    ========================================================================== */
 
 /* ── Outer shell ──────────────────────────────────────────────────────────── */
@@ -15,103 +17,111 @@
   pointer-events: none;
   z-index: 110;
 
-  /* Breathing: --bellows-t drives a ±1.5% scale pulse */
   transform: scale(calc(1 + var(--bellows-t, 0) * 1.5));
   transform-origin: center center;
   will-change: transform;
+}
 
-  /* Subtle warm radial "light gathered at focal center" — additive, not masking */
-  background: radial-gradient(
-    ellipse 70% 65% at 50% 50%,
-    rgba(213, 164, 74, 0.035) 0%,
-    rgba(213, 164, 74, 0.015) 45%,
-    transparent 72%
+/* ── Leather frame ────────────────────────────────────────────────────────── */
+/* A real photographed leather texture tiled across the viewport, then masked
+   so only the edges show. The mask's inner soft edge (55% → 85%) creates the
+   "soft focus falloff" of a true bellows — not a hard vignette. */
+.bellows__leather {
+  position: absolute;
+  inset: 0;
+  background-image: url('../../assets/textures/leather.jpg');
+  background-size: 512px 512px;
+  background-repeat: repeat;
+  background-position: center center;
+
+  opacity: 0.92;
+
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 78% at 50% 50%,
+    transparent 0%,
+    transparent 52%,
+    rgba(0, 0, 0, 0.35) 66%,
+    rgba(0, 0, 0, 0.75) 80%,
+    #000 100%
   );
+          mask-image: radial-gradient(
+    ellipse 72% 78% at 50% 50%,
+    transparent 0%,
+    transparent 52%,
+    rgba(0, 0, 0, 0.35) 66%,
+    rgba(0, 0, 0, 0.75) 80%,
+    #000 100%
+  );
+}
+
+/* Subtle inner warm glow where the leather meets the clear center — suggests
+   light gathered at the focal plane, without washing out content. */
+.bellows__leather::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 68% 72% at 50% 50%,
+    rgba(213, 164, 74, 0.06) 0%,
+    rgba(213, 164, 74, 0.02) 40%,
+    transparent 62%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
 /* ── Corner L-brackets ────────────────────────────────────────────────────── */
 /* Four 36×36 divs, each drawing only two of its four borders. Amber at 40%
-   opacity — present but never competing with content. */
+   opacity — present but never competing with content. Must sit ABOVE the
+   leather layer so they stay crisp against the soft-focus edge. */
 .bellows__corner {
   position: absolute;
   width: 36px;
   height: 36px;
   pointer-events: none;
+  z-index: 2;
 }
 .bellows__corner--tl { top:    18px; left:   18px;
-  border-top:    1px solid rgba(213, 164, 74, 0.40);
-  border-left:   1px solid rgba(213, 164, 74, 0.40); }
+  border-top:    1px solid rgba(213, 164, 74, 0.45);
+  border-left:   1px solid rgba(213, 164, 74, 0.45); }
 .bellows__corner--tr { top:    18px; right:  18px;
-  border-top:    1px solid rgba(213, 164, 74, 0.40);
-  border-right:  1px solid rgba(213, 164, 74, 0.40); }
+  border-top:    1px solid rgba(213, 164, 74, 0.45);
+  border-right:  1px solid rgba(213, 164, 74, 0.45); }
 .bellows__corner--bl { bottom: 18px; left:   18px;
-  border-bottom: 1px solid rgba(213, 164, 74, 0.40);
-  border-left:   1px solid rgba(213, 164, 74, 0.40); }
+  border-bottom: 1px solid rgba(213, 164, 74, 0.45);
+  border-left:   1px solid rgba(213, 164, 74, 0.45); }
 .bellows__corner--br { bottom: 18px; right:  18px;
-  border-bottom: 1px solid rgba(213, 164, 74, 0.40);
-  border-right:  1px solid rgba(213, 164, 74, 0.40); }
-
-/* ── Telemetry readouts (four corners, inside the brackets) ──────────────── */
-/* All use DM Mono, uppercase, small size, low opacity — reads as instrument
-   panel text, not as content. Updated by scripts/core/viewfinder.js. */
-.bellows__readout {
-  position: absolute;
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 1.4;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(213, 164, 74, 0.55);
-  pointer-events: none;
-  user-select: none;
-}
-.bellows__readout--tl { top:    28px; left:   64px; }
-.bellows__readout--tr { top:    28px; right:  64px; text-align: right; }
-.bellows__readout--bl { bottom: 28px; left:   64px; }
-.bellows__readout--br { bottom: 28px; right:  64px; text-align: right; }
-
-/* Recording dot — the only accent color allowed at full intensity,
-   positioned immediately before the timer text in the top-right readout. */
-.bellows__rec-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent, #d5a44a);
-  margin-right: 6px;
-  vertical-align: middle;
-  animation: bellowsRecPulse 1.8s ease-in-out infinite;
-}
-@keyframes bellowsRecPulse {
-  0%, 100% { opacity: 0.45; }
-  50%      { opacity: 1.00; }
-}
-
-/* Two-line readouts stack — each line a .bellows__line span */
-.bellows__line { display: block; }
-.bellows__line--dim { color: rgba(213, 164, 74, 0.32); }
+  border-bottom: 1px solid rgba(213, 164, 74, 0.45);
+  border-right:  1px solid rgba(213, 164, 74, 0.45); }
 
 /* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .bellows { transform: none; }
+  .bellows__leather {
+    background-size: 320px 320px;
+    -webkit-mask-image: radial-gradient(
+      ellipse 82% 85% at 50% 50%,
+      transparent 0%,
+      transparent 58%,
+      rgba(0, 0, 0, 0.4) 72%,
+      #000 100%
+    );
+            mask-image: radial-gradient(
+      ellipse 82% 85% at 50% 50%,
+      transparent 0%,
+      transparent 58%,
+      rgba(0, 0, 0, 0.4) 72%,
+      #000 100%
+    );
+  }
   .bellows__corner    { width: 24px; height: 24px; }
-  .bellows__corner--tl,
-  .bellows__corner--tr,
-  .bellows__corner--bl,
-  .bellows__corner--br { /* closer to edge on small screens */ }
   .bellows__corner--tl { top: 12px; left: 12px; }
   .bellows__corner--tr { top: 12px; right: 12px; }
   .bellows__corner--bl { bottom: 12px; left: 12px; }
   .bellows__corner--br { bottom: 12px; right: 12px; }
-  .bellows__readout { font-size: 9px; }
-  .bellows__readout--tl { top: 18px; left: 44px; }
-  .bellows__readout--tr { top: 18px; right: 44px; }
-  .bellows__readout--bl { bottom: 18px; left: 44px; }
-  .bellows__readout--br { bottom: 18px; right: 44px; }
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .bellows         { transform: none; will-change: auto; }
-  .bellows__rec-dot { animation: none; opacity: 0.85; }
+  .bellows { transform: none; will-change: auto; }
 }
