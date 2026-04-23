@@ -235,13 +235,19 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
                 </p>
               </div>
               <div class="card-front-visual">
-                <div class="card-front-media" aria-label="Smart Airport walkthrough preview">
+                <a class="card-front-media card-front-media-poster"
+                   href="https://youtu.be/7ae8t7nckHY"
+                   target="_blank"
+                   rel="noopener"
+                   aria-label="Open Smart Airport walkthrough on YouTube">
                   <span class="card-front-media-label">walkthrough video</span>
-                  <iframe title="Smart Airport front preview video"
-                    data-src="https://www.youtube.com/embed/7ae8t7nckHY?rel=0&mute=1"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-                </div>
+                  <img class="card-front-media-thumb"
+                       src="https://i.ytimg.com/vi/7ae8t7nckHY/hqdefault.jpg"
+                       alt="Smart Airport walkthrough cover"
+                       loading="lazy"
+                       decoding="async">
+                  <span class="card-front-media-play" aria-hidden="true">▶</span>
+                </a>
               </div>
             </div>
             <div class="card-footer">

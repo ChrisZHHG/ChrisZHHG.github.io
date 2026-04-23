@@ -9,9 +9,12 @@
      viewport sits below the fixed topbar so cards never get clipped. */
   position: relative;
   height: calc((100vh - var(--topbar-h)) * 6.2);
+  /* Base uses sky-6/7 tokens so this section stays in the correct tunnel
+     luminance band when entering from Act 4 (sky-5). The amber radial stays
+     as gallery-spotlight overlay. */
   background:
     radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
-    linear-gradient(180deg, #2a211b 0%, #1c1612 55%, #16110e 100%);
+    linear-gradient(180deg, var(--sky-7, #3a3026) 0%, var(--sky-6, #2f2720) 100%);
   color: #ece6d9;
   isolation: isolate;
 }
@@ -165,6 +168,48 @@
   width: 100%;
   height: 100%;
   border: 0;
+}
+.card-front-media-poster {
+  display: block;
+}
+.card-front-media-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: contrast(1.05) saturate(1.02);
+}
+.card-front-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.28) 100%);
+  pointer-events: none;
+}
+.card-front-media-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 18px;
+  color: rgba(255, 245, 212, 0.95);
+  background: rgba(10, 8, 6, 0.66);
+  border: 1px solid rgba(232, 184, 79, 0.42);
+  z-index: 3;
+  box-shadow: 0 0 18px rgba(232, 184, 79, 0.16);
+  transition: transform 0.22s var(--ease-out), border-color 0.22s var(--ease-out);
+}
+.card-front-media-poster:hover .card-front-media-play {
+  transform: translate(-50%, -50%) scale(1.06);
+  border-color: rgba(255, 235, 166, 0.7);
 }
 .card-front-media-label {
   position: absolute;
@@ -833,43 +878,44 @@
   position: relative;
   width: 100%;
   flex: 1 1 auto;
-  min-height: clamp(160px, 30vh, 320px);
+  min-height: clamp(170px, 31vh, 330px);
   aspect-ratio: 16 / 7;
   border: 1px solid rgba(232, 184, 79, 0.2);
   border-radius: 3px;
   overflow: hidden;
   margin-top: 0;
   background:
-    radial-gradient(ellipse at 50% -40%, rgba(48, 138, 136, 0.24), transparent 62%),
+    radial-gradient(ellipse at 52% -28%, rgba(48, 138, 136, 0.22), transparent 64%),
+    radial-gradient(ellipse at 52% 70%, rgba(42, 128, 116, 0.16), transparent 60%),
     linear-gradient(180deg, #0e0b08 0%, #080605 100%);
 }
 .cybertao-stone {
   position: absolute;
   left: 50%;
-  top: 58%;
-  width: clamp(110px, 34%, 220px);
-  aspect-ratio: 1.52 / 1;
+  top: 66%;
+  width: clamp(120px, 36%, 240px);
+  aspect-ratio: 1.72 / 1;
   height: auto;
   transform: translate(-50%, -50%);
-  border-radius: 50% 44% 48% 52% / 46% 56% 44% 54%;
+  border-radius: 58% 42% 52% 48% / 54% 56% 44% 46%;
   background:
-    radial-gradient(circle at 38% 30%, rgba(112, 186, 178, 0.46), rgba(39, 64, 62, 0.8) 52%, rgba(13, 18, 20, 0.96) 100%);
+    radial-gradient(circle at 44% 28%, rgba(121, 196, 188, 0.3), rgba(31, 54, 56, 0.86) 54%, rgba(10, 14, 16, 0.97) 100%);
   box-shadow:
-    0 26px 42px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(99, 170, 162, 0.26) inset,
-    0 0 42px rgba(77, 148, 141, 0.24);
+    0 22px 46px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(99, 170, 162, 0.22) inset,
+    0 0 52px rgba(77, 148, 141, 0.2);
 }
 .cybertao-ring {
   position: absolute;
   left: 50%;
-  top: 23%;
-  width: clamp(150px, 44%, 300px);
+  top: 28%;
+  width: clamp(160px, 48%, 330px);
   height: auto;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  border: 1px solid rgba(91, 167, 160, 0.36);
+  border: 1px solid rgba(91, 167, 160, 0.24);
   transform: translate(-50%, -50%);
-  opacity: 0.8;
+  opacity: 0.66;
 }
 .card[data-plate="5"]:hover .cybertao-stone,
 .card[data-plate="5"].is-flipped .cybertao-stone {
@@ -885,9 +931,9 @@
   right: 14px;
   bottom: 12px;
   font-family: var(--serif);
-  font-size: clamp(18px, 2.1vw, 25px);
+  font-size: clamp(18px, 2vw, 24px);
   line-height: 1.12;
-  color: rgba(226, 236, 246, 0.86);
+  color: rgba(226, 236, 246, 0.78);
   text-align: right;
 }
 
