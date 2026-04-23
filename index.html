@@ -327,10 +327,11 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
 }
 body:not(.is-gated) .gate { display: none; }
 
-/* Utility: hide native OS cursor on all children too */
-button, a, input, textarea { cursor: none; }
+/* Utility: force-hide native cursor on desktop to avoid flicker between
+   custom viewfinder and OS pointer on mixed interactive surfaces. */
+html, body, body * { cursor: none !important; }
 @media (pointer: coarse) {
-  button, a, input, textarea { cursor: auto; }
+  html, body, body * { cursor: auto !important; }
 }
 
 /* ==========================================================================
@@ -351,12 +352,13 @@ button, a, input, textarea { cursor: none; }
   opacity: var(--bracket-opacity);
   color: var(--amber);
   will-change: transform, width, height;
-  transition: width 0.14s var(--ease-out),
-              height 0.14s var(--ease-out),
+  transition: width 0.08s var(--ease-out),
+              height 0.08s var(--ease-out),
               opacity 0.3s ease,
               color 0.2s ease;
-  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.55))
-          drop-shadow(0 0 4px rgba(240, 195, 90, 0.35));
+  /* Lighter halo reduces the "post-processed smear" feeling while moving. */
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.45))
+          drop-shadow(0 0 2px rgba(240, 195, 90, 0.24));
 }
 
 /* Thin rectangular bright-line frame */
@@ -2701,6 +2703,13 @@ const Cursor = (() => {
   });
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest(hoverSelector)) el.classList.remove('is-hover');
+  });
+
+  /* Embedded iframes can still expose their own cursor styles. Fade out the
+     custom cursor at boundary to avoid a jarring dual-cursor moment. */
+  document.querySelectorAll('iframe').forEach((frame) => {
+    frame.addEventListener('mouseenter', () => setVar('--bracket-opacity', '0'));
+    frame.addEventListener('mouseleave', () => setVar('--bracket-opacity', '1'));
   });
 
   /* Velocity getter for Flow module */
