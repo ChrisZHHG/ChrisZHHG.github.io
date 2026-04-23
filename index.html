@@ -1047,47 +1047,6 @@ body.stage-archive .vignette {
   display: block;
 }
 
-/* Poster treatment for plates whose demo video is still drafting. Keeps the
-   split layout coherent without shipping an embarrassing placeholder video. */
-.card-split-media-poster {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-align: center;
-  padding: 28px;
-  background:
-    radial-gradient(circle at 50% 40%, rgba(232, 184, 79, 0.18), transparent 55%),
-    repeating-linear-gradient(135deg, rgba(232, 184, 79, 0.04) 0 2px, transparent 2px 22px),
-    linear-gradient(180deg, #1a1411 0%, #0f0b09 100%);
-  color: rgba(245, 241, 232, 0.82);
-}
-.card-split-media-poster .poster-title {
-  font-family: var(--serif);
-  font-size: 30px;
-  line-height: 1;
-  color: var(--amber);
-  letter-spacing: -0.012em;
-}
-.card-split-media-poster .poster-sub {
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.5;
-  color: rgba(245, 241, 232, 0.75);
-  letter-spacing: 0.04em;
-}
-.card-split-media-poster .poster-badge {
-  margin-top: 6px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(232, 184, 79, 0.7);
-  border: 1px solid rgba(232, 184, 79, 0.35);
-  padding: 5px 10px;
-  border-radius: 2px;
-}
 .card-split-info {
   padding: 32px 32px 28px;
   display: flex;
@@ -1171,200 +1130,196 @@ body.stage-archive .vignette {
 }
 
 /* ==========================================================================
-   iPhone mockup — used on the Nod plate to show the app "live" instead of
-   paraphrased. Built in pure CSS so it degrades gracefully and can host
-   real interactive elements (not a flat screenshot).
+   iPhone mockup — shows the real Nod app screenshot inside a premium-feeling
+   phone bezel, with a subtle amber sweep to keep the preview alive. The
+   authentic screenshot reads a lot better than a CSS redraw with emojis.
    ========================================================================== */
 .phone-stage {
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 24px;
-  padding: 24px 24px 24px 34px;
+  gap: 22px;
+  padding: 22px 26px 24px 28px;
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(232, 184, 79, 0.08), transparent 60%),
-    #0e0b08;
-  align-items: center;
+    radial-gradient(ellipse at 18% 0%, rgba(232, 184, 79, 0.1), transparent 55%),
+    linear-gradient(180deg, #15110e 0%, #0c0907 100%);
+  align-items: stretch;
+  overflow: hidden;
 }
 .phone {
   position: relative;
-  width: 240px;
-  height: 480px;
-  border-radius: 44px;
-  padding: 8px;
-  background: linear-gradient(145deg, #2a2520 0%, #0c0a08 100%);
+  width: 210px;
+  height: 425px;
+  border-radius: 36px;
+  padding: 6px;
+  background: linear-gradient(148deg, #3c342b 0%, #1a1611 45%, #0a0806 100%);
   box-shadow:
-    0 30px 60px -20px rgba(0, 0, 0, 0.75),
-    0 0 0 1.5px #363028 inset,
-    0 0 0 3px #0a0806 inset;
+    0 22px 40px -18px rgba(0, 0, 0, 0.8),
+    0 0 0 1px #2a2520 inset,
+    0 0 0 2.5px #060504 inset,
+    0 0 24px rgba(232, 184, 79, 0.08);
+  align-self: center;
   flex-shrink: 0;
+}
+/* Fake side buttons on the left & right rail for a touch of realism */
+.phone::before,
+.phone::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, #2a2520, #0a0806);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.phone::before { /* left volume + ringer cluster */
+  left: -1.5px;
+  top: 80px;
+  width: 2px;
+  height: 26px;
+  box-shadow:
+    0 36px 0 #1d1915,
+    0 70px 0 #1d1915;
+}
+.phone::after { /* right power button */
+  right: -1.5px;
+  top: 110px;
+  width: 2px;
+  height: 46px;
 }
 .phone-screen {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 36px;
+  border-radius: 30px;
   overflow: hidden;
   background: #0a0908;
+  isolation: isolate;
 }
 .phone-notch {
   position: absolute;
-  top: 8px;
+  top: 7px;
   left: 50%;
   transform: translateX(-50%);
-  width: 82px;
-  height: 22px;
+  width: 88px;
+  height: 24px;
   background: #000;
-  border-radius: 20px;
+  border-radius: 14px;
   z-index: 8;
+  box-shadow: 0 0 0 0.5px #0a0a0a;
+}
+/* Dynamic Island camera dot on the right side */
+.phone-notch::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #0d1a2a 35%, #000 60%);
+  border-radius: 50%;
 }
 .phone-statusbar {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 36px;
+  height: 34px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 22px 0;
-  font-family: var(--sans);
+  align-items: flex-end;
+  padding: 0 18px 6px;
+  font-family: 'SF Pro Text', var(--sans);
   font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
-  z-index: 7;
-  letter-spacing: 0.02em;
-}
-.phone-statusbar .bar-right { display: inline-flex; gap: 4px; align-items: center; }
-.phone-statusbar .bar-right .battery {
-  display: inline-block;
-  font-size: 9px;
-  background: #3bb34a;
-  color: #000;
   font-weight: 600;
-  padding: 0 4px;
-  border-radius: 3px;
-}
-
-/* Nod app UI */
-.nod-ui {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(180deg, rgba(10, 9, 8, 0.6) 0%, rgba(10, 9, 8, 0.05) 20%, rgba(10, 9, 8, 0.15) 50%, rgba(10, 9, 8, 0.85) 100%),
-    url('assets/nod-home.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
   color: #fff;
-  padding: 44px 22px 24px;
-  font-family: var(--sans);
+  z-index: 7;
+  pointer-events: none;
 }
-.nod-ui::before {
-  /* Fallback tint when the jpg is missing */
+.phone-statusbar .bar-right { display: inline-flex; gap: 5px; align-items: center; }
+.phone-statusbar .bar-right svg { display: block; height: 10px; width: auto; }
+.phone-statusbar .battery {
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 2.5px;
+  padding: 1px;
+}
+.phone-statusbar .battery::after {
   content: '';
   position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1px;
+}
+.phone-statusbar .battery-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #3bb34a;
+  border-radius: 1px;
+}
+
+/* The actual screen content — authentic app screenshot */
+.phone-screen-img {
+  position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 60%, rgba(232, 184, 79, 0.16), transparent 55%),
-    linear-gradient(180deg, #1c160f 0%, #2a1e12 55%, #0f0a07 100%);
-  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
 }
-.nod-trinity {
-  display: grid;
-  gap: 10px;
-  font-family: var(--serif);
-  font-size: 32px;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.88);
-  font-weight: 400;
+
+/* Ambient amber sweep that slides across the Snap / Decode / Trust region
+   once the card is visible, so the preview never feels frozen. */
+.phone-glow {
+  position: absolute;
+  top: 0;
+  left: -30%;
+  bottom: 40%;
+  width: 40%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+                rgba(232, 184, 79, 0.25) 0%,
+                rgba(232, 184, 79, 0) 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  z-index: 6;
 }
-.nod-trinity-item {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  transition: opacity 0.8s ease, color 0.8s ease;
-  opacity: 0.4;
+.card.is-flipped .phone-glow {
+  animation: phoneSweep 6s var(--ease-in-out) 0.8s infinite;
 }
-.nod-trinity-item.is-on { opacity: 1; color: #fff; }
-.nod-trinity-item .glyph {
-  font-size: 22px;
-  filter: saturate(0.8);
+@keyframes phoneSweep {
+  0%   { left: -30%; opacity: 0; }
+  15%  { opacity: 0.85; }
+  60%  { opacity: 0.85; }
+  85%  { opacity: 0; }
+  100% { left: 120%; opacity: 0; }
 }
-.nod-wordmark {
-  margin-top: 18px;
-  font-family: var(--sans);
-  font-size: 64px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: #fff;
-}
-.nod-wordmark .o {
-  color: var(--amber);
-  display: inline-block;
-  transform: translateY(-1px);
-}
-.nod-prompt {
-  margin-top: auto;
+
+/* Disclaimer strip below the phone */
+.phone-caption {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.45);
   text-align: center;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
-  margin-bottom: 14px;
-  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
-.nod-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 6px;
-}
-.nod-btn {
+.phone-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  flex: 1;
-  color: #fff;
-  cursor: none;
-  transition: transform 0.2s ease;
-}
-.nod-btn:hover { transform: translateY(-2px); }
-.nod-btn-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--amber);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 22px;
-  color: #1a1411;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
-}
-.nod-btn-icon.is-hero { box-shadow: 0 4px 16px rgba(232, 184, 79, 0.45); }
-.nod-btn-title {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.15;
-  text-align: center;
-}
-.nod-btn-sub {
-  font-size: 8px;
-  color: rgba(255, 255, 255, 0.62);
-  line-height: 1;
-}
-.nod-footer {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.55);
 }
 
 /* Side notes to the right of the phone */
@@ -1372,21 +1327,264 @@ body.stage-archive .vignette {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-right: 8px;
+  padding-right: 52px;
   color: rgba(245, 241, 232, 0.88);
-  max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
+  align-self: center;
 }
-.phone-notes::-webkit-scrollbar { width: 4px; }
-.phone-notes::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
 .phone-notes .card-split-title { font-size: 30px; }
 .phone-notes .card-split-sub { font-size: 13.5px; }
 .phone-notes .card-split-list { font-size: 11.5px; gap: 5px; }
 
 @media (max-width: 780px) {
   .phone-stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding: 20px; gap: 16px; }
-  .phone { width: 200px; height: 400px; justify-self: center; }
+  .phone { width: 180px; height: 360px; }
   .phone-notes { padding-right: 0; }
+}
+
+/* ==========================================================================
+   Live-demo tile — used on YVR-style plates where the primary surface should
+   be an embedded running app, not a video. Shows demo iframe LARGE on left,
+   with video as a parallel, same-weight option on the right.
+   ========================================================================== */
+.demo-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  background: #0e0b08;
+  overflow: hidden;
+}
+.demo-stage .demo-primary {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  border-right: 1px solid rgba(232, 184, 79, 0.18);
+}
+.demo-stage .demo-primary iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+.demo-stage .demo-primary-poster {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 30px;
+  text-align: center;
+  color: rgba(245, 241, 232, 0.88);
+  background:
+    repeating-linear-gradient(45deg, rgba(232, 184, 79, 0.05) 0 2px, transparent 2px 16px),
+    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.18), transparent 60%),
+    linear-gradient(180deg, #1a1411 0%, #0d0a08 100%);
+}
+.demo-primary-poster .poster-kicker {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.75);
+}
+.demo-primary-poster .poster-hed {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1.05;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+  max-width: 18ch;
+}
+.demo-primary-poster .poster-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(245, 241, 232, 0.65);
+  line-height: 1.6;
+}
+.demo-primary-poster .poster-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1a1411;
+  background: var(--amber);
+  padding: 10px 14px;
+  border-radius: 2px;
+}
+.demo-primary-poster .poster-cta:hover { background: var(--amber-hot); }
+
+.demo-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.65);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px 9px;
+  border-radius: 2px;
+  z-index: 4;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.demo-label .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6ad178;
+  box-shadow: 0 0 6px rgba(106, 209, 120, 0.6);
+}
+.demo-label.is-pending .dot { background: var(--amber); }
+
+.demo-secondary {
+  padding: 22px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: rgba(245, 241, 232, 0.88);
+  overflow: auto;
+}
+.demo-secondary::-webkit-scrollbar { width: 4px; }
+.demo-secondary::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+
+.demo-video-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid rgba(232, 184, 79, 0.25);
+  text-decoration: none;
+  color: inherit;
+  cursor: none;
+}
+.demo-video-tile iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.demo-video-tile .video-poster {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(245, 241, 232, 0.85);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(232, 184, 79, 0.18), transparent 60%),
+    linear-gradient(180deg, #211b15 0%, #0e0b08 100%);
+}
+.demo-video-tile .play-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #1a1411;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 6px 16px rgba(232, 184, 79, 0.35);
+}
+.demo-video-tile .video-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.72);
+}
+
+.demo-sec-kicker {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.7);
+}
+.demo-sec-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.demo-sec-sub {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.78);
+}
+.demo-metrics {
+  display: flex;
+  gap: 12px;
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+.demo-metrics .m {
+  flex: 1;
+  padding: 10px 10px;
+  border: 1px solid rgba(232, 184, 79, 0.3);
+  border-radius: 3px;
+  background: rgba(232, 184, 79, 0.04);
+}
+.demo-metrics .m-big {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--amber);
+  line-height: 1;
+}
+.demo-metrics .m-lbl {
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.6);
+  margin-top: 4px;
+}
+.demo-links {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.demo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.85);
+  border: 1px solid rgba(245, 241, 232, 0.25);
+  padding: 7px 11px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.demo-link:hover { color: var(--amber); border-color: var(--amber); background: rgba(232, 184, 79, 0.08); }
+
+@media (max-width: 780px) {
+  .demo-stage { grid-template-columns: 1fr; grid-template-rows: 180px 1fr; }
+  .demo-stage .demo-primary { border-right: none; border-bottom: 1px solid rgba(232, 184, 79, 0.18); }
+  .demo-secondary { padding: 18px 18px 16px; }
 }
 
 /* Archive card navigation buttons on edges */
@@ -1673,7 +1871,7 @@ html:not(.js) .card-back { display: none; }
 
     <ul class="thread-map" aria-label="How the work maps to the manifesto">
       <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a> · a live counter in your editor</li>
-      <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">YVR e-GSE</a> · a Transformer + PPO for the tarmac</li>
+      <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">Smart Airport</a> · a Transformer + PPO for the tarmac</li>
       <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a> · six windows collapsed into one run</li>
       <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a> · scan, decide in 30 s, eat</li>
       <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a> · an essay site, not a tool</li>
@@ -1741,21 +1939,21 @@ html:not(.js) .card-back { display: none; }
           </div>
         </article>
 
-        <!-- Plate 02 — YVR e-GSE Capstone -->
+        <!-- Plate 02 — Smart Airport (YVR e-GSE Capstone) -->
         <article class="card" data-plate="2"
-                 data-href="https://www.linkedin.com/in/chriszhang">
+                 data-href="https://github.com/PCBZ/Smart_Airport">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Friction</span>
               <span class="ftag-arrow">→</span>
               <span class="ftag-name">Manual airport charging schedules</span>
             </div>
-            <div class="card-name">YVR e-GSE</div>
+            <div class="card-name">Smart Airport</div>
             <p class="card-desc">
-              Capstone with Vancouver Airport. A Transformer forecasts each
-              aircraft's energy demand, a PPO agent schedules the chargers —
-              end-to-end ML for the physical infrastructure that moves planes.
-              90 % coverage, 9.2 % gain over the heuristic baseline.
+              Capstone with Vancouver Airport (YVR). A Transformer forecasts
+              each aircraft's energy demand and a PPO policy schedules the
+              chargers — end-to-end ML for the physical infrastructure that
+              keeps gates running.
             </p>
             <div class="card-footer">
               <span class="card-status status-demo">Capstone</span>
@@ -1763,34 +1961,60 @@ html:not(.js) .card-back { display: none; }
             </div>
           </div>
           <div class="card-face card-back">
-            <a class="card-back-open reveal reveal-1" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">↗ LinkedIn post</a>
-            <div class="card-split reveal reveal-2">
-              <div class="card-split-media card-split-media-poster" aria-label="YVR e-GSE simulation — video coming soon">
-                <div class="poster-title">e-GSE · Simulation</div>
-                <div class="poster-sub">Transformer forecaster +<br>PPO charging scheduler</div>
-                <div class="poster-badge">Video drops with LinkedIn post</div>
-              </div>
-              <div class="card-split-info">
-                <div class="card-split-kicker">YVR · MS Capstone · Apr 2026</div>
-                <div class="card-split-title">e-GSE Charging Optimizer</div>
-                <div class="card-split-sub">
-                  Built with YVR's electric ground-support team. Two models
-                  run together: a Transformer predicts energy demand per
-                  aircraft, a PPO policy picks charger + timeslot so every
-                  GSE unit is ready when the gate needs it.
+            <div class="demo-stage reveal reveal-2">
+              <!-- Primary: live demo, embedded. Users hit this first. -->
+              <div class="demo-primary">
+                <span class="demo-label is-pending" data-role="demo-label">
+                  <span class="dot"></span>
+                  Live demo · pending deploy
+                </span>
+                <!-- When a hosted demo URL is ready, swap the poster for:
+                     <iframe data-src="YOUR_DEMO_URL" ...></iframe> -->
+                <div class="demo-primary-poster">
+                  <span class="poster-kicker">Live demo</span>
+                  <div class="poster-hed">Transformer + PPO, on YVR's gate schedule.</div>
+                  <div class="poster-meta">
+                    Interactive sim coming with the capstone release.<br>
+                    Code + write-up live on GitHub today.
+                  </div>
+                  <a class="poster-cta" href="https://github.com/PCBZ/Smart_Airport" target="_blank" rel="noopener">Open repo ↗</a>
                 </div>
-                <ul class="card-split-list">
-                  <li><strong>90 %</strong> coverage across a full day of gate ops</li>
-                  <li><strong>9.2 %</strong> efficiency gain vs. heuristic baseline</li>
-                  <li>Transformer forecaster · PPO scheduler (PyTorch)</li>
-                  <li>Sim built for YVR's charger topology &amp; flight schedule</li>
-                </ul>
-                <a class="card-split-cta" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">Read the write-up ↗</a>
-                <div class="card-split-note">Collaborators: YVR · Northeastern MSCS</div>
+              </div>
+
+              <!-- Secondary: video preview + notes, parallel to the demo. -->
+              <div class="demo-secondary">
+                <div class="demo-sec-kicker">YVR · MS Capstone · 2026</div>
+                <div class="demo-sec-title">Smart Airport</div>
+                <div class="demo-sec-sub">
+                  Two models run together: a Transformer predicts per-aircraft
+                  energy need, a PPO agent picks charger + timeslot so every
+                  ground-support unit is ready when the gate needs it.
+                </div>
+
+                <!-- Parallel option: watch the walkthrough. -->
+                <a class="demo-video-tile" data-role="demo-video"
+                   href="https://github.com/PCBZ/Smart_Airport"
+                   target="_blank" rel="noopener"
+                   aria-label="Watch the walkthrough video (coming soon)">
+                  <div class="video-poster">
+                    <span class="play-btn" aria-hidden="true">▶</span>
+                    <span class="video-label">Watch walkthrough</span>
+                  </div>
+                </a>
+
+                <div class="demo-metrics">
+                  <div class="m"><div class="m-big">90<span style="font-size:14px">%</span></div><div class="m-lbl">Gate coverage</div></div>
+                  <div class="m"><div class="m-big">9.2<span style="font-size:14px">%</span></div><div class="m-lbl">vs. baseline</div></div>
+                </div>
+
+                <div class="demo-links">
+                  <a class="demo-link" href="https://github.com/PCBZ/Smart_Airport" target="_blank" rel="noopener">GitHub ↗</a>
+                  <a class="demo-link" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn post ↗</a>
+                </div>
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">02 / 08 · YVR e-GSE</div>
+            <div class="card-back-meta reveal reveal-3">02 / 08 · Smart Airport</div>
           </div>
         </article>
 
@@ -1867,63 +2091,48 @@ html:not(.js) .card-back { display: none; }
           </div>
           <div class="card-face card-back">
             <div class="phone-stage reveal reveal-2">
-              <div class="phone" role="img" aria-label="Nod iPhone mockup">
-                <div class="phone-screen">
-                  <div class="phone-notch"></div>
-                  <div class="phone-statusbar">
-                    <span>10:57</span>
-                    <span class="bar-right">
-                      <span aria-hidden="true">·:·</span>
-                      <span aria-hidden="true">⌃</span>
-                      <span class="battery">100</span>
-                    </span>
-                  </div>
-                  <div class="nod-ui" data-role="nod-ui">
-                    <div class="nod-trinity">
-                      <span class="nod-trinity-item is-on" data-step="0">Snap <span class="glyph" aria-hidden="true">📷</span></span>
-                      <span class="nod-trinity-item" data-step="1">Decode <span class="glyph" aria-hidden="true">🌐</span></span>
-                      <span class="nod-trinity-item" data-step="2">Trust <span class="glyph" aria-hidden="true">👆</span></span>
+              <div class="phone-col">
+                <div class="phone" role="img" aria-label="Nod home screen on iPhone">
+                  <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div class="phone-statusbar">
+                      <span>10:57</span>
+                      <span class="bar-right">
+                        <svg viewBox="0 0 18 10" aria-hidden="true"><g fill="currentColor">
+                          <rect x="0"  y="6" width="3" height="4" rx="0.5"/>
+                          <rect x="5"  y="4" width="3" height="6" rx="0.5"/>
+                          <rect x="10" y="2" width="3" height="8" rx="0.5"/>
+                          <rect x="15" y="0" width="3" height="10" rx="0.5"/>
+                        </g></svg>
+                        <svg viewBox="0 0 14 10" aria-hidden="true"><path fill="currentColor" d="M7 1.2c-2 0-3.9.7-5.4 2l1 1.1C3.9 3.1 5.4 2.6 7 2.6s3.1.5 4.4 1.7l1-1.1C10.9 1.9 9 1.2 7 1.2Zm0 3c-1.2 0-2.4.4-3.3 1.2l1 1.1c.6-.5 1.4-.8 2.3-.8s1.7.3 2.3.8l1-1.1C9.4 4.6 8.2 4.2 7 4.2Zm0 3c-.7 0-1.3.2-1.8.6l1 1.1c.2-.2.5-.3.8-.3s.6.1.8.3l1-1.1c-.5-.4-1.1-.6-1.8-.6Z"/></svg>
+                        <span class="battery"><span class="battery-fill"></span></span>
+                      </span>
                     </div>
-                    <div class="nod-wordmark">N<span class="o">O</span>D</div>
-
-                    <div class="nod-prompt">How are you dining today?</div>
-                    <div class="nod-actions">
-                      <button class="nod-btn" type="button" aria-label="Grand Feast">
-                        <span class="nod-btn-icon" aria-hidden="true">👥</span>
-                        <span class="nod-btn-title">GRAND<br>FEAST</span>
-                        <span class="nod-btn-sub">Sharing table</span>
-                      </button>
-                      <button class="nod-btn" type="button" aria-label="Agent Chat">
-                        <span class="nod-btn-icon is-hero" aria-hidden="true">💬</span>
-                        <span class="nod-btn-title">AGENT<br>CHAT</span>
-                        <span class="nod-btn-sub">AI Consensus</span>
-                      </button>
-                      <button class="nod-btn" type="button" aria-label="Solo Tasting">
-                        <span class="nod-btn-icon" aria-hidden="true">👤</span>
-                        <span class="nod-btn-title">SOLO<br>TASTING</span>
-                        <span class="nod-btn-sub">Just for you</span>
-                      </button>
-                    </div>
-                    <div class="nod-footer">⎔ Join a Table</div>
+                    <img class="phone-screen-img" src="assets/nod-screen.jpg" alt="Nod — Snap, Decode, Trust. How are you dining today?" loading="lazy" decoding="async">
+                    <span class="phone-glow" aria-hidden="true"></span>
                   </div>
                 </div>
+                <div class="phone-caption">Nod · TestFlight · iOS mockup</div>
               </div>
               <div class="phone-notes">
-                <div class="card-split-kicker">Nod · iOS · TestFlight</div>
-                <div class="card-split-title">Ambrosia</div>
+                <div class="card-split-kicker">Ambrosia · manager-worker agents</div>
+                <div class="card-split-title">Decide in 30 seconds.</div>
                 <div class="card-split-sub">
-                  A manager-worker agent loop. An OCR "Eye" digitises the
-                  menu, a "Brain" translates culturally (not literally),
-                  and a "Gatekeeper" critic blocks anything that violates
-                  your allergies — even when the Brain suggested it.
+                  Point the camera at a menu in any language. The <strong>Eye</strong>
+                  digitises it, the <strong>Brain</strong> translates culturally —
+                  not literally — and a <strong>Gatekeeper</strong> critic blocks
+                  anything that touches your allergies, even when the Brain
+                  suggested it.
                 </div>
                 <ul class="card-split-list">
                   <li>Eye · Gemini 3.0 Flash · layout + currency aware OCR</li>
-                  <li>Brain · Gemini 3.0 Pro · sommelier persona, knapsack pick</li>
+                  <li>Brain · Gemini 3.0 Pro · sommelier persona + knapsack pick</li>
                   <li>Gatekeeper · allergy-aware critic (always on)</li>
-                  <li>Platform: iOS 26.1 · SwiftUI · Liquid Glass UI</li>
+                  <li>iOS 26.1 · SwiftUI · Liquid Glass UI</li>
                 </ul>
-                <div class="card-split-note">Pre-release mockup · not final UI</div>
+                <div class="demo-links" style="margin-top: 6px;">
+                  <span class="demo-link" style="opacity:0.75">TestFlight · invite on request</span>
+                </div>
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
@@ -2362,7 +2571,7 @@ const Cursor = (() => {
   window.addEventListener('mousemove', (e) => moveTo(e.clientX, e.clientY), { passive: true });
 
   /* Hover affordance */
-  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .nod-btn, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
+  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .demo-link, .demo-video-tile, .poster-cta, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(hoverSelector)) el.classList.add('is-hover');
   });
@@ -2652,48 +2861,6 @@ const Archive = (() => {
   setTimeout(updateFromScroll, 50);
 
   return { setActive, flipActive, navigateTo };
-})();
-
-/* ==========================================================================
-   Nod mockup — cycle Snap → Decode → Trust highlight so the phone feels
-   alive even before the user taps anything. Runs only when the Nod card is
-   on-screen to avoid wasted ticks.
-   ========================================================================== */
-(function NodCycle() {
-  const root = document.querySelector('[data-role="nod-ui"]');
-  if (!root || prefersReducedMotion) return;
-  const items = root.querySelectorAll('.nod-trinity-item');
-  if (!items.length) return;
-  let i = 0;
-  let timer = null;
-
-  function tick() {
-    items.forEach((el, idx) => el.classList.toggle('is-on', idx === i));
-    i = (i + 1) % items.length;
-  }
-
-  function start() {
-    if (timer) return;
-    tick();
-    timer = setInterval(tick, 1800);
-  }
-  function stop() {
-    if (!timer) return;
-    clearInterval(timer);
-    timer = null;
-  }
-
-  /* IntersectionObserver so the cycle only burns CPU when visible. */
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) start(); else stop();
-      });
-    }, { threshold: 0.25 });
-    io.observe(root);
-  } else {
-    start();
-  }
 })();
 
 /* ==========================================================================
