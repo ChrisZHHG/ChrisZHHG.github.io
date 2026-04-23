@@ -1,117 +1,117 @@
 /* ==========================================================================
-   BELLOWS PROSCENIUM
-   The observer's head stays inside the camera throughout Acts 1–5.
-
-   Design principle: the bellows is an edge frame, NOT a center obstruction.
-   Content fills ~80% of the viewport; the dark accordion-fold edges occupy
-   only the outer 12–15%. The viewer sees clearly — they are focused,
-   not blinded.
-
-   Three CSS layers stacked via z-index 30:
-     1. .bellows         — layered inset box-shadows (the folds + depth)
-     2. .bellows::before — rib texture pattern (masked to edges only)
-     3. .bellows::after  — hard corner anchors (chamfered leather housing)
-
-   Breathing: --bellows-t (0→0.02) from bellows.js drives a ±1.5% scale
-   pulse. Imperceptible as deliberate motion; physiologically alive.
+   BELLOWS PROSCENIUM — Viewfinder chrome (35mm.vercel.app-inspired)
+   Design principle (corrected from dark-on-dark attempt):
+     - Do NOT try to darken already-dark backgrounds
+     - DO add low-contrast, additive UI chrome that reads as camera apparatus
+     - Mirror the cursor's viewfinder language at viewport scale: 4 corner
+       L-brackets, warm amber at low opacity, plus small monospace telemetry
+     - Content area is entirely untouched — full legibility preserved
    ========================================================================== */
 
+/* ── Outer shell ──────────────────────────────────────────────────────────── */
 .bellows {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  /* Above vignette(99) and grain(98) so the frame always renders on top */
   z-index: 110;
 
-  /* Breathing: very subtle scale, synced to sinusoidal oscillator */
+  /* Breathing: --bellows-t drives a ±1.5% scale pulse */
   transform: scale(calc(1 + var(--bellows-t, 0) * 1.5));
   transform-origin: center center;
   will-change: transform;
 
-  /* Six inset shadow layers build the accordion-fold depth illusion.
-     Pure black shadows on a dark-warm body create clear, visible contrast.
-     Layer 0: hard leather frame edge (solid 16px, pure black).
-     Layers 1–5: progressively softer fold shadows fading toward center.
-     Center of viewport is fully transparent — content shows through. */
-  box-shadow:
-    inset 0 0   0px  16px rgba(0, 0, 0, 1.00),       /* leather frame */
-    inset 0 0  60px  16px rgba(0, 0, 0, 0.88),        /* fold 1 */
-    inset 0 0 100px  24px rgba(0, 0, 0, 0.65),        /* fold 2 */
-    inset 0 0 150px  32px rgba(0, 0, 0, 0.42),        /* fold 3 */
-    inset 0 0 200px  40px rgba(0, 0, 0, 0.22),        /* fold 4 */
-    inset 0 0 260px  48px rgba(0, 0, 0, 0.09);        /* soft vignette */
-}
-
-/* Accordion rib texture — subtle repeating ridge lines, visible only at
-   edges. The radial mask hides the pattern in the content area so text
-   is never cluttered by the texture. */
-.bellows::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      transparent 0px, transparent 15px,
-      rgba(0, 0, 0, 0.055) 15px, rgba(0, 0, 0, 0.055) 17px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 15px,
-      rgba(0, 0, 0, 0.055) 15px, rgba(0, 0, 0, 0.055) 17px
-    );
-  /* Mask: transparent at center (72% × 68% ellipse), full opacity at edges */
-  mask-image: radial-gradient(
-    ellipse 72% 68% at 50% 50%,
-    transparent 62%,
-    rgba(0, 0, 0, 0.5) 76%,
-    black 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    ellipse 72% 68% at 50% 50%,
-    transparent 62%,
-    rgba(0, 0, 0, 0.5) 76%,
-    black 100%
+  /* Subtle warm radial "light gathered at focal center" — additive, not masking */
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 50%,
+    rgba(213, 164, 74, 0.035) 0%,
+    rgba(213, 164, 74, 0.015) 45%,
+    transparent 72%
   );
 }
 
-/* Hard corner anchors: the chamfered leather housing corners.
-   Post-1900 bellows used chamfered corners to prevent light-leak pinholing
-   (ref: licm.org.uk — Camera Anatomy: Bellows Cameras). */
-.bellows::after {
-  content: '';
+/* ── Corner L-brackets ────────────────────────────────────────────────────── */
+/* Four 36×36 divs, each drawing only two of its four borders. Amber at 40%
+   opacity — present but never competing with content. */
+.bellows__corner {
   position: absolute;
-  inset: 0;
+  width: 36px;
+  height: 36px;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 20% 20% at   0%   0%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
-    radial-gradient(ellipse 20% 20% at 100%   0%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
-    radial-gradient(ellipse 20% 20% at   0% 100%, rgba(5, 4, 3, 0.92) 0%, transparent 100%),
-    radial-gradient(ellipse 20% 20% at 100% 100%, rgba(5, 4, 3, 0.92) 0%, transparent 100%);
+}
+.bellows__corner--tl { top:    18px; left:   18px;
+  border-top:    1px solid rgba(213, 164, 74, 0.40);
+  border-left:   1px solid rgba(213, 164, 74, 0.40); }
+.bellows__corner--tr { top:    18px; right:  18px;
+  border-top:    1px solid rgba(213, 164, 74, 0.40);
+  border-right:  1px solid rgba(213, 164, 74, 0.40); }
+.bellows__corner--bl { bottom: 18px; left:   18px;
+  border-bottom: 1px solid rgba(213, 164, 74, 0.40);
+  border-left:   1px solid rgba(213, 164, 74, 0.40); }
+.bellows__corner--br { bottom: 18px; right:  18px;
+  border-bottom: 1px solid rgba(213, 164, 74, 0.40);
+  border-right:  1px solid rgba(213, 164, 74, 0.40); }
+
+/* ── Telemetry readouts (four corners, inside the brackets) ──────────────── */
+/* All use DM Mono, uppercase, small size, low opacity — reads as instrument
+   panel text, not as content. Updated by scripts/core/viewfinder.js. */
+.bellows__readout {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(213, 164, 74, 0.55);
+  pointer-events: none;
+  user-select: none;
+}
+.bellows__readout--tl { top:    28px; left:   64px; }
+.bellows__readout--tr { top:    28px; right:  64px; text-align: right; }
+.bellows__readout--bl { bottom: 28px; left:   64px; }
+.bellows__readout--br { bottom: 28px; right:  64px; text-align: right; }
+
+/* Recording dot — the only accent color allowed at full intensity,
+   positioned immediately before the timer text in the top-right readout. */
+.bellows__rec-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, #d5a44a);
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: bellowsRecPulse 1.8s ease-in-out infinite;
+}
+@keyframes bellowsRecPulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1.00; }
 }
 
-/* ── Mobile ──────────────────────────────────────────────────────────────── */
-/* Below 768px: collapse to a single soft radial vignette only.
-   No rib texture, no breathing — preserve battery and simplicity. */
+/* Two-line readouts stack — each line a .bellows__line span */
+.bellows__line { display: block; }
+.bellows__line--dim { color: rgba(213, 164, 74, 0.32); }
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .bellows {
-    transform: none;
-    box-shadow:
-      inset 0 0   0px   8px rgba(0, 0, 0, 1.00),
-      inset 0 0  40px   8px rgba(0, 0, 0, 0.85),
-      inset 0 0  80px  16px rgba(0, 0, 0, 0.52),
-      inset 0 0 120px  24px rgba(0, 0, 0, 0.20);
-  }
-  .bellows::before { display: none; }
+  .bellows { transform: none; }
+  .bellows__corner    { width: 24px; height: 24px; }
+  .bellows__corner--tl,
+  .bellows__corner--tr,
+  .bellows__corner--bl,
+  .bellows__corner--br { /* closer to edge on small screens */ }
+  .bellows__corner--tl { top: 12px; left: 12px; }
+  .bellows__corner--tr { top: 12px; right: 12px; }
+  .bellows__corner--bl { bottom: 12px; left: 12px; }
+  .bellows__corner--br { bottom: 12px; right: 12px; }
+  .bellows__readout { font-size: 9px; }
+  .bellows__readout--tl { top: 18px; left: 44px; }
+  .bellows__readout--tr { top: 18px; right: 44px; }
+  .bellows__readout--bl { bottom: 18px; left: 44px; }
+  .bellows__readout--br { bottom: 18px; right: 44px; }
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
-/* Freeze the bellows at its neutral state. The frame is still visible
-   as a dark edge vignette — just not breathing. */
 @media (prefers-reduced-motion: reduce) {
-  .bellows {
-    transform: none;
-    will-change: auto;
-  }
+  .bellows         { transform: none; will-change: auto; }
+  .bellows__rec-dot { animation: none; opacity: 0.85; }
 }

@@ -7,6 +7,7 @@ import { createFocalPlane } from './core/focal.js';
 import { initCursor } from './core/cursor.js';
 import { createHealthMonitor } from './core/health.js';
 import { createBellows } from './core/bellows.js';
+import { createViewfinder } from './core/viewfinder.js';
 import { initGate } from './features/gate.js';
 import { initArchive } from './features/archive.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
@@ -56,6 +57,10 @@ trackDisposable(safeInit('cursor', () => initCursor({
 trackDisposable(safeInit('bellows', () => createBellows({
   isReducedMotion: reducedMotion.isReduced,
 }), hooks));
+
+// Viewfinder telemetry: timer, scroll %, fps, act — the "camera readouts"
+// visible in the four bellows corners.
+trackDisposable(safeInit('viewfinder', () => createViewfinder(), hooks));
 
 trackDisposable(safeInit('gate', () => initGate({ body, isReducedMotion: reducedMotion.isReduced }), hooks));
 

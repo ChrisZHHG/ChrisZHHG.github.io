@@ -36,10 +36,32 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain-paper" aria-hidden="true"></div>
 
-<!-- Bellows proscenium: fixed dark edge frame, always present Acts 1–5.
-     Content fills the center; the bellows is the camera housing around it.
-     Breathing driven by --bellows-t from scripts/core/bellows.js. -->
-<div class="bellows" aria-hidden="true"></div>
+<!-- Bellows proscenium: viewfinder chrome (35mm-inspired).
+     Four corner L-brackets + four telemetry readouts + subtle warm glow.
+     All pointer-events:none; content below is fully unobstructed.
+     Readouts populated by scripts/core/viewfinder.js. -->
+<div class="bellows" aria-hidden="true">
+  <span class="bellows__corner bellows__corner--tl"></span>
+  <span class="bellows__corner bellows__corner--tr"></span>
+  <span class="bellows__corner bellows__corner--bl"></span>
+  <span class="bellows__corner bellows__corner--br"></span>
+  <div class="bellows__readout bellows__readout--tl">
+    <span class="bellows__line" data-viewfinder="act">ACT 01 · HERO</span>
+    <span class="bellows__line bellows__line--dim" data-viewfinder="res">0×0</span>
+  </div>
+  <div class="bellows__readout bellows__readout--tr">
+    <span class="bellows__line"><span class="bellows__rec-dot"></span><span data-viewfinder="timer">00:00</span></span>
+    <span class="bellows__line bellows__line--dim" data-viewfinder="fps">24 fps</span>
+  </div>
+  <div class="bellows__readout bellows__readout--bl">
+    <span class="bellows__line" data-viewfinder="scroll">SCROLL 0%</span>
+    <span class="bellows__line bellows__line--dim">CHRIS ZHANG · V6</span>
+  </div>
+  <div class="bellows__readout bellows__readout--br">
+    <span class="bellows__line" data-viewfinder="frame">FRAME 1 / 6</span>
+    <span class="bellows__line bellows__line--dim">F/2.8 · 1/125</span>
+  </div>
+</div>
 
 <!-- First-visit gate (JS toggles body.is-gated; removed by localStorage on subsequent visits) -->
 <div class="gate" data-role="gate" aria-hidden="true">
