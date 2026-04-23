@@ -61,7 +61,14 @@ html {
 }
 
 body {
-  background: var(--paper);
+  background: linear-gradient(
+    180deg,
+    #ebe3d4 0%,
+    #e5dbc9 24%,
+    #d9ccb6 48%,
+    #e3d8c8 72%,
+    #f1ece2 100%
+  );
   color: var(--ink);
   font-family: var(--sans);
   font-size: 17.5px;
@@ -73,7 +80,6 @@ body {
 
 /* First-visit gate stays dark until user dismisses it */
 body.is-gated      { background: var(--ink); color: #f2efe8; }
-body.stage-archive { background: var(--archive); color: var(--paper); }
 
 /* Device without fine pointer falls back to native cursor */
 @media (pointer: coarse) {
@@ -110,11 +116,6 @@ strong { font-weight: 500; }
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
-}
-body.stage-archive .sidebar {
-  background: rgba(13, 12, 10, 0.92);
-  border-right-color: rgba(232, 184, 79, 0.18);
-  color: var(--paper);
 }
 body.is-gated .sidebar { opacity: 0; pointer-events: none; }
 
@@ -227,11 +228,6 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
-}
-body.stage-archive .topbar {
-  background: rgba(13, 12, 10, 0.85);
-  border-bottom-color: rgba(232, 184, 79, 0.18);
-  color: var(--paper);
 }
 body.is-gated .topbar { opacity: 0; pointer-events: none; }
 
@@ -422,13 +418,6 @@ button, a, input, textarea { cursor: none; }
 }
 
 .vignette { opacity: 0.5; }
-
-body.stage-archive .vignette {
-  background: radial-gradient(ellipse at center,
-              transparent 60%,
-              rgba(0, 0, 0, 0.32) 100%);
-  opacity: 0.6;
-}
 
 /* Flow overlay removed in this revision — content stays sharp. */
 .flow-blur, .flow-ghost { display: none; }
@@ -1871,7 +1860,7 @@ html:not(.js) .card-back { display: none; }
   </nav>
   <div class="sidebar-footer">
     <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
-      <span class="audio-label">sound · off</span>
+      <span class="audio-label">sound · on</span>
     </button>
     <a href="https://x.com/home" target="_blank" rel="noopener">X ↗</a>
     <a href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub ↗</a>
@@ -2412,7 +2401,7 @@ function setVar(name, value) { root.style.setProperty(name, value); }
    ========================================================================== */
 const Audio = (() => {
   let ctx = null;
-  let muted = true;
+  let muted = false;
   let noiseBuffer = null;
 
   function ensure() {
@@ -2769,7 +2758,13 @@ const Archive = (() => {
     const active = cards[current];
     if (!active) return;
     active.classList.toggle('is-flipped');
-    if (!Audio.muted) Audio.shutter();
+    if (!Audio.muted) {
+      const onFlipMotionDone = (e) => {
+        if (e.propertyName !== 'transform') return;
+        Audio.shutter();
+      };
+      active.addEventListener('transitionend', onFlipMotionDone, { once: true });
+    }
     /* Mark archive captured on first flip */
     Capture.markFrame('archive');
   }
@@ -2786,6 +2781,7 @@ const Archive = (() => {
       if (e.target.closest('a, button')) return;
       if (!card.classList.contains('is-active')) {
         const idx = cards.indexOf(card);
+        if (!Audio.muted) Audio.softTick();
         setActive(idx);
         return;
       }
@@ -2795,9 +2791,10 @@ const Archive = (() => {
 
   /* Scroll-sync navigation so that explicit prev/next/arrow/swipe
      does not fight the scroll-derived state on subsequent scrolls. */
-  function navigateTo(idx) {
+  function navigateTo(idx, source = 'programmatic') {
     idx = clamp(idx, 0, cards.length - 1);
     if (prefersReducedMotion) { setActive(idx); return; }
+    if (source !== 'scroll' && !Audio.muted) Audio.softTick();
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
     const topbarH = window.innerWidth > 880 ? 52 : 0;
@@ -2812,14 +2809,14 @@ const Archive = (() => {
   }
 
   /* Prev/next buttons */
-  prevBtn.addEventListener('click', () => navigateTo(current - 1));
-  nextBtn.addEventListener('click', () => navigateTo(current + 1));
+  prevBtn.addEventListener('click', () => navigateTo(current - 1, 'button'));
+  nextBtn.addEventListener('click', () => navigateTo(current + 1, 'button'));
 
   /* Keyboard */
   window.addEventListener('keydown', (e) => {
     if (Stage.current !== 'archive') return;
-    if (e.key === 'ArrowRight' || e.key === 'Right') { e.preventDefault(); navigateTo(current + 1); }
-    else if (e.key === 'ArrowLeft' || e.key === 'Left') { e.preventDefault(); navigateTo(current - 1); }
+    if (e.key === 'ArrowRight' || e.key === 'Right') { e.preventDefault(); navigateTo(current + 1, 'keyboard'); }
+    else if (e.key === 'ArrowLeft' || e.key === 'Left') { e.preventDefault(); navigateTo(current - 1, 'keyboard'); }
     else if (e.key.toLowerCase() === 'f' || (e.code === 'Space' && Stage.current === 'archive')) {
       e.preventDefault();
       flipActive();
@@ -2837,7 +2834,7 @@ const Archive = (() => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     const dy = e.changedTouches[0].clientY - touchStartY;
     if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
-      navigateTo(current + (dx < 0 ? 1 : -1));
+      navigateTo(current + (dx < 0 ? 1 : -1), 'swipe');
     } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
       /* Treat as tap on active card */
       if (e.target.closest('a, button')) return;
