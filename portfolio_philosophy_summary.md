@@ -224,3 +224,67 @@ Drafted. Core structure:
 - Once Nod has a public website or App Store listing, upgrade the mockup into a real "↗ open app" CTA.
 - Consider a Substack / long-form embed on the Pedalling plate once the first essay ships.
 
+---
+
+## 12. Dark Box → Light (Apr 23, 2026)
+
+### The metaphor, stated cleanly
+> A portfolio is not a résumé. It is a **folding camera** the visitor walks into.
+> They enter the dark bellows, their cursor becomes the lens, focus converges, and at the end they step out into the finished photograph — the work.
+
+The whole site is one camera. The viewport is the interior of the bellows. The content is what the lens sees. The cursor is where light enters. The shutter is the act of leaving.
+
+### What this round fixed (and what went wrong first)
+
+Three attempts before the right one. Documenting them so future sessions do not repeat the mistakes.
+
+| Attempt | Idea | Why it failed |
+|---|---|---|
+| **A. Color tunnel** | Twelve `--sky-*` tokens; body background shifts from dark → dawn → noon as you scroll. "Immersive cinematic tunnel." | Killed readability. Text on mid-range tokens disappeared. The whole type system would have needed to adapt color per act — too expensive, too fragile. |
+| **B. 35mm HUD** | Four corner L-brackets plus four readout zones (timecode, fps, frame, resolution) in mono amber. Inspired by 35mm.vercel.app. | Visible, clean — but thematically off. That language belongs to sites about **making film**. Our story is **focus**, not film-making. Form started to exceed substance. |
+| **C. Leather bellows (kept)** | Real photographed bellows leather masked to viewport edges, feathered soft-focus falloff, four amber L-brackets, nothing else. | Correct. Reads as "I am inside a camera", not "I am operating a camera". |
+
+### The final language (seven elements, no more)
+
+| # | Element | Role |
+|---|---|---|
+| 1 | **Leather edges** (`.bellows__leather`) | Physical proscenium. Real bellows texture, tiled, masked 52%→85% radial so only the edges show with a soft feather into the clear content area. Scales ±1.5 % in a 6 s sinusoidal breath (`--bellows-t`). |
+| 2 | **Four amber L-brackets** (`.bellows__corner`) | The viewfinder's framing corners. Same geometric language as the cursor — they are the cursor, scaled to viewport. |
+| 3 | **Cursor** (existing) | The lens itself. Four L-corners following the pointer. On hover widens; during hunt contracts; at lock snaps and pops. |
+| 4 | **Focal plane** (existing) | The damped-harmonic hunt that converges on first visit, then releases into reading mode. |
+| 5 | **Act markers** (`body[data-act='01'..'06']`) | Which frame of the storyboard the reader is in. Written by `acts.js` via IntersectionObserver. Drives 6–8 below. |
+| 6 | **Iris transitions** (planned, `iris.js`) | 220 ms radial clip-path wipe at every act boundary. Feels like the lens refocusing, not like a cut. |
+| 7 | **Coda peel** (planned, act 06 only) | Leather mask radius animates outward until the bellows fully dissolves, revealing a bright, clean finale. Literal walking-out-of-the-dark-box. |
+
+### Rules we will not break again
+
+1. **Never darken an already-dark surface.** Dark-on-dark is invisible. Add light, add warmth, add material — do not subtract.
+2. **Content is sacred.** The center ~55 % of the viewport is untouched, always. Every frame element is fixed, pointer-events:none, and respects a feathered gap around the reading column.
+3. **One metaphor, literalized once.** If we already have a leather bellows at the edge, we do not also need a film-reel HUD, a light-meter, or a shutter-speed dial. Form must never exceed substance.
+4. **The cursor is the hero interaction.** Every other embellishment is background. If an addition competes with the cursor for attention, it is wrong.
+5. **Thematic coherence over reference fidelity.** 35mm.vercel.app is beautiful — but it is a film-making site. Borrow its craft, not its vocabulary. Our vocabulary is focus.
+
+### Two-phase scroll narrative (unchanged, restated for clarity)
+
+- **Phase one — Hero / Gate**: bellows fully present, breathing, leather dark and warm. Cursor hunts and locks. The only event. *"You are inside a camera. The lens is your attention."*
+- **Phase two — Acts 02–05**: bellows present but quiet. Content is the focus. Iris wipe at each act boundary. Reader's eye is at the focal plane; everything else falls into bokeh.
+- **Phase three — Act 06 / Coda**: the leather dissolves outward. The reader steps out of the box, into the light, holding the finished photograph. Shutter click. Flashbulb. End.
+
+### Files touched this round
+- `assets/textures/leather.jpg` — seamless tileable leatherette (generated).
+- `styles/modules/bellows.css` — leather-frame + corner-bracket implementation; previous HUD readouts removed.
+- `styles/modules/tunnel.css` — stripped to just `--bellows-t` / `--iris-t` (the color-tunnel tokens are gone).
+- `scripts/core/bellows.js` — 6 s sinusoidal breath oscillator.
+- `scripts/core/viewfinder.js` — **deleted** (HUD readouts are gone).
+- `index.html` — replaced readout DOM with `.bellows__leather` + four corner spans.
+- `scripts/main.js` — removed `createViewfinder` import / init.
+
+### Next round (chunks C′–F′)
+
+| Chunk | Deliverable |
+|---|---|
+| **C′** | `scripts/core/acts.js` writes `body[data-act]` via IntersectionObserver. `#writing` compressed to 3 lines + "read more". Six `.pull-quote` anchors as act landmarks. |
+| **D′** | `scripts/core/iris.js` — 220 ms radial clip-path wipe on `data-act` change. Reference: Figma page 02 "Iris frame". |
+| **E′** | Coda peel — only `body[data-act='06']` animates `.bellows__leather`'s mask radius outward until the leather fully dissolves. |
+| **F′** | Four interaction languages, scoped by act: noiseCollapse (hero), intentLock (theory/friction), decisionTrail (archive/writing), commitShutter + flashbulb (coda). |
+
