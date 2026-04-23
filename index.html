@@ -34,15 +34,16 @@
   /* Dynamic state, written by JS */
   --cx: 50vw;
   --cy: 50vh;
-  --exposure: 0;          /* 0..1 during Act 1 hold-to-expose */
-  --flow: 0;              /* 0..1 velocity-driven quicksilver blend */
-  --focal-radius: 180px;  /* radius of transient clarity pulse around cursor */
-  --bracket-size: 56px;   /* viewfinder outer size */
+  --bracket-size: 52px;   /* viewfinder outer size */
   --bracket-opacity: 1;
-  --ambient-blur: 0;      /* content is sharp by default; blur is a transient event, not a state */
-  --vignette: 0.12;       /* edge darkening 0..1 — kept very subtle */
+  --vignette: 0.08;       /* edge darkening 0..1 — kept very subtle */
   --amber: #e8b84f;       /* classic viewfinder amber */
   --amber-hot: #fff0a8;   /* lock-in highlight */
+
+  /* Layout */
+  --sidebar-w: 220px;
+  --topbar-h: 48px;
+  --content-max: 720px;
 }
 
 /* ==========================================================================
@@ -58,17 +59,18 @@ html {
 }
 
 body {
-  background: var(--ink);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
   cursor: none;
-  transition: background 0.75s var(--ease-out), color 0.75s var(--ease-out);
+  transition: background 0.6s var(--ease-out), color 0.6s var(--ease-out);
 }
 
-body.stage-paper   { background: var(--paper); color: var(--ink); }
+/* First-visit gate stays dark until user dismisses it */
+body.is-gated      { background: var(--ink); color: #f2efe8; }
 body.stage-archive { background: var(--archive); color: var(--paper); }
 
 /* Device without fine pointer falls back to native cursor */
@@ -80,28 +82,197 @@ a { color: inherit; text-decoration: none; }
 strong { font-weight: 500; }
 
 /* ==========================================================================
-   3. STAGE / WORLD / ACT
+   3. LAYOUT — Sidebar TOC, Top status bar, Main column
    ========================================================================== */
 .world {
   position: relative;
   z-index: 1;
+  padding-left: var(--sidebar-w);
+  padding-top: var(--topbar-h);
+}
+
+/* Sidebar (kylemcgraw-style fixed TOC) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  z-index: 200;
+  padding: 26px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  border-right: 1px solid var(--border);
+  background: rgba(248, 246, 241, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
+}
+body.stage-archive .sidebar {
+  background: rgba(13, 12, 10, 0.92);
+  border-right-color: rgba(232, 184, 79, 0.18);
+  color: var(--paper);
+}
+body.is-gated .sidebar { opacity: 0; pointer-events: none; }
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar-brand-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+.sidebar-brand-tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.toc {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 -8px;
+  padding: 0 4px;
+}
+.toc::-webkit-scrollbar { width: 0; }
+
+.toc-section {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  padding: 14px 8px 6px;
+}
+
+.toc a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: inherit;
+  opacity: 0.55;
+  border-radius: 2px;
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+  position: relative;
+}
+.toc a:hover { opacity: 1; }
+.toc a .toc-num {
+  font-size: 9.5px;
+  opacity: 0.55;
+  width: 18px;
+  flex-shrink: 0;
+}
+.toc a.is-active {
+  opacity: 1;
+  color: var(--amber);
+}
+.toc a.is-active::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.sidebar-footer a:hover { opacity: 1; color: var(--amber); }
+
+/* Top status bar */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  height: var(--topbar-h);
+  z-index: 199;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 26px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  background: rgba(248, 246, 241, 0.86);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.6s var(--ease-out), border-color 0.6s var(--ease-out), color 0.6s var(--ease-out);
+}
+body.stage-archive .topbar {
+  background: rgba(13, 12, 10, 0.85);
+  border-bottom-color: rgba(232, 184, 79, 0.18);
+  color: var(--paper);
+}
+body.is-gated .topbar { opacity: 0; pointer-events: none; }
+
+.topbar-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.7;
+}
+.topbar-status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(232, 184, 79, 0.65);
+}
+.topbar-actions {
+  display: flex;
+  gap: 18px;
+  opacity: 0.65;
+}
+.topbar-actions a:hover { opacity: 1; color: var(--amber); }
+
+/* Mobile: hide sidebar/topbar, full width content */
+@media (max-width: 880px) {
+  .world { padding-left: 0; padding-top: 0; }
+  .sidebar { display: none; }
+  .topbar { display: none; }
 }
 
 .act {
   position: relative;
-  max-width: 720px;
+  max-width: var(--content-max);
   margin: 0 auto;
   padding: 96px 24px;
 }
 
 .act-hero {
-  max-width: none;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 80px 32px 96px;
+  min-height: auto;
+  display: block;
 }
 
 .act-archive {
@@ -110,17 +281,51 @@ strong { font-weight: 500; }
   padding: 0;
 }
 
-/* When on dark hero stage, everything below is hidden */
-body.stage-hero .world > :not(.act-hero),
-body.stage-hero .ambient-blur,
-body.stage-hero .grain-paper {
-  opacity: 0 !important;
-  pointer-events: none !important;
+/* First-visit gate (covers viewport until user dismisses) */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--ink);
+  color: #f2efe8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  text-align: center;
+  padding: 48px 24px;
+  opacity: 1;
+  transition: opacity 0.7s var(--ease-out);
 }
-
-body.stage-hero .grain-film {
-  opacity: 0.9;
+.gate.is-leaving { opacity: 0; pointer-events: none; }
+.gate-line {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4.5vw, 44px);
+  line-height: 1.15;
+  max-width: 18ch;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: gateFade 1.2s var(--ease-out) forwards;
 }
+.gate-line.it { font-style: italic; color: rgba(242, 239, 232, 0.7); animation-delay: 0.4s; }
+.gate-prompt {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: gateFade 1s var(--ease-out) 1.6s forwards, gatePulse 2.4s ease-in-out 2.6s infinite;
+  color: rgba(242, 239, 232, 0.55);
+}
+@keyframes gateFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes gatePulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.85; }
+}
+body:not(.is-gated) .gate { display: none; }
 
 /* Utility: hide native OS cursor on all children too */
 button, a, input, textarea { cursor: none; }
@@ -151,7 +356,7 @@ button, a, input, textarea { cursor: none; }
               opacity 0.3s ease,
               color 0.2s ease;
   filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.55))
-          drop-shadow(0 0 calc(var(--flow) * 5px) rgba(240, 195, 90, 0.75));
+          drop-shadow(0 0 4px rgba(240, 195, 90, 0.35));
 }
 
 /* Thin rectangular bright-line frame */
@@ -220,7 +425,7 @@ button, a, input, textarea { cursor: none; }
   transition: opacity 0.6s var(--ease-out);
 }
 
-body.stage-paper .vignette { opacity: 0.5; }
+.vignette { opacity: 0.5; }
 
 body.stage-archive .vignette {
   background: radial-gradient(ellipse at center,
@@ -229,34 +434,8 @@ body.stage-archive .vignette {
   opacity: 0.8;
 }
 
-/* Quicksilver flow-state overlay: full-screen blur with no mask */
-.flow-blur {
-  position: fixed;
-  inset: 0;
-  z-index: 101;
-  pointer-events: none;
-  backdrop-filter: blur(calc(var(--flow) * 12px)) contrast(calc(1 - var(--flow) * 0.15));
-  -webkit-backdrop-filter: blur(calc(var(--flow) * 12px)) contrast(calc(1 - var(--flow) * 0.15));
-  opacity: var(--flow);
-  transition: opacity 0.18s linear;
-}
-
-.flow-ghost {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.4em;
-  color: rgba(255, 255, 255, 0.5);
-  mix-blend-mode: difference;
-  z-index: 102;
-  pointer-events: none;
-  opacity: calc(max(var(--flow) - 0.5, 0) * 2);
-  transition: opacity 0.15s linear;
-  text-transform: uppercase;
-}
+/* Flow overlay removed in this revision — content stays sharp. */
+.flow-blur, .flow-ghost { display: none; }
 
 /* ==========================================================================
    6. FILM GRAIN
@@ -286,353 +465,91 @@ body.stage-archive .vignette {
 }
 
 /* ==========================================================================
-   7. HERO (Act 1 — Exposure Ritual)
+   7. HERO (now a clean intro section, no ritual)
    ========================================================================== */
-.hero-shell {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  color: #f2efe8;
-}
-
-.hero-prompt {
-  position: absolute;
-  bottom: 18vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.5em;
-  color: rgba(242, 239, 232, calc(0.25 + var(--prompt-pulse, 0.2) * 0.3));
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: opacity 0.5s ease;
-  opacity: calc(1 - var(--exposure));
-}
-
-.hero-prompt-mobile { display: none; }
-@media (pointer: coarse) {
-  .hero-prompt-desktop { display: none; }
-  .hero-prompt-mobile  { display: inline; }
-}
-
-@keyframes promptPulse {
-  0%,100% { opacity: 0.35; letter-spacing: 0.5em; }
-  50%     { opacity: 0.7;  letter-spacing: 0.55em; }
-}
-.hero-prompt span { animation: promptPulse 2.6s var(--ease-in-out) infinite; }
-
-.hero-content {
-  max-width: 620px;
-  text-align: left;
-  opacity: var(--exposure);
-  transform: scale(calc(0.97 + var(--exposure) * 0.03));
-  transition: opacity 0.08s linear, transform 0.08s linear;
-  will-change: opacity, transform;
-}
-
-.hero-avatar {
-  width: 118px;
-  height: 118px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #0a0a0a;
-  margin-bottom: 44px;
-  /* Avatar reveals earliest (from highlights) */
-  opacity: clamp(0, calc((var(--exposure) - 0.05) * 2.2), 1);
-  filter: brightness(calc(0.4 + var(--exposure) * 0.7));
-}
-.hero-avatar video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .hero-headline {
   font-family: var(--serif);
-  font-size: clamp(40px, 6vw, 62px);
+  font-size: clamp(38px, 5.6vw, 56px);
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.01em;
-  color: #f2efe8;
+  color: var(--ink);
   margin-bottom: 6px;
-  opacity: clamp(0, calc((var(--exposure) - 0.2) * 2), 1);
 }
 
 .hero-headline-2 {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(40px, 6vw, 62px);
+  font-size: clamp(38px, 5.6vw, 56px);
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.01em;
-  color: rgba(242, 239, 232, 0.7);
-  margin-bottom: 44px;
-  opacity: clamp(0, calc((var(--exposure) - 0.38) * 2), 1);
+  color: var(--ink-2);
+  margin-bottom: 38px;
 }
 
 .hero-rule {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 26px;
-  opacity: clamp(0, calc((var(--exposure) - 0.55) * 2.2), 1);
+  margin-bottom: 22px;
 }
 
 .hero-rule-name {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.32em;
-  color: rgba(242, 239, 232, 0.55);
+  color: var(--ink-3);
   white-space: nowrap;
 }
 
 .hero-rule-line {
   flex: 1;
   height: 1px;
-  background: rgba(242, 239, 232, 0.25);
+  background: var(--border);
 }
 
 .hero-bio {
   font-size: 15.5px;
-  line-height: 1.85;
-  color: rgba(242, 239, 232, 0.78);
-  max-width: 560px;
-  margin-bottom: 30px;
-  opacity: clamp(0, calc((var(--exposure) - 0.65) * 2.4), 1);
+  line-height: 1.78;
+  color: var(--ink-2);
+  max-width: 58ch;
+  margin-bottom: 28px;
 }
-
-.hero-bio strong { color: #f2efe8; font-weight: 500; }
+.hero-bio strong { color: var(--ink); font-weight: 500; }
 
 .hero-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  opacity: clamp(0, calc((var(--exposure) - 0.75) * 3.5), 1);
 }
 
 .hero-tag {
   font-family: var(--mono);
   font-size: 11px;
   padding: 4px 10px;
-  border: 1px solid rgba(242, 239, 232, 0.3);
+  border: 1px solid var(--border);
   border-radius: 2px;
-  color: rgba(242, 239, 232, 0.65);
+  color: var(--ink-2);
   letter-spacing: 0.04em;
 }
 
-/* Exposure meter (bottom-right analog) */
-.exposure-meter {
-  position: absolute;
-  bottom: 28px;
-  right: 32px;
-  font-family: var(--mono);
-  color: rgba(242, 239, 232, 0.7);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-}
-
-.meter-body {
-  width: 140px;
-  height: 34px;
-  border: 1px solid rgba(242, 239, 232, 0.25);
-  border-radius: 2px;
-  position: relative;
-  background: rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-
-.meter-scale {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 8px;
-  font-size: 8px;
-  color: rgba(242, 239, 232, 0.35);
-  letter-spacing: 0.08em;
-  pointer-events: none;
-}
-
-.meter-needle {
-  position: absolute;
-  top: 4px;
-  bottom: 4px;
-  left: 8px;
-  width: 1.5px;
-  background: var(--accent);
-  transform-origin: bottom center;
-  /* exposure 0..1 maps to left 10% .. 82% */
-  left: calc(8px + var(--exposure) * 116px);
-  transition: left 0.08s linear;
-  box-shadow: 0 0 6px rgba(200, 57, 43, 0.8);
-}
-
-.meter-label {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  color: rgba(242, 239, 232, 0.45);
-  text-transform: uppercase;
-}
-
-.exposure-feedback {
-  position: absolute;
-  bottom: 14vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  color: rgba(242, 239, 232, 0.55);
-  text-transform: uppercase;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.exposure-feedback.show { opacity: 1; }
-
-/* Capture badge appearing on keyup */
-.capture-badge {
-  position: absolute;
-  bottom: 78px;
-  right: 32px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: rgba(242, 239, 232, 0.75);
-  letter-spacing: 0.16em;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.capture-badge.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Fullscreen white flash at shutter close */
-.capture-flash {
-  position: fixed;
-  inset: 0;
-  background: #ffffff;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 9999;
-}
-.capture-flash.flash {
-  animation: flashPulse 220ms ease-out forwards;
-}
-@keyframes flashPulse {
-  0%   { opacity: 0; }
-  15%  { opacity: 0.85; }
-  100% { opacity: 0; }
-}
-
-/* ==========================================================================
-   8. TOP NAV (post-hero)
-   ========================================================================== */
-.top-nav {
-  position: fixed;
-  top: 22px;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 32px;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  pointer-events: none;
-}
-body.stage-paper .top-nav,
-body.stage-archive .top-nav {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-body.stage-archive .top-nav .nav-links { opacity: 0.5; }
-
-.nav-brand {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  color: currentColor;
-}
-
-.nav-links {
-  display: flex;
-  gap: 22px;
-  list-style: none;
-  transition: opacity 0.4s ease;
-}
-.nav-links a {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  opacity: 0.55;
-  transition: opacity 0.2s ease;
-  text-transform: uppercase;
-}
-.nav-links a:hover { opacity: 1; }
-
-/* ==========================================================================
-   9. FRAMES COUNTER (global, fixed bottom-left)
-   ========================================================================== */
-.frames-counter {
-  position: fixed;
-  bottom: 22px;
-  left: 32px;
-  z-index: 200;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: currentColor;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  pointer-events: none;
-  text-transform: uppercase;
-}
-body.stage-paper .frames-counter,
-body.stage-archive .frames-counter {
-  opacity: 0.55;
-}
-
-.frames-counter .num { color: var(--accent); }
-body.stage-archive .frames-counter .num { color: #e8ddc9; }
-
-/* Mute audio toggle */
+/* Sound toggle now lives inside the sidebar */
 .audio-toggle {
-  position: fixed;
-  bottom: 22px;
-  right: 32px;
-  z-index: 200;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.18em;
-  color: currentColor;
-  opacity: 0;
+  color: inherit;
   background: none;
   border: none;
-  padding: 4px 8px;
+  padding: 0;
   text-transform: uppercase;
-  transition: opacity 0.6s ease;
   cursor: none;
+  text-align: left;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, color 0.2s ease;
 }
-body.stage-paper .audio-toggle,
-body.stage-archive .audio-toggle { opacity: 0.5; }
-.audio-toggle:hover { opacity: 1; }
+.audio-toggle:hover { opacity: 1; color: var(--amber); }
 
 /* ==========================================================================
    10. MANIFESTO (Act 2)
@@ -687,66 +604,81 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
   max-width: 580px;
 }
 
-/* Dual demo beat (Act 2b) */
-.dual-demo {
-  margin-top: 32px;
-  padding: 36px 0 12px;
+/* (Dual demo beat removed in this revision.) */
+.dual-demo, .demo-line, .demo-line-2, .demo-hint { display: none; }
+
+/* The thread map: explicit friction-to-project linkage right above the archive */
+.thread-map {
+  list-style: none;
+  margin-top: 24px;
+  padding-top: 22px;
   border-top: 1px solid var(--border);
-}
-
-.demo-line {
-  font-family: var(--serif);
-  font-size: clamp(24px, 3.2vw, 30px);
-  line-height: 1.3;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-
-.demo-line-2 {
-  font-style: italic;
-  color: var(--ink-3);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.demo-hint {
+  display: grid;
+  gap: 10px;
   font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.28em;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 3px 8px;
-  white-space: nowrap;
-  opacity: 0.7;
+  font-size: 12.5px;
+  color: var(--ink-2);
 }
+.thread-map li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  padding: 4px 0;
+  line-height: 1.5;
+}
+.thread-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid rgba(232, 184, 79, 0.45);
+  padding: 3px 8px;
+  border-radius: 2px;
+  background: rgba(232, 184, 79, 0.04);
+  white-space: nowrap;
+}
+.thread-map a {
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom: 1px solid var(--ink-3);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.thread-map a:hover { color: var(--amber); border-color: var(--amber); }
 
 /* ==========================================================================
    11. ARCHIVE (Act 3) — sticky scroll, 6 flip cards
    ========================================================================== */
 .act-archive {
-  /* Container is tall: one viewport per card = 6 * 100vh, plus an
-     entry/exit buffer so the first and last cards rest visibly. */
+  /* Container is tall: one viewport per card = 6 viewport-heights, plus a
+     small entry buffer so the first and last cards rest visibly. The sticky
+     viewport sits below the fixed topbar so cards never get clipped. */
   position: relative;
-  height: calc(100vh * 7);
+  height: calc((100vh - var(--topbar-h)) * 7);
   background: var(--archive);
   color: #e8e3d8;
   isolation: isolate;
 }
+@media (max-width: 880px) {
+  .act-archive { height: calc(100vh * 7); }
+}
 
 .archive-viewport {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
   width: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   perspective: 1600px;
+}
+@media (max-width: 880px) {
+  .archive-viewport { top: 0; height: 100vh; }
 }
 
 .archive-label {
@@ -839,14 +771,25 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
 .card-back  { transform: rotateY(180deg); background: #060504; display: flex; align-items: center; justify-content: center; }
 
 .card-friction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.18em;
-  color: var(--accent);
+  color: var(--amber);
   text-transform: uppercase;
   margin-bottom: 18px;
-  opacity: 0.92;
+  padding: 4px 10px;
+  border: 1px solid rgba(232, 184, 79, 0.45);
+  border-radius: 2px;
+  background: rgba(232, 184, 79, 0.04);
 }
+.card-friction .ftag-key {
+  color: rgba(232, 184, 79, 0.6);
+}
+.card-friction .ftag-arrow { opacity: 0.6; }
 
 .card-name {
   font-family: var(--serif);
@@ -958,6 +901,28 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
   color: rgba(242, 239, 232, 0.92);
   text-align: left;
 }
+
+/* Progressive reveal: hide card-back contents until the card is actually
+   flipped, then fade them in section-by-section so the reader builds the
+   picture instead of getting a wall of text. Delays are tuned to start
+   right as the 0.7s flip is finishing. */
+.card-back .reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+.card.is-flipped .card-back .reveal { opacity: 1; transform: translateY(0); }
+
+/* Stagger steps relative to flip end (~0.55s into the flip) */
+.card.is-flipped .card-back .reveal-1 { transition-delay: 0.55s; }
+.card.is-flipped .card-back .reveal-2 { transition-delay: 0.70s; }
+.card.is-flipped .card-back .reveal-3 { transition-delay: 0.85s; }
+.card.is-flipped .card-back .reveal-4 { transition-delay: 1.00s; }
+.card.is-flipped .card-back .reveal-5 { transition-delay: 1.20s; }
+.card.is-flipped .card-back .reveal-6 { transition-delay: 1.40s; }
+
+/* When unflipping, snap everything back instantly so the next flip animates fresh */
+.card:not(.is-flipped) .card-back .reveal { transition-duration: 0s; transition-delay: 0s; }
 .spec-title {
   font-family: var(--serif);
   font-size: 36px;
@@ -1125,17 +1090,10 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
    13. MOBILE
    ========================================================================== */
 @media (max-width: 620px) {
-  .top-nav { padding: 0 20px; top: 18px; }
-  .nav-links { gap: 16px; }
-  .frames-counter { left: 20px; bottom: 16px; }
-  .audio-toggle { right: 20px; bottom: 16px; }
-
+  .act-hero { padding: 48px 20px 64px; }
   .act { padding: 72px 20px; }
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
-
-  .exposure-meter { right: 20px; bottom: 20px; }
-  .meter-body { width: 110px; height: 30px; }
 
   .card-stack { width: 92vw; height: 62vh; max-height: 480px; }
   .card-front { padding: 26px 24px; }
@@ -1146,41 +1104,18 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
   .archive-label { left: 20px; top: 22px; }
   .archive-skip { right: 20px; top: 22px; }
 
-  .dual-demo { padding: 28px 0 0; }
-  .demo-line-2 { flex-wrap: wrap; gap: 10px; }
+  .thread-map { font-size: 12px; }
 }
 
 /* ==========================================================================
-   14. REDUCED MOTION FALLBACK
+   14. REDUCED MOTION + NO-JS FALLBACK
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  :root {
-    --ambient-blur: 0;
-    --vignette: 0;
-    --flow: 0;
-  }
-  body, body.stage-hero .world > :not(.act-hero) {
-    transition: none !important;
-    animation: none !important;
-  }
-  body.stage-hero .world > :not(.act-hero) {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-  .cursor, .ambient-blur, .flow-blur, .vignette, .grain-film, .grain-paper {
-    display: none !important;
-  }
-  body { cursor: auto; background: var(--paper); color: var(--ink); }
-  .hero-shell { color: var(--ink); }
-  .hero-content { opacity: 1; transform: none; }
-  .hero-avatar { opacity: 1; filter: none; }
-  .hero-headline, .hero-headline-2, .hero-rule, .hero-bio, .hero-tags { opacity: 1; }
-  .hero-headline, .hero-tag { color: var(--ink); }
-  .hero-headline-2 { color: var(--ink-2); }
-  .hero-bio { color: var(--ink-2); }
-  .hero-bio strong { color: var(--ink); }
-  .hero-rule-name, .hero-rule-line { color: var(--ink-3); background: var(--border); }
-  .hero-prompt, .exposure-meter { display: none; }
+  :root { --vignette: 0; }
+  body { transition: none !important; animation: none !important; }
+  .cursor, .vignette, .grain-film, .grain-paper, .gate { display: none !important; }
+  body { cursor: auto; }
+  .card-back .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 
   .act-archive { height: auto; background: var(--paper); color: var(--ink); }
   .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; perspective: none; }
@@ -1193,21 +1128,9 @@ body.stage-archive .audio-toggle { opacity: 0.5; }
 }
 
 /* When JS has not loaded yet, show everything (progressive enhancement) */
-html:not(.js) body { background: var(--paper); color: var(--ink); cursor: auto; }
-html:not(.js) .hero-shell { color: var(--ink); }
-html:not(.js) .hero-content { opacity: 1; transform: none; }
-html:not(.js) .hero-avatar { opacity: 1; filter: none; }
-html:not(.js) .hero-headline, html:not(.js) .hero-headline-2,
-html:not(.js) .hero-rule, html:not(.js) .hero-bio, html:not(.js) .hero-tags { opacity: 1; }
-html:not(.js) .hero-headline { color: var(--ink); }
-html:not(.js) .hero-headline-2 { color: var(--ink-2); font-style: italic; }
-html:not(.js) .hero-bio { color: var(--ink-2); }
-html:not(.js) .hero-rule-name { color: var(--ink-3); }
-html:not(.js) .hero-rule-line { background: var(--border); }
-html:not(.js) .hero-tag { color: var(--ink-2); border-color: var(--border); }
-html:not(.js) .hero-prompt, html:not(.js) .exposure-meter { display: none; }
-html:not(.js) .cursor, html:not(.js) .ambient-blur, html:not(.js) .flow-blur,
-html:not(.js) .vignette, html:not(.js) .grain-film, html:not(.js) .grain-paper { display: none; }
+html:not(.js) body { cursor: auto; }
+html:not(.js) .gate { display: none; }
+html:not(.js) .cursor, html:not(.js) .vignette, html:not(.js) .grain-film, html:not(.js) .grain-paper { display: none; }
 html:not(.js) .act-archive { height: auto; background: var(--paper); color: var(--ink); }
 html:not(.js) .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; }
 html:not(.js) .archive-label, html:not(.js) .archive-skip,
@@ -1218,9 +1141,9 @@ html:not(.js) .card-face { position: static; height: auto; }
 html:not(.js) .card-back { display: none; }
 </style>
 </head>
-<body class="stage-hero">
+<body>
 
-<!-- Cursor viewfinder — amber rangefinder frame -->
+<!-- Cursor viewfinder — amber rangefinder frame (signature) -->
 <div class="cursor" aria-hidden="true">
   <span class="cursor-frame"></span>
   <span class="cursor-tick cursor-tick-tl"></span>
@@ -1230,97 +1153,89 @@ html:not(.js) .card-back { display: none; }
   <span class="cursor-dot"></span>
 </div>
 
-<!-- Ambient layers -->
+<!-- Ambient layers (kept very subtle; everything heavy was cut) -->
 <div class="vignette" aria-hidden="true"></div>
-<div class="ambient-blur" aria-hidden="true"></div>
-<div class="flow-blur" aria-hidden="true"></div>
-<div class="flow-ghost" aria-hidden="true">flow</div>
-<div class="grain-film" aria-hidden="true"></div>
 <div class="grain-paper" aria-hidden="true"></div>
-<div class="capture-flash" aria-hidden="true"></div>
 
-<!-- Fixed chrome -->
-<nav class="top-nav" aria-label="Primary">
-  <a class="nav-brand" href="#">CZ</a>
-  <ul class="nav-links">
-    <li><a href="#archive">Archive</a></li>
-    <li><a href="#now">Now</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<div class="frames-counter" aria-live="polite">
-  <span class="num">0</span> / 6 frames captured
+<!-- First-visit gate (JS toggles body.is-gated; removed by localStorage on subsequent visits) -->
+<div class="gate" data-role="gate" aria-hidden="true">
+  <div class="gate-line">Time is currency.</div>
+  <div class="gate-line it">Attention is where you spend it.</div>
+  <div class="gate-prompt">tap anywhere to enter</div>
 </div>
 
-<button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
-  <span class="audio-label">sound · on</span>
-</button>
+<!-- Sidebar TOC -->
+<aside class="sidebar" aria-label="Table of contents">
+  <a class="sidebar-brand" href="#intro">
+    <span class="sidebar-brand-name">Chris Zhang</span>
+    <span class="sidebar-brand-tag">Builder · Vancouver</span>
+  </a>
+  <nav class="toc" data-role="toc">
+    <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
+    <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>What I build</span></a>
+    <div class="toc-section">Work</div>
+    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>Six plates</span></a>
+    <div class="toc-section">More</div>
+    <a href="#background" data-toc="background"><span class="toc-num">02</span><span>Background</span></a>
+    <a href="#now" data-toc="now"><span class="toc-num">03</span><span>Now</span></a>
+    <a href="#contact" data-toc="contact"><span class="toc-num">04</span><span>Contact</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
+      <span class="audio-label">sound · on</span>
+    </button>
+    <a href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn ↗</a>
+  </div>
+</aside>
+
+<!-- Top status bar -->
+<header class="topbar" role="banner">
+  <span class="topbar-status">
+    <span class="dot"></span>
+    Vancouver, BC · Open to AI-audit + ML-risk roles
+  </span>
+  <div class="topbar-actions">
+    <a href="#archive">Work</a>
+    <a href="#contact">Get in touch</a>
+  </div>
+</header>
 
 <main class="world">
 
   <!-- =====================================================================
-       Act 1: Hero — Exposure Ritual
+       Act 1: Intro — clean, no ritual
        ===================================================================== -->
-  <section class="act act-hero" data-frame="01" aria-label="Hero">
-    <div class="hero-shell">
+  <section class="act act-hero" id="intro" aria-label="Intro">
+    <h1 class="hero-headline">Time is currency.</h1>
+    <h2 class="hero-headline-2">Attention is where you spend it.</h2>
 
-      <div class="hero-content">
-        <div class="hero-avatar">
-          <video autoplay muted loop playsinline preload="metadata">
-            <source src="focus.mp4" type="video/mp4">
-          </video>
-        </div>
+    <div class="hero-rule">
+      <span class="hero-rule-name">CHRIS ZHANG</span>
+      <div class="hero-rule-line"></div>
+    </div>
 
-        <h1 class="hero-headline">Time is currency.</h1>
-        <h2 class="hero-headline-2">Attention is where you spend it.</h2>
+    <p class="hero-bio">
+      Former Big 4 auditor (8 yrs at Deloitte and KPMG, in tech-risk and
+      data governance) turned builder. Now an MS CS student at
+      Northeastern Vancouver, working at the intersection of
+      <strong>AI, financial systems, and product</strong>. I build small,
+      sharp tools that remove a specific friction so attention can land
+      somewhere worth spending.
+    </p>
 
-        <div class="hero-rule">
-          <span class="hero-rule-name">CHRIS ZHANG</span>
-          <div class="hero-rule-line"></div>
-        </div>
-
-        <p class="hero-bio">
-          Former Big 4 auditor turned builder. I work at the intersection of
-          <strong>AI, financial systems, and product</strong> — building tools
-          that eliminate friction so your attention flows toward what actually matters.
-        </p>
-
-        <div class="hero-tags">
-          <span class="hero-tag">MS CS @ Northeastern</span>
-          <span class="hero-tag">8 yrs · Deloitte / KPMG</span>
-          <span class="hero-tag">Vancouver, BC</span>
-        </div>
-      </div>
-
-      <div class="hero-prompt" aria-hidden="true">
-        <span class="hero-prompt-desktop">Hold space to expose</span>
-        <span class="hero-prompt-mobile">Tap &amp; hold to expose</span>
-      </div>
-
-      <div class="exposure-feedback" data-role="feedback" aria-hidden="true"></div>
-
-      <div class="capture-badge" data-role="capture-badge" aria-hidden="true">
-        Frame 01 — captured
-      </div>
-
-      <div class="exposure-meter" aria-hidden="true">
-        <div class="meter-body">
-          <div class="meter-scale">
-            <span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span>
-          </div>
-          <div class="meter-needle"></div>
-        </div>
-        <div class="meter-label">exposure</div>
-      </div>
+    <div class="hero-tags">
+      <span class="hero-tag">MS CS @ Northeastern Vancouver</span>
+      <span class="hero-tag">8 yrs · Deloitte / KPMG</span>
+      <span class="hero-tag">Available for AI-audit / ML-risk work</span>
     </div>
   </section>
 
   <!-- =====================================================================
        Act 2: Manifesto — The thread
        ===================================================================== -->
-  <section class="act act-manifesto" data-frame="02" id="thread" aria-label="Manifesto">
-    <p class="section-label">The thread</p>
+  <section class="act act-manifesto" id="thread" aria-label="What I build">
+    <p class="section-label">What I build</p>
 
     <div class="manifesto-grid">
       <div class="manifesto-item">
@@ -1342,22 +1257,20 @@ html:not(.js) .card-back { display: none; }
     </div>
 
     <p class="manifesto-body">
-      Every project I build targets one specific friction point.
-      <strong>DevValue</strong> watches where your AI budget bleeds.
-      <strong>Cleanroll</strong> turns Canadian payroll into a non-event.
-      <strong>Nod</strong> decodes a foreign menu so a meal stays a meal.
-      The goal is always the same: quietly hand back the attention that
-      some system was taking.
+      Every project below targets one specific friction. I write the friction
+      first — in the language of the manifesto above — and only then decide
+      what shape the solution takes. So you can read each card front and
+      already know which tax it pays back.
     </p>
 
-    <!-- Act 2b: Dual demo beat -->
-    <div class="dual-demo" data-role="dual-demo">
-      <p class="demo-line demo-line-1">Friction is the tax on your focal plane.</p>
-      <p class="demo-line demo-line-2">
-        <em>Or move fast enough to leave it behind.</em>
-        <span class="demo-hint">try a fast flick →</span>
-      </p>
-    </div>
+    <ul class="thread-map" aria-label="How the work maps to the manifesto">
+      <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a> · a live counter in your editor</li>
+      <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="2">Cleanroll</a> · six windows collapsed into one run</li>
+      <li><span class="thread-tag">Foreign menu anxiety</span> → <a href="#archive" data-jump="3">Nod</a> · scan, decide in 30 s, eat</li>
+      <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="4">CyberTao</a> · an essay site, not a tool</li>
+      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="5">FFP</a> · a private tracker for miles &amp; status</li>
+      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="6">Pedalling</a> · a route map of how I got here</li>
+    </ul>
   </section>
 
   <!-- =====================================================================
@@ -1379,117 +1292,117 @@ html:not(.js) .card-back { display: none; }
                  data-plate="1"
                  data-href="https://marketplace.visualstudio.com/items?itemName=ChrisZhang.devvalue">
           <div class="card-face card-front">
-            <div class="card-friction">Friction → AI cost opacity</div>
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">AI cost opacity</span>
+            </div>
             <div class="card-name">DevValue</div>
             <p class="card-desc">
-              Measures the real cost of your AI coding tools. Tracks Claude Code
-              and Cursor usage so you know exactly where your attention budget
-              is going.
+              A live dollar counter for AI-era engineering. Watches Claude
+              Code, Cursor, and Copilot sessions and binds every cost to
+              the git branch you're working on.
             </p>
             <div class="card-footer">
               <span class="card-status status-live">Live</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
             </div>
           </div>
           <div class="card-face card-back">
-            <a class="card-back-open" href="https://marketplace.visualstudio.com/items?itemName=ChrisZhang.devvalue" target="_blank" rel="noopener">↗ install</a>
+            <a class="card-back-open reveal reveal-1" href="https://marketplace.visualstudio.com/items?itemName=ChrisZhang.devvalue" target="_blank" rel="noopener">↗ install</a>
             <div class="card-spec">
-              <div class="spec-title">DevValue</div>
-              <div class="spec-sub">
-                A VS Code extension that puts a live dollar counter on your AI
-                coding. Every prompt, every completion, every dollar — visible
-                while you work.
+              <div class="spec-title reveal reveal-1">DevValue</div>
+              <div class="spec-sub reveal reveal-2">
+                Cost = (your focus time × your hourly rate) + (AI agent
+                token cost). DevValue surfaces both inside VS Code, broken
+                down per branch, so the bill is visible before it shows up.
               </div>
-              <div class="spec-divider"></div>
-              <dl class="spec-list">
-                <dt>Tracks</dt><dd>Claude Code · Cursor · Copilot sessions</dd>
-                <dt>Surfaces</dt><dd>Per-file cost · per-PR cost · daily burn</dd>
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
+                <dt>PTA flow</dt><dd>Idle-timeout that recognizes thinking time, not just typing</dd>
+                <dt>Token sniff</dt><dd>Parses Claude Code logs for real compute cost</dd>
+                <dt>Branch bind</dt><dd>Every cost tagged to a git branch</dd>
+                <dt>Status bar</dt><dd>Live time · branch · cost in your editor frame</dd>
                 <dt>Stack</dt><dd>TypeScript · VS Code API · local SQLite</dd>
-                <dt>Publisher</dt><dd>ChrisZhang.devvalue</dd>
-                <dt>Status</dt><dd>Live on the Marketplace</dd>
               </dl>
-              <div class="spec-note">Press <span style="color:var(--amber)">F</span> again to flip back</div>
+              <div class="spec-note reveal reveal-5">Press <span style="color:var(--amber)">F</span> again to flip back</div>
             </div>
-            <div class="card-back-meta">01 / 06 · DevValue</div>
+            <div class="card-back-meta reveal reveal-6">01 / 06 · DevValue</div>
           </div>
         </article>
 
         <!-- Plate 02 — Cleanroll -->
-        <article class="card" data-plate="2">
+        <article class="card" data-plate="2"
+                 data-href="https://cleanroll.onrender.com/setup">
           <div class="card-face card-front">
-            <div class="card-friction">Friction → Canadian payroll complexity</div>
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Canadian payroll complexity</span>
+            </div>
             <div class="card-name">Cleanroll</div>
             <p class="card-desc">
-              Canadian payroll engine for small teams. BC, ON, QC.
-              Full CPP/EI/QPP calculations and pay stub PDF — without the
-              tab-switching and manual math.
+              A payroll engine that turns CPP / EI / QPP, federal + provincial
+              tax, and a signed pay stub into one short run. Built for the
+              one-bookkeeper company that wants payroll to be a non-event.
             </p>
             <div class="card-footer">
               <span class="card-status status-beta">Beta</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for demo</span>
             </div>
           </div>
           <div class="card-face card-back">
-            <div class="card-spec">
-              <div class="spec-title">Cleanroll</div>
-              <div class="spec-sub">
-                A payroll engine for Canadian small teams. Six windows, one
-                spreadsheet, and a lawyer's worth of confusion, replaced with
-                one clean run.
-              </div>
-              <div class="spec-divider"></div>
-              <dl class="spec-list">
-                <dt>Provinces</dt><dd>BC · ON · QC</dd>
-                <dt>Calculators</dt><dd>CPP · EI · QPP · federal + provincial tax</dd>
-                <dt>Output</dt><dd>Signed pay stub PDF · deduction trail</dd>
-                <dt>Stack</dt><dd>Next.js · Supabase · React-PDF</dd>
-                <dt>Status</dt><dd>Beta · onboarding design partners</dd>
-              </dl>
-              <div class="spec-note">Reach out if you run payroll in Canada</div>
-            </div>
-            <div class="card-back-meta">02 / 06 · Cleanroll</div>
+            <a class="card-back-open reveal reveal-1" href="https://cleanroll.onrender.com/setup" target="_blank" rel="noopener">↗ try the app</a>
+            <iframe class="card-back-iframe reveal reveal-2"
+                    data-src="https://www.loom.com/embed/5e0f9e11729b40e28ee022197ddde683?hideEmbedTopBar=true&autoplay=0"
+                    title="Cleanroll demo (Loom)"
+                    loading="lazy"
+                    frameborder="0"
+                    allow="fullscreen; clipboard-write"
+                    allowfullscreen></iframe>
+            <div class="card-back-meta reveal reveal-3">02 / 06 · Cleanroll · 2-minute demo</div>
           </div>
         </article>
 
         <!-- Plate 03 — Nod -->
         <article class="card" data-plate="3">
           <div class="card-face card-front">
-            <div class="card-friction">Friction → foreign menu anxiety</div>
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Foreign menu anxiety</span>
+            </div>
             <div class="card-name">Nod</div>
             <p class="card-desc">
-              iOS app that decodes foreign menus and checks dishes against
-              allergies and preferences. Scan, get 3 safe picks, order.
-              Zero cognitive load.
+              An iOS personal sommelier. Point the camera at a menu in any
+              language, get back three dishes that match your budget and your
+              allergies — with a critic agent that double-checks every pick.
             </p>
             <div class="card-footer">
               <span class="card-status status-testflight">TestFlight</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
             </div>
           </div>
           <div class="card-face card-back">
             <div class="card-spec">
-              <div class="spec-title">Nod</div>
-              <div class="spec-sub">
-                Scan a menu in any language. Get three dishes that actually
-                match your allergies and preferences. Put the phone down. Eat.
+              <div class="spec-title reveal reveal-1">Nod</div>
+              <div class="spec-sub reveal reveal-2">
+                Built on a manager-worker multi-agent pattern: an OCR "Eye"
+                digitizes the menu, a "Brain" does cultural translation
+                (not literal), and a "Gatekeeper" critic blocks anything
+                that violates your allergies — even if the Brain suggested it.
               </div>
-              <div class="spec-divider"></div>
-              <dl class="spec-list">
-                <dt>Platform</dt><dd>iOS 17+ · SwiftUI</dd>
-                <dt>Input</dt><dd>Camera scan · handwritten &amp; printed menus</dd>
-                <dt>Engine</dt><dd>Vision OCR + Claude for ranking</dd>
-                <dt>Languages</dt><dd>JP · KR · ZH · ES · FR · IT · DE</dd>
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
+                <dt>Platform</dt><dd>iOS 26.1 · SwiftUI · Liquid Glass UI</dd>
+                <dt>Eye</dt><dd>Gemini 3.0 Flash — layout + currency aware OCR</dd>
+                <dt>Brain</dt><dd>Gemini 3.0 Pro — Sommelier persona, knapsack pick</dd>
+                <dt>Gatekeeper</dt><dd>Allergy-aware critic agent (always on)</dd>
                 <dt>Status</dt><dd>TestFlight · invite on request</dd>
               </dl>
-              <div class="spec-note">Built for travel, tested in Tokyo</div>
+              <div class="spec-note reveal reveal-5">Repo name: Ambrosia · open to private testers</div>
             </div>
-            <div class="card-back-meta">03 / 06 · Nod</div>
+            <div class="card-back-meta reveal reveal-6">03 / 06 · Nod</div>
           </div>
         </article>
 
@@ -1498,66 +1411,71 @@ html:not(.js) .card-back { display: none; }
                  data-plate="4"
                  data-href="https://cybertao.netlify.app">
           <div class="card-face card-front">
-            <div class="card-friction">Thinking → AI &amp; cognition</div>
+            <div class="card-friction">
+              <span class="ftag-key">Question</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Thinking alongside machines</span>
+            </div>
             <div class="card-name">CyberTao</div>
             <p class="card-desc">
-              An inquiry into what it means to think alongside machines.
-              Where does focus end and outsourcing begin?
+              An essay site, not a tool. Writes about what it means to think
+              with AI in the loop — where focus ends and outsourcing begins,
+              and what stays uniquely yours.
             </p>
             <div class="card-footer">
               <span class="card-status status-live">Live</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-flip-hint"><span class="key">F</span> flip to preview</span>
             </div>
           </div>
           <div class="card-face card-back">
-            <a class="card-back-open" href="https://cybertao.netlify.app" target="_blank" rel="noopener">↗ open site</a>
-            <iframe class="card-back-iframe"
+            <a class="card-back-open reveal reveal-1" href="https://cybertao.netlify.app" target="_blank" rel="noopener">↗ open site</a>
+            <iframe class="card-back-iframe reveal reveal-2"
                     data-src="https://cybertao.netlify.app"
                     title="CyberTao preview"
                     loading="lazy"
                     referrerpolicy="no-referrer"
                     sandbox="allow-scripts allow-same-origin"></iframe>
-            <div class="card-back-meta">04 / 06 · CyberTao</div>
+            <div class="card-back-meta reveal reveal-3">04 / 06 · CyberTao</div>
           </div>
         </article>
 
         <!-- Plate 05 — FFP -->
         <article class="card" data-plate="5">
           <div class="card-face card-front">
-            <div class="card-friction">Friction → points complexity</div>
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Points programs sprawl</span>
+            </div>
             <div class="card-name">FFP</div>
             <p class="card-desc">
-              Private backend for tracking frequent flyer points across
-              Aeroplan, Marriott, Hilton, and IHG. Because spreadsheets
-              don't scale.
+              A private backend that tracks miles, status, and expiries
+              across Aeroplan, Marriott, Hilton, IHG, and Amex MR — so I
+              never lose a balance to a spreadsheet again.
             </p>
             <div class="card-footer">
               <span class="card-status status-private">Private</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
             </div>
           </div>
           <div class="card-face card-back">
             <div class="card-spec">
-              <div class="spec-title">FFP</div>
-              <div class="spec-sub">
-                A private backend that stops me from losing points to
-                spreadsheets. Balances, expiries, and transfer partners, all
-                in one quiet place.
+              <div class="spec-title reveal reveal-1">FFP</div>
+              <div class="spec-sub reveal reveal-2">
+                One quiet place for every loyalty balance, with alerts that
+                actually matter: expiry, devaluation, transfer-bonus windows.
+                Single-tenant on purpose.
               </div>
-              <div class="spec-divider"></div>
-              <dl class="spec-list">
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
                 <dt>Programs</dt><dd>Aeroplan · Marriott · Hilton · IHG · Amex MR</dd>
                 <dt>Alerts</dt><dd>Expiry · devaluation · bonus windows</dd>
                 <dt>Stack</dt><dd>FastAPI · Postgres · scheduled jobs</dd>
                 <dt>Status</dt><dd>Private · single-tenant</dd>
               </dl>
-              <div class="spec-note">Happy to give a walkthrough over coffee</div>
+              <div class="spec-note reveal reveal-5">Happy to give a walkthrough over coffee</div>
             </div>
-            <div class="card-back-meta">05 / 06 · FFP</div>
+            <div class="card-back-meta reveal reveal-6">05 / 06 · FFP</div>
           </div>
         </article>
 
@@ -1565,36 +1483,40 @@ html:not(.js) .card-back { display: none; }
         <article class="card"
                  data-plate="6">
           <div class="card-face card-front">
-            <div class="card-friction">About → how I got here</div>
+            <div class="card-friction">
+              <span class="ftag-key">About</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Drift in my own story</span>
+            </div>
             <div class="card-name">Pedalling</div>
             <p class="card-desc">
-              An interactive map of cities, chapters, and decisions that
-              shaped the work.
+              An interactive essay about the route from auditor to builder.
+              Four cities, four chapters, one through-line: the friction
+              I noticed each time, and what I built to remove it.
             </p>
             <div class="card-footer">
-              <span class="card-status status-demo">Coming</span>
-              <span class="card-flip-hint">
-                <span class="key">F</span> flip to view
-              </span>
+              <span class="card-status status-demo">Drafting</span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for outline</span>
             </div>
           </div>
           <div class="card-face card-back">
             <div class="card-spec">
-              <div class="spec-title">Pedalling</div>
-              <div class="spec-sub">
-                An interactive essay about how I got here. Each chapter is a
-                city, a decision, and one thing I learned before moving on.
+              <div class="spec-title reveal reveal-1">Pedalling</div>
+              <div class="spec-sub reveal reveal-2">
+                A four-chapter route map. Each chapter pairs a city with a
+                shift in how I work — the kind of shift that ends up in the
+                next project on this archive.
               </div>
-              <div class="spec-divider"></div>
-              <dl class="spec-list">
-                <dt>Ch. 1</dt><dd>Chongqing — where I stopped memorizing</dd>
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
+                <dt>Ch. 1</dt><dd>Chongqing — learning to question the rule book</dd>
                 <dt>Ch. 2</dt><dd>Toronto — eight years inside Big 4 audit</dd>
                 <dt>Ch. 3</dt><dd>Boston — learning to build, not only check</dd>
                 <dt>Ch. 4</dt><dd>Vancouver — now</dd>
               </dl>
-              <div class="spec-note">Drafting · open soon at /pedalling</div>
+              <div class="spec-note reveal reveal-5">Drafting · open soon at /pedalling</div>
             </div>
-            <div class="card-back-meta">06 / 06 · Pedalling</div>
+            <div class="card-back-meta reveal reveal-6">06 / 06 · Pedalling</div>
           </div>
         </article>
 
@@ -1611,7 +1533,7 @@ html:not(.js) .card-back { display: none; }
   <!-- =====================================================================
        Act 4: Coda — Background / Now / Contact
        ===================================================================== -->
-  <section class="act" data-frame="03" id="background" aria-label="Background">
+  <section class="act" id="background" aria-label="Background">
     <p class="section-label">Background</p>
     <div class="bg-grid">
       <div>
@@ -1645,17 +1567,16 @@ html:not(.js) .card-back { display: none; }
     </div>
   </section>
 
-  <section class="act" data-frame="04" id="now" aria-label="Now">
+  <section class="act" id="now" aria-label="Now">
     <p class="section-label">Now</p>
     <ul class="now-list">
-      <li>Building DevValue into a pricing engine and central AI cost console</li>
-      <li>Validating Cleanroll with real Canadian small-business payroll</li>
-      <li>Exploring AI auditing as a career pivot — enterprise model risk and LLM evaluation</li>
-      <li>Road trip through US Southwest in May — Zion, Bryce, Moab, Grand Canyon</li>
+      <li>Extending DevValue from a personal tracker into a team-wide AI cost console</li>
+      <li>Onboarding the first Canadian small businesses onto Cleanroll</li>
+      <li>Interviewing for AI-audit / ML-risk roles — enterprise model risk and LLM evaluation</li>
     </ul>
   </section>
 
-  <section class="act" data-frame="05" id="contact" aria-label="Contact">
+  <section class="act" id="contact" aria-label="Contact">
     <p class="section-label">Contact</p>
     <div class="contact-links">
       <a class="contact-link" href="https://linkedin.com/in/chriszhang" target="_blank" rel="noopener">LinkedIn</a>
@@ -1666,8 +1587,8 @@ html:not(.js) .card-back { display: none; }
 
   <footer class="coda-footer">
     <span>© 2026 Chris Zhang</span>
-    <span class="coda-footer-summary" data-role="footer-summary">
-      <span class="good">0</span> / 6 frames captured
+    <span class="coda-footer-summary">
+      Built as a single file · no framework · no tracker
     </span>
   </footer>
 
@@ -1792,14 +1713,15 @@ document.querySelector('.audio-toggle').addEventListener('click', () => Audio.to
 })();
 
 /* ==========================================================================
-   Stage manager — hero → paper → archive → paper → out
+   Stage manager — only tracks 'paper' (default) vs 'archive' now.
+   The old hero exposure ritual is gone; the page just reads as a document.
    ========================================================================== */
 const Stage = (() => {
-  let current = 'hero';
+  let current = 'paper';
   function set(name) {
     if (current === name) return;
-    body.classList.remove(`stage-${current}`);
-    body.classList.add(`stage-${name}`);
+    if (current === 'archive') body.classList.remove('stage-archive');
+    if (name === 'archive') body.classList.add('stage-archive');
     current = name;
   }
   return { set, get current() { return current; } };
@@ -1850,7 +1772,7 @@ const Cursor = (() => {
 
   function scheduleDwell() {
     if (prefersReducedMotion || isCoarsePointer) return;
-    if (Stage.current === 'hero' || Stage.current === 'archive') return;
+    if (Stage.current === 'archive') return;
     if (dwellTimer) return;
     dwellTimer = setTimeout(() => {
       if (!isLocking) {
@@ -1923,343 +1845,84 @@ function damped(onTick, onDone) {
 }
 
 /* ==========================================================================
-   Focal Plane — clarity mask + dwell lock
+   Focal Plane — stripped to a small amber pulse on dwell.
+   No more fullscreen blur, no more focal-radius mask. The cursor itself is
+   the only thing that reacts, so "idea" stays visible without eating content.
    ========================================================================== */
 const FocalPlane = (() => {
-  let activeDamped = null;
   const cursorEl = Cursor.el;
+  let pulseT = null;
 
-  function lock(x, y) {
+  function lock(/* x, y */) {
     if (prefersReducedMotion) return;
-    cursorEl.classList.add('is-locking');
-    /* Radial oscillation around 160px baseline */
-    activeDamped = damped(
-      (osc) => {
-        const radius = 160 + osc * 26;             // oscillate between ~134 and ~186
-        setVar('--focal-radius', radius + 'px');
-        setVar('--bracket-size', (56 + osc * 8) + 'px');
-      },
-      () => {
-        /* Final snap: bracket to min then flash out */
-        cursorEl.classList.remove('is-locking');
-        setVar('--bracket-size', '46px');
-        requestAnimationFrame(() => {
-          setVar('--bracket-size', '64px');
-          cursorEl.classList.add('is-flash');
-          setTimeout(() => {
-            setVar('--bracket-size', '56px');
-            cursorEl.classList.remove('is-flash');
-          }, 140);
-        });
-        Audio.lockChime();
-        Audio.softTick();
-        Capture.maybeCaptureAtPoint();
-      }
-    );
+    if (pulseT) clearTimeout(pulseT);
+    cursorEl.classList.add('is-flash');
+    Audio.lockChime();
+    pulseT = setTimeout(() => cursorEl.classList.remove('is-flash'), 220);
   }
-
   function unlock() {
-    if (activeDamped) { activeDamped.cancel(); activeDamped = null; }
-    cursorEl.classList.remove('is-locking', 'is-flash');
-    setVar('--focal-radius', '170px');
-    setVar('--bracket-size', '56px');
+    if (pulseT) { clearTimeout(pulseT); pulseT = null; }
+    cursorEl.classList.remove('is-flash');
   }
-
-  function onMotion() {
-    unlock();
-  }
-
+  function onMotion() { unlock(); }
   return { lock, unlock, onMotion };
 })();
 
-/* ==========================================================================
-   Flow — velocity-to-filter binding (Act 2b, ambient everywhere)
-   ========================================================================== */
-const Flow = (() => {
-  const THRESHOLD = 900;  // px/s baseline
-  const CAP      = 2400;  // px/s = fully flow
-  let current = 0;
-  let scrollVel = 0;
-  let lastScrollY = window.scrollY;
-  let lastScrollT = performance.now();
-
-  window.addEventListener('scroll', () => {
-    const now = performance.now();
-    const dt = Math.max(1, now - lastScrollT);
-    const speed = Math.abs(window.scrollY - lastScrollY) / dt * 1000;
-    scrollVel = scrollVel * 0.6 + speed * 0.4;
-    lastScrollY = window.scrollY;
-    lastScrollT = now;
-  }, { passive: true });
-
-  function tick() {
-    if (prefersReducedMotion) return;
-    if (Stage.current !== 'hero') {
-      const raw = Math.max(Cursor.velocity(), scrollVel * 1.3);
-      const target = clamp((raw - THRESHOLD) / (CAP - THRESHOLD), 0, 1);
-      current = lerp(current, target, 0.12);
-      setVar('--flow', current.toFixed(3));
-    } else {
-      current = 0;
-      setVar('--flow', 0);
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-
-  return { get value() { return current; } };
-})();
+/* Flow module removed — content stays crisp. Provide a no-op shim just in
+   case anything still references it (defensive programming). */
+const Flow = { get value() { return 0; } };
 
 /* ==========================================================================
-   Exposure (Act 1) — hold space / long-press to expose
+   Capture — now a no-op shim. The camera-frames counter / badges are gone,
+   but FocalPlane + Archive still call maybeCaptureAtPoint / markFrame, so
+   keep the API stable.
    ========================================================================== */
-const Exposure = (() => {
-  const heroEl    = document.querySelector('.act-hero');
-  const prompt    = document.querySelector('.hero-prompt');
-  const feedback  = document.querySelector('[data-role="feedback"]');
-  const badge     = document.querySelector('[data-role="capture-badge"]');
-  const flashEl   = document.querySelector('.capture-flash');
+const Capture = {
+  markFrame() {},
+  maybeCaptureAtPoint() {},
+};
 
-  let value = 0;
-  let holding = false;
-  let holdStart = 0;
-  let raf = 0;
-  let finished = false;
-  /* Target full exposure at ~2s */
-  const TARGET_MS = 2000;
+/* ==========================================================================
+   Gate — first-visit entry. A calm dark card with the tagline; click or key
+   to enter. On subsequent visits the gate is skipped entirely via
+   localStorage.cz_visited.
+   ========================================================================== */
+(function Gate() {
+  const gate = document.querySelector('[data-role="gate"]');
+  if (!gate) return;
 
-  function loop(now) {
-    if (!holding) return;
-    const elapsed = now - holdStart;
-    value = clamp(elapsed / TARGET_MS, 0, 1.25);
-    setVar('--exposure', Math.min(value, 1));
-    /* Update feedback text based on over-exposure */
-    if (value > 1.15 && feedback) {
-      feedback.textContent = 'Overexposed — release to capture';
-      feedback.classList.add('show');
-    }
-    raf = requestAnimationFrame(loop);
+  const VISIT_KEY = 'cz_visited_v2';
+  const alreadyVisited = (() => {
+    try { return !!localStorage.getItem(VISIT_KEY); } catch (_) { return false; }
+  })();
+
+  if (alreadyVisited || prefersReducedMotion) {
+    gate.remove();
+    return;
   }
 
-  function startHold() {
-    if (finished) return;
+  body.classList.add('is-gated');
+  gate.setAttribute('aria-hidden', 'false');
+
+  let dismissed = false;
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
     Audio.ensure();
     Audio.softTick();
-    holding = true;
-    holdStart = performance.now();
-    raf = requestAnimationFrame(loop);
+    gate.classList.add('is-leaving');
+    body.classList.remove('is-gated');
+    try { localStorage.setItem(VISIT_KEY, '1'); } catch (_) {}
+    setTimeout(() => gate.remove(), 750);
   }
 
-  function endHold() {
-    if (!holding || finished) return;
-    holding = false;
-    cancelAnimationFrame(raf);
-    const held = performance.now() - holdStart;
-    if (held < 500) {
-      /* Underexposed: gently reset and invite retake */
-      feedback.textContent = 'Underexposed — hold longer';
-      feedback.classList.add('show');
-      setTimeout(() => feedback.classList.remove('show'), 1400);
-      Audio.softTick();
-      /* decay value back to zero */
-      decay();
-      return;
-    }
-    complete(held);
-  }
-
-  function decay() {
-    const startVal = value;
-    const t0 = performance.now();
-    function step(now) {
-      const k = clamp((now - t0) / 600, 0, 1);
-      const v = startVal * (1 - k);
-      value = v;
-      setVar('--exposure', v);
-      if (k < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function complete(held) {
-    finished = true;
-    /* Snap exposure to 1 for final state */
-    setVar('--exposure', 1);
-    value = 1;
-    /* Shutter close sound */
-    Audio.shutter();
-    /* White flash */
-    flashEl.classList.remove('flash');
-    // reflow
-    void flashEl.offsetWidth;
-    flashEl.classList.add('flash');
-    setTimeout(() => flashEl.classList.remove('flash'), 260);
-
-    /* Show capture badge */
-    const ev = ((held / TARGET_MS) * 4 - 3).toFixed(1);
-    if (badge) {
-      badge.textContent = `Frame 01 — ${ev > 0 ? '+' + ev : ev} EV — captured`;
-      badge.classList.add('show');
-      setTimeout(() => badge.classList.remove('show'), 2600);
-    }
-
-    /* Register Frame 01 */
-    Capture.markFrame('01');
-
-    /* Transition stage */
-    setTimeout(() => {
-      Stage.set('paper');
-      /* Snap the page down so the hero section is not re-visited */
-      requestAnimationFrame(() => {
-        const manifesto = document.getElementById('thread');
-        if (manifesto) {
-          /* One-time scroll lock to hero until paper transitions in. Then
-             we simply unlock; reader can scroll freely. */
-        }
-      });
-    }, 140);
-  }
-
-  /* Keyboard. IMPORTANT: preventDefault must fire for EVERY Space keydown
-     during the hero (including OS-level auto-repeat events), otherwise the
-     browser scrolls the document while the user is holding to expose. */
-  window.addEventListener('keydown', (e) => {
-    if (e.code !== 'Space') return;
-    if (Stage.current !== 'hero') return;
-    e.preventDefault();
-    if (prefersReducedMotion) return;
-    if (!e.repeat) startHold();
-  }, { capture: true });
-  window.addEventListener('keyup', (e) => {
-    if (e.code !== 'Space') return;
-    if (Stage.current !== 'hero') return;
-    e.preventDefault();
-    endHold();
-  }, { capture: true });
-
-  /* Long-press on touch */
-  let touchTimer = null;
-  heroEl.addEventListener('touchstart', (e) => {
-    if (Stage.current !== 'hero') return;
-    startHold();
-  }, { passive: true });
-  heroEl.addEventListener('touchend', () => {
-    if (Stage.current !== 'hero') return;
-    endHold();
-  });
-  heroEl.addEventListener('touchcancel', () => {
-    if (Stage.current !== 'hero') return;
-    endHold();
+  /* Any interaction dismisses the gate */
+  ['click', 'touchend', 'keydown'].forEach(ev => {
+    window.addEventListener(ev, dismiss, { once: true, capture: true });
   });
 
-  /* Mouse fallback (desktop without keyboard) */
-  heroEl.addEventListener('mousedown', () => {
-    if (Stage.current !== 'hero') return;
-    startHold();
-  });
-  heroEl.addEventListener('mouseup', () => {
-    if (Stage.current !== 'hero') return;
-    endHold();
-  });
-
-  /* If the user somehow reaches the page without any interaction for 12s,
-     we auto-expose at a modest level so the page is not completely blocked
-     (e.g., a search engine preview, or someone stuck). This ONLY happens on
-     desktop where keyboard may not be accessible. We still require minimum
-     0.6s simulation for feel. */
-  setTimeout(() => {
-    if (finished || holding) return;
-    /* gentle auto-expose, no capture badge */
-    const t0 = performance.now();
-    function auto(now) {
-      if (finished) return;
-      const k = clamp((now - t0) / 1600, 0, 1);
-      value = k;
-      setVar('--exposure', k);
-      if (k < 1) requestAnimationFrame(auto);
-      else complete(1600);
-    }
-    requestAnimationFrame(auto);
-  }, 45000); // 45s — effectively: users who never interact eventually see content
-
-  return { };
-})();
-
-/* ==========================================================================
-   Capture — frames counter + per-frame detection
-   ========================================================================== */
-const Capture = (() => {
-  const TOTAL = 6;
-  const frames = new Map(); // id -> captured bool
-  ['01', '02', '03', '04', '05'].forEach(id => frames.set(id, false));
-  frames.set('archive', false);
-
-  const counterEl = document.querySelector('.frames-counter .num');
-  const footerEl  = document.querySelector('[data-role="footer-summary"]');
-
-  function capturedCount() {
-    let n = 0;
-    frames.forEach(v => { if (v) n++; });
-    return n;
-  }
-
-  function render() {
-    const n = capturedCount();
-    if (counterEl) counterEl.textContent = String(n);
-    if (footerEl) {
-      if (n >= TOTAL) {
-        footerEl.innerHTML = `<span class="good">6</span> / 6 frames captured — <em>thank you for your attention.</em>`;
-      } else {
-        footerEl.innerHTML = `<span class="good">${n}</span> / 6 frames developed · <span class="waiting">${TOTAL - n} still in the darkroom</span>`;
-      }
-    }
-  }
-
-  function markFrame(id) {
-    if (!frames.has(id)) return;
-    if (frames.get(id)) return;
-    frames.set(id, true);
-    if (id !== '01') {
-      /* Frame 01 already had its own shutter in Exposure */
-      Audio.softTick();
-    }
-    render();
-  }
-
-  /* On focus-lock, check which .act[data-frame] contains the cursor */
-  function maybeCaptureAtPoint() {
-    const el = document.elementFromPoint(Cursor.x, Cursor.y);
-    if (!el) return;
-    const act = el.closest('.act[data-frame]');
-    if (act) markFrame(act.dataset.frame);
-    const archiveCard = el.closest('.act-archive');
-    if (archiveCard) markFrame('archive');
-  }
-
-  /* Scroll-based capture for Acts 2-5 as fallback: when section
-     stays in view and centred for >1.2s */
-  const seen = new Map();
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const id = entry.target.dataset.frame;
-      if (!id) return;
-      if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
-        if (!seen.has(id)) seen.set(id, performance.now());
-        setTimeout(() => {
-          if (!frames.get(id) && seen.has(id)) {
-            markFrame(id);
-          }
-        }, 1400);
-      } else {
-        seen.delete(id);
-      }
-    });
-  }, { threshold: [0.55, 0.8] });
-  document.querySelectorAll('.act[data-frame]').forEach(el => io.observe(el));
-
-  render();
-
-  return { markFrame, maybeCaptureAtPoint, render };
+  /* Fail-safe: auto-dismiss after 6s so search engine previews still see content */
+  setTimeout(dismiss, 6000);
 })();
 
 /* ==========================================================================
@@ -2335,12 +1998,14 @@ const Archive = (() => {
     if (prefersReducedMotion) { setActive(idx); return; }
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    const total = section.offsetHeight - vh;
-    /* Snap to the middle of the corresponding 100vh slot within the
-       scroll zone to avoid edge-case rounding. */
+    const topbarH = window.innerWidth > 880 ? 48 : 0;
+    const effVh = vh - topbarH;
+    const total = section.offsetHeight - effVh;
     const targetProgress = (idx + 0.4) / cards.length;
     const sectionTopAbs = window.scrollY + rect.top;
-    const targetY = sectionTopAbs + targetProgress * total;
+    /* Scroll so that "topbarH - rect.top" == targetProgress * total, i.e.
+       traveled == targetProgress * total when sticky anchor is topbarH. */
+    const targetY = sectionTopAbs + targetProgress * total - topbarH;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
   }
 
@@ -2378,20 +2043,21 @@ const Archive = (() => {
     }
   });
 
-  /* Scroll position → card index */
+  /* Scroll position → card index. Accounts for the fixed topbar on desktop
+     so the sticky viewport starts just under it. */
   function updateFromScroll() {
     if (prefersReducedMotion) return;
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    /* Section is `7 * 100vh` tall; sticky viewport is first 100vh.
-       We have 6 * 100vh of travel to advance through 6 cards. */
-    const total = rect.height - vh;
-    const traveled = clamp(-rect.top, 0, total);
-    const progress = traveled / total;                 // 0..1
+    const topbarH = window.innerWidth > 880 ? 48 : 0;
+    const effVh = vh - topbarH;
+    const total = rect.height - effVh;
+    const traveled = clamp(topbarH - rect.top, 0, total);
+    const progress = total > 0 ? traveled / total : 0;
     const idx = clamp(Math.floor(progress * cards.length + 0.15), 0, cards.length - 1);
 
-    /* Detect stage entry/exit based on viewport */
-    const enter = rect.top <= 0 && rect.bottom >= vh;
+    /* Stage enter/exit based on whether the sticky viewport is pinned. */
+    const enter = rect.top <= topbarH + 1 && rect.bottom >= effVh;
     if (enter && !inArchive) {
       inArchive = true;
       Stage.set('archive');
@@ -2407,11 +2073,65 @@ const Archive = (() => {
   /* Initial position check */
   setTimeout(updateFromScroll, 50);
 
-  return { setActive, flipActive };
+  return { setActive, flipActive, navigateTo };
 })();
 
 /* ==========================================================================
-   Beforeunload / blur — lens-cap crossfade
+   Thread-map jumps — clicking a solution link on the manifesto should take
+   the reader straight to that plate in the archive, keeping the logic tight.
+   ========================================================================== */
+document.querySelectorAll('a[data-jump]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const n = parseInt(a.dataset.jump, 10);
+    if (Number.isFinite(n)) {
+      e.preventDefault();
+      Archive.navigateTo(n - 1);
+    }
+  });
+});
+
+/* ==========================================================================
+   Sidebar scroll-spy — highlights the current section in the left TOC so the
+   reader always knows where they are inside the document.
+   ========================================================================== */
+(function ScrollSpy() {
+  const tocLinks = Array.from(document.querySelectorAll('[data-role="toc"] a'));
+  if (!tocLinks.length) return;
+
+  const map = new Map();
+  tocLinks.forEach(a => {
+    const id = a.dataset.toc;
+    const target = id && document.getElementById(id);
+    if (target) map.set(target, a);
+  });
+  if (!map.size) return;
+
+  const targets = Array.from(map.keys());
+  function setActive(el) {
+    tocLinks.forEach(a => a.classList.remove('is-active'));
+    const link = map.get(el);
+    if (link) link.classList.add('is-active');
+  }
+
+  function update() {
+    /* Pick the section whose top is closest to (but above) a horizon near the
+       top of the viewport. Archive is tall so its top sticks for many
+       viewports — explicitly detect that. */
+    const horizon = window.innerHeight * 0.35;
+    let chosen = targets[0];
+    for (const t of targets) {
+      const rect = t.getBoundingClientRect();
+      if (rect.top <= horizon) chosen = t;
+    }
+    setActive(chosen);
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
+/* ==========================================================================
+   Beforeunload / blur — gentle page fadeout
    ========================================================================== */
 window.addEventListener('beforeunload', () => {
   document.body.style.transition = 'filter 0.2s ease, opacity 0.2s ease';
