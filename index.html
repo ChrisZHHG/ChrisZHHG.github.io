@@ -238,15 +238,8 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
 .topbar-status {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   opacity: 0.7;
-}
-.topbar-status .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--amber);
-  box-shadow: 0 0 6px rgba(232, 184, 79, 0.65);
 }
 .topbar-actions {
   display: flex;
@@ -655,6 +648,8 @@ body.stage-archive .vignette {
    11. ARCHIVE (Act 3) — sticky scroll, 6 flip cards
    ========================================================================== */
 .act-archive {
+  max-width: none;
+  padding: 0;
   /* Container is tall: one viewport per card = 8 viewport-heights, plus a
      small entry buffer so the first and last cards rest visibly. The sticky
      viewport sits below the fixed topbar so cards never get clipped. */
@@ -727,9 +722,9 @@ body.stage-archive .vignette {
 
 .card-stack {
   position: relative;
-  width: min(1040px, 94vw);
-  height: min(640px, 78vh);
-  max-height: 680px;
+  width: min(1460px, 76vw);
+  height: min(820px, 84vh);
+  max-height: 860px;
 }
 
 .card {
@@ -1665,6 +1660,44 @@ body.stage-archive .vignette {
   flex-shrink: 0;
 }
 
+.writing-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.writing-item {
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.writing-item:last-child { border-bottom: 1px solid var(--border); }
+.writing-item-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+.writing-item-sub {
+  margin-top: 8px;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 760px;
+}
+.writing-item-link {
+  display: inline-flex;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+}
+.writing-item-link:hover { color: var(--accent); border-color: var(--accent); }
+
 .contact-links {
   display: flex;
   flex-wrap: wrap;
@@ -1707,7 +1740,7 @@ body.stage-archive .vignette {
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
 
-  .card-stack { width: 94vw; height: min(72vh, 620px); max-height: 640px; }
+  .card-stack { width: 95vw; height: min(74vh, 700px); max-height: 720px; }
   .card-front { padding: 30px 26px; }
   .card-name { font-size: clamp(36px, 10vw, 52px); }
   .archive-nav.prev { left: 14px; }
@@ -1786,11 +1819,12 @@ html:not(.js) .card-back { display: none; }
     <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
     <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>What I build</span></a>
     <div class="toc-section">Work</div>
-    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>Six plates</span></a>
+    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>Eight plates</span></a>
     <div class="toc-section">More</div>
     <a href="#background" data-toc="background"><span class="toc-num">02</span><span>Background</span></a>
     <a href="#now" data-toc="now"><span class="toc-num">03</span><span>Now</span></a>
-    <a href="#contact" data-toc="contact"><span class="toc-num">04</span><span>Contact</span></a>
+    <a href="#writing" data-toc="writing"><span class="toc-num">04</span><span>Writing</span></a>
+    <a href="#contact" data-toc="contact"><span class="toc-num">05</span><span>Contact</span></a>
   </nav>
   <div class="sidebar-footer">
     <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
@@ -1804,8 +1838,7 @@ html:not(.js) .card-back { display: none; }
 <!-- Top status bar -->
 <header class="topbar" role="banner">
   <span class="topbar-status">
-    <span class="dot"></span>
-    Vancouver, BC · Open to AI-audit + ML-risk roles
+    Vancouver, BC · AI Audit + ML Risk
   </span>
   <div class="topbar-actions">
     <a href="#archive">Work</a>
@@ -2374,6 +2407,28 @@ html:not(.js) .card-back { display: none; }
     </ul>
   </section>
 
+  <section class="act" id="writing" aria-label="Writing">
+    <p class="section-label">Writing</p>
+    <ul class="writing-list">
+      <li class="writing-item">
+        <div class="writing-item-title">Thinking in Public</div>
+        <p class="writing-item-sub">
+          Short notes on attention cost, AI audit practice, and what breaks when
+          we optimize speed but ignore judgment. This is where I write the model
+          before I ship the product.
+        </p>
+        <a class="writing-item-link" href="https://cybertao.netlify.app" target="_blank" rel="noopener">Read current essays ↗</a>
+      </li>
+      <li class="writing-item">
+        <div class="writing-item-title">Pedalling (in progress)</div>
+        <p class="writing-item-sub">
+          A longer narrative from auditor to builder. Four cities, four chapters,
+          and the design principles behind each turn.
+        </p>
+      </li>
+    </ul>
+  </section>
+
   <section class="act" id="contact" aria-label="Contact">
     <p class="section-label">Contact</p>
     <div class="contact-links">
@@ -2386,7 +2441,7 @@ html:not(.js) .card-back { display: none; }
   <footer class="coda-footer">
     <span>© 2026 Chris Zhang</span>
     <span class="coda-footer-summary">
-      Built as a single file · no framework · no tracker
+      Built for clear decisions
     </span>
   </footer>
 
