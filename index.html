@@ -727,9 +727,9 @@ body.stage-archive .vignette {
 
 .card-stack {
   position: relative;
-  width: min(720px, 92vw);
-  height: min(500px, 66vh);
-  max-height: 500px;
+  width: min(1040px, 94vw);
+  height: min(640px, 78vh);
+  max-height: 680px;
 }
 
 .card {
@@ -839,6 +839,7 @@ body.stage-archive .vignette {
 .status-live       { background: rgba(60, 140, 80, 0.2);   color: #a2d9b0; border: 1px solid rgba(162, 217, 176, 0.35); }
 .status-beta       { background: rgba(200, 130, 50, 0.18); color: #e8b680; border: 1px solid rgba(232, 182, 128, 0.35); }
 .status-testflight { background: rgba(60, 120, 200, 0.18); color: #9fc2e8; border: 1px solid rgba(159, 194, 232, 0.35); }
+.status-interest   { background: rgba(130, 110, 180, 0.16); color: #c9b8e8; border: 1px solid rgba(201, 184, 232, 0.38); }
 .status-demo       { background: rgba(150, 90, 180, 0.18); color: #d2a8e0; border: 1px solid rgba(210, 168, 224, 0.35); }
 .status-private    { background: rgba(140, 140, 140, 0.15); color: #b8b4ab; border: 1px solid rgba(184, 180, 171, 0.3); }
 
@@ -1202,30 +1203,9 @@ body.stage-archive .vignette {
   background: #0a0908;
   isolation: isolate;
 }
-.phone-notch {
-  position: absolute;
-  top: 7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 88px;
-  height: 24px;
-  background: #000;
-  border-radius: 14px;
-  z-index: 8;
-  box-shadow: 0 0 0 0.5px #0a0a0a;
-}
-/* Dynamic Island camera dot on the right side */
-.phone-notch::after {
-  content: '';
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle, #0d1a2a 35%, #000 60%);
-  border-radius: 50%;
-}
+/* Omit the fake Dynamic Island — it stole vertical space from the real UI art. */
+.phone-notch { display: none; }
+
 .phone-statusbar {
   position: absolute;
   top: 0;
@@ -1303,6 +1283,49 @@ body.stage-archive .vignette {
 .card.is-flipped .phone-glow {
   animation: phoneSweep 6s var(--ease-in-out) 0.8s infinite;
 }
+
+/* In-phone tappable regions (screenshot is static; buttons explain the loop). */
+.nod-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+.nod-hotspot {
+  position: absolute;
+  pointer-events: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+.nod-hotspot:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+.nod-hotspot--feast { left: 4%;  bottom: 19%; width: 30%; height: 21%; }
+.nod-hotspot--agent { left: 35%; bottom: 19%; width: 30%; height: 21%; }
+.nod-hotspot--solo  { left: 66%; bottom: 19%; width: 30%; height: 21%; }
+
+.nod-callout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  margin: 0;
+  padding: 6px 10px 7px;
+  font-family: var(--sans);
+  font-size: 10px;
+  line-height: 1.35;
+  color: rgba(245, 241, 232, 0.93);
+  background: rgba(6, 5, 4, 0.94);
+  border-top: 1px solid rgba(232, 184, 79, 0.3);
+  pointer-events: none;
+}
 @keyframes phoneSweep {
   0%   { left: -30%; opacity: 0; }
   15%  { opacity: 0.85; }
@@ -1350,40 +1373,85 @@ body.stage-archive .vignette {
 }
 
 /* ==========================================================================
-   Live-demo tile — used on YVR-style plates where the primary surface should
-   be an embedded running app, not a video. Shows demo iframe LARGE on left,
-   with video as a parallel, same-weight option on the right.
+   Smart Airport card back — walkthrough video LEFT, live HF Space + copy RIGHT
+   (Gradio on *.hf.space embeds more reliably than huggingface.co/embed in
+   some browsers.)
    ========================================================================== */
 .demo-stage {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
+  grid-template-columns: 1fr 1.22fr;
   background: #0e0b08;
   overflow: hidden;
 }
-.demo-stage .demo-primary {
+.demo-side-video {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px 14px;
+  background: #0a0806;
+  border-right: 1px solid rgba(232, 184, 79, 0.18);
+  min-height: 0;
+}
+.demo-side-video-frame {
   position: relative;
+  flex: 1;
+  min-height: 140px;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 184, 79, 0.25);
+  background: #111;
+}
+.demo-side-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.demo-side-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 14px;
+  min-height: 0;
+  overflow: auto;
+  color: rgba(245, 241, 232, 0.88);
+}
+.demo-side-detail::-webkit-scrollbar { width: 4px; }
+.demo-side-detail::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+
+.demo-live-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  border: 1px solid rgba(232, 184, 79, 0.22);
+  border-radius: 3px;
   background: #000;
   overflow: hidden;
-  border-right: 1px solid rgba(232, 184, 79, 0.18);
 }
-.demo-stage .demo-primary iframe {
+.demo-live-panel .demo-label {
+  position: static;
+  margin: 8px 10px 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.demo-live-frame {
+  position: relative;
+  flex: 1;
+  min-height: 160px;
+}
+.demo-live-frame iframe {
   position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  bottom: 34px;
+  inset: 0;
   width: 100%;
+  height: 100%;
   border: 0;
   background: #000;
 }
 .demo-open-tab {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.14em;
@@ -1391,64 +1459,14 @@ body.stage-archive .vignette {
   color: rgba(232, 184, 79, 0.85);
   text-decoration: none;
   white-space: nowrap;
-  padding: 4px 8px;
+  padding: 5px 10px;
+  margin: 2px auto 8px;
   background: rgba(0, 0, 0, 0.65);
   border-radius: 2px;
   border: 1px solid rgba(232, 184, 79, 0.25);
+  align-self: center;
 }
 .demo-open-tab:hover { color: var(--amber-hot); border-color: var(--amber); }
-.demo-stage .demo-primary-poster {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 30px;
-  text-align: center;
-  color: rgba(245, 241, 232, 0.88);
-  background:
-    repeating-linear-gradient(45deg, rgba(232, 184, 79, 0.05) 0 2px, transparent 2px 16px),
-    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.18), transparent 60%),
-    linear-gradient(180deg, #1a1411 0%, #0d0a08 100%);
-}
-.demo-primary-poster .poster-kicker {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(232, 184, 79, 0.75);
-}
-.demo-primary-poster .poster-hed {
-  font-family: var(--serif);
-  font-size: 30px;
-  line-height: 1.05;
-  color: var(--amber);
-  letter-spacing: -0.012em;
-  max-width: 18ch;
-}
-.demo-primary-poster .poster-meta {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: rgba(245, 241, 232, 0.65);
-  line-height: 1.6;
-}
-.demo-primary-poster .poster-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #1a1411;
-  background: var(--amber);
-  padding: 10px 14px;
-  border-radius: 2px;
-}
-.demo-primary-poster .poster-cta:hover { background: var(--amber-hot); }
 
 .demo-label {
   position: absolute;
@@ -1476,28 +1494,13 @@ body.stage-archive .vignette {
 }
 .demo-label.is-pending .dot { background: var(--amber); }
 
-.demo-secondary {
-  padding: 22px 24px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  color: rgba(245, 241, 232, 0.88);
-  overflow: auto;
-}
-.demo-secondary::-webkit-scrollbar { width: 4px; }
-.demo-secondary::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
-
-.demo-video-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 .demo-video-label {
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(245, 241, 232, 0.55);
+  flex-shrink: 0;
 }
 .demo-video-youtube {
   font-family: var(--mono);
@@ -1508,59 +1511,6 @@ body.stage-archive .vignette {
   align-self: flex-start;
 }
 .demo-video-youtube:hover { color: var(--amber-hot); }
-
-.demo-video-tile {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 3px;
-  overflow: hidden;
-  background: #111;
-  border: 1px solid rgba(232, 184, 79, 0.25);
-  text-decoration: none;
-  color: inherit;
-  cursor: default;
-}
-.demo-video-tile iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-.demo-video-tile .video-poster {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: rgba(245, 241, 232, 0.85);
-  background:
-    radial-gradient(circle at 50% 40%, rgba(232, 184, 79, 0.18), transparent 60%),
-    linear-gradient(180deg, #211b15 0%, #0e0b08 100%);
-}
-.demo-video-tile .play-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--amber);
-  color: #1a1411;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 6px 16px rgba(232, 184, 79, 0.35);
-}
-.demo-video-tile .video-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(245, 241, 232, 0.72);
-}
 
 .demo-sec-kicker {
   font-family: var(--mono);
@@ -1632,9 +1582,15 @@ body.stage-archive .vignette {
 .demo-link:hover { color: var(--amber); border-color: var(--amber); background: rgba(232, 184, 79, 0.08); }
 
 @media (max-width: 780px) {
-  .demo-stage { grid-template-columns: 1fr; grid-template-rows: 180px 1fr; }
-  .demo-stage .demo-primary { border-right: none; border-bottom: 1px solid rgba(232, 184, 79, 0.18); }
-  .demo-secondary { padding: 18px 18px 16px; }
+  .demo-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(200px, 36vh) 1fr;
+  }
+  .demo-side-video {
+    border-right: none;
+    border-bottom: 1px solid rgba(232, 184, 79, 0.18);
+  }
+  .demo-side-detail { padding: 14px 14px 12px; }
 }
 
 /* Archive card navigation buttons on edges */
@@ -1751,7 +1707,7 @@ body.stage-archive .vignette {
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
 
-  .card-stack { width: 92vw; height: 66vh; max-height: 520px; }
+  .card-stack { width: 94vw; height: min(72vh, 620px); max-height: 640px; }
   .card-front { padding: 30px 26px; }
   .card-name { font-size: clamp(36px, 10vw, 52px); }
   .archive-nav.prev { left: 14px; }
@@ -1904,7 +1860,7 @@ html:not(.js) .card-back { display: none; }
       </div>
       <div class="manifesto-item">
         <div class="manifesto-item-label">Friction</div>
-        <div class="manifesto-item-value">The tax on your focus</div>
+        <div class="manifesto-item-value">The attention cost of process — every switch, wait, and re-entry</div>
       </div>
       <div class="manifesto-item">
         <div class="manifesto-item-label">Tools</div>
@@ -1913,10 +1869,11 @@ html:not(.js) .card-back { display: none; }
     </div>
 
     <p class="manifesto-body">
-      Every project below targets one specific friction. I write the friction
-      first — in the language of the manifesto above — and only then decide
-      what shape the solution takes. So you can read each card front and
-      already know which tax it pays back.
+      Every project below targets one specific friction — the
+      <strong>attention cost</strong> of staying inside a broken workflow
+      (re-checking, re-opening, re-explaining). I write that tax in plain
+      language first, then decide what shape the tool takes. Read the card
+      front and you already know which invoice it tears up.
     </p>
 
     <ul class="thread-map" aria-label="How the work maps to the manifesto">
@@ -1925,9 +1882,9 @@ html:not(.js) .card-back { display: none; }
       <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a> · six windows collapsed into one run</li>
       <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a> · scan, decide in 30 s, eat</li>
       <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a> · an essay site, not a tool</li>
-      <li><span class="thread-tag">Road-test booking lottery</span> → <a href="#archive" data-jump="6">FlashSlot</a> · a watcher that pings when ICBC opens a slot</li>
-      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="7">FFP</a> · a private tracker for miles &amp; status</li>
-      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="8">Pedalling</a> · a route map of how I got here</li>
+      <li><span class="thread-tag">Road-test booking lottery</span> → <a href="#archive" data-jump="6">FlashSlot</a> · personal tool · ICBC slot watcher</li>
+      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="7">FFP</a> · personal tracker · miles &amp; status</li>
+      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="8">Pedalling</a> · personal essay · repo, no public site yet</li>
     </ul>
   </section>
 
@@ -1937,7 +1894,7 @@ html:not(.js) .card-back { display: none; }
   <section class="act act-archive" id="archive" aria-label="Archive of projects">
     <div class="archive-viewport">
 
-      <div class="archive-label">The Archive — 6 Plates</div>
+      <div class="archive-label">The Archive — 8 Plates</div>
       <a class="archive-skip" href="#background">skip archive ↓</a>
 
       <button class="archive-nav prev" type="button" aria-label="Previous plate" data-role="prev">‹</button>
@@ -2013,40 +1970,42 @@ html:not(.js) .card-back { display: none; }
           </div>
           <div class="card-face card-back">
             <div class="demo-stage reveal reveal-2">
-              <!-- Primary: Hugging Face Space (same FastAPI inference as production). -->
-              <div class="demo-primary">
-                <span class="demo-label" data-role="demo-label">
-                  <span class="dot"></span>
-                  Live demo · Hugging Face Space
-                </span>
-                <iframe title="Smart Airport — interactive charging dispatch demo (Hugging Face Space)"
-                  data-src="https://huggingface.co/spaces/Devil02047/smart-airport-demo/embed"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-                <a class="demo-open-tab" href="https://huggingface.co/spaces/Devil02047/smart-airport-demo" target="_blank" rel="noopener">Open Space in new tab ↗</a>
+              <div class="demo-side-video">
+                <span class="demo-video-label">Walkthrough</span>
+                <div class="demo-side-video-frame">
+                  <iframe title="Smart Airport — project walkthrough (YouTube)"
+                    data-src="https://www.youtube.com/embed/7ae8t7nckHY?rel=0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+                </div>
+                <a class="demo-video-youtube" href="https://youtu.be/7ae8t7nckHY" target="_blank" rel="noopener">Watch on YouTube ↗</a>
               </div>
 
-              <!-- Secondary: walkthrough video + context, parallel to the demo. -->
-              <div class="demo-secondary">
+              <div class="demo-side-detail">
                 <div class="demo-sec-kicker">Vancouver Airport Authority · MS Capstone</div>
                 <div class="demo-sec-title">eGSE charging optimization</div>
                 <div class="demo-sec-sub">
-                  Preprocessing and feature engineering on flight, fleet,
-                  charger, and spatial data → Transformer demand forecasting →
-                  Gymnasium env + PPO (Stable-Baselines3) for AC / non-AC
-                  dispatch. Artifacts versioned in DVC; experiments in MLflow.
-                  Online inference: FastAPI + Uvicorn; demo UI on Spaces.
+                  Raw flight / fleet / charger / spatial data → preprocess +
+                  feature engineering → Transformer demand forecasts → Gymnasium
+                  environment + PPO policies (Stable-Baselines3) for AC and
+                  non-AC fleets. DVC for artifacts, MLflow for experiments,
+                  FastAPI + Uvicorn for inference — same stack as the Space below.
                 </div>
 
-                <div class="demo-video-wrap">
-                  <span class="demo-video-label">Walkthrough (optional)</span>
-                  <div class="demo-video-tile" data-role="demo-video">
-                    <iframe title="Smart Airport — project walkthrough (YouTube)"
-                      data-src="https://www.youtube.com/embed/7ae8t7nckHY?rel=0"
+                <div class="demo-live-panel">
+                  <span class="demo-label">
+                    <span class="dot"></span>
+                    Try the live demo
+                  </span>
+                  <div class="demo-live-frame">
+                    <!-- Direct Gradio host — more reliable in iframes than /embed on some setups -->
+                    <iframe title="Smart Airport — interactive dispatch (Hugging Face Space)"
+                      data-src="https://devil02047-smart-airport-demo.hf.space"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen></iframe>
+                      allowfullscreen
+                      referrerpolicy="no-referrer-when-downgrade"></iframe>
                   </div>
-                  <a class="demo-video-youtube" href="https://youtu.be/7ae8t7nckHY" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+                  <a class="demo-open-tab" href="https://huggingface.co/spaces/Devil02047/smart-airport-demo" target="_blank" rel="noopener">Open Hugging Face Space ↗</a>
                 </div>
 
                 <div class="demo-metrics">
@@ -2142,7 +2101,7 @@ html:not(.js) .card-back { display: none; }
               <div class="phone-col">
                 <div class="phone" role="img" aria-label="Nod home screen on iPhone">
                   <div class="phone-screen">
-                    <div class="phone-notch"></div>
+                    <div class="phone-notch" aria-hidden="true"></div>
                     <div class="phone-statusbar">
                       <span>10:57</span>
                       <span class="bar-right">
@@ -2158,6 +2117,12 @@ html:not(.js) .card-back { display: none; }
                     </div>
                     <img class="phone-screen-img" src="assets/nod-screen.jpg" alt="Nod — Snap, Decode, Trust. How are you dining today?" loading="lazy" decoding="async">
                     <span class="phone-glow" aria-hidden="true"></span>
+                    <div class="nod-hotspots">
+                      <button type="button" class="nod-hotspot nod-hotspot--feast" data-nod="feast" aria-label="Grand Feast — sharing table"></button>
+                      <button type="button" class="nod-hotspot nod-hotspot--agent" data-nod="agent" aria-label="Agent Chat — manager–worker loop"></button>
+                      <button type="button" class="nod-hotspot nod-hotspot--solo" data-nod="solo" aria-label="Solo tasting — just for you"></button>
+                    </div>
+                    <p class="nod-callout" data-role="nod-callout" aria-live="polite">Tap Grand Feast, Agent Chat, or Solo — mockup explains each path.</p>
                   </div>
                 </div>
                 <div class="phone-caption">Nod · TestFlight · iOS mockup</div>
@@ -2176,11 +2141,13 @@ html:not(.js) .card-back { display: none; }
                   <li>Eye · Gemini 3.0 Flash · layout + currency aware OCR</li>
                   <li>Brain · Gemini 3.0 Pro · sommelier persona + knapsack pick</li>
                   <li>Gatekeeper · allergy-aware critic (always on)</li>
-                  <li>iOS 26.1 · SwiftUI · Liquid Glass UI</li>
+                  <li>Agent Chat · manager–worker UI on the same loop — you steer while Eye / Brain propose and Gatekeeper vetoes unsafe picks</li>
+                  <li>Platform target · iOS 26.1 · SwiftUI · Liquid Glass (ship roadmap; TestFlight may trail)</li>
                 </ul>
                 <div class="demo-links" style="margin-top: 6px;">
                   <span class="demo-link" style="opacity:0.75">TestFlight · invite on request</span>
                 </div>
+                <div class="card-split-note" style="margin-top:4px">On-card taps are a guided mockup, not the production app binary.</div>
               </div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
@@ -2226,7 +2193,7 @@ html:not(.js) .card-back { display: none; }
         <article class="card" data-plate="6">
           <div class="card-face card-front">
             <div class="card-friction">
-              <span class="ftag-key">Friction</span>
+              <span class="ftag-key">Interest</span>
               <span class="ftag-arrow">→</span>
               <span class="ftag-name">Road-test booking lottery</span>
             </div>
@@ -2237,7 +2204,7 @@ html:not(.js) .card-back { display: none; }
               for me and pings my phone the second a seat opens in my window.
             </p>
             <div class="card-footer">
-              <span class="card-status status-private">Personal</span>
+              <span class="card-status status-interest">Personal</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
             </div>
           </div>
@@ -2269,7 +2236,7 @@ html:not(.js) .card-back { display: none; }
         <article class="card" data-plate="7">
           <div class="card-face card-front">
             <div class="card-friction">
-              <span class="ftag-key">Friction</span>
+              <span class="ftag-key">Interest</span>
               <span class="ftag-arrow">→</span>
               <span class="ftag-name">Points programs sprawl</span>
             </div>
@@ -2280,7 +2247,7 @@ html:not(.js) .card-back { display: none; }
               never lose a balance to a spreadsheet again.
             </p>
             <div class="card-footer">
-              <span class="card-status status-private">Private</span>
+              <span class="card-status status-interest">Private</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
             </div>
           </div>
@@ -2311,7 +2278,7 @@ html:not(.js) .card-back { display: none; }
                  data-plate="8">
           <div class="card-face card-front">
             <div class="card-friction">
-              <span class="ftag-key">About</span>
+              <span class="ftag-key">Interest</span>
               <span class="ftag-arrow">→</span>
               <span class="ftag-name">Drift in my own story</span>
             </div>
@@ -2319,10 +2286,12 @@ html:not(.js) .card-back { display: none; }
             <p class="card-desc">
               An interactive essay about the route from auditor to builder.
               Four cities, four chapters, one through-line: the friction
-              I noticed each time, and what I built to remove it.
+              I noticed each time, and what I built to remove it. Manuscript
+              and prototype code live in a repo — there is no public microsite
+              yet; this card is the showroom until something ships at /pedalling.
             </p>
             <div class="card-footer">
-              <span class="card-status status-demo">Drafting</span>
+              <span class="card-status status-interest">Drafting</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for outline</span>
             </div>
           </div>
@@ -2340,8 +2309,9 @@ html:not(.js) .card-back { display: none; }
                 <dt>Ch. 2</dt><dd>Toronto — eight years inside Big 4 audit</dd>
                 <dt>Ch. 3</dt><dd>Boston — learning to build, not only check</dd>
                 <dt>Ch. 4</dt><dd>Vancouver — now</dd>
+                <dt>Deploy</dt><dd>No hosted site yet · writing + code in private iteration</dd>
               </dl>
-              <div class="spec-note reveal reveal-5">Drafting · open soon at /pedalling</div>
+              <div class="spec-note reveal reveal-5">When /pedalling goes live, this card will deep-link there first.</div>
             </div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
             <div class="card-back-meta reveal reveal-6">08 / 08 · Pedalling</div>
@@ -2619,7 +2589,7 @@ const Cursor = (() => {
   window.addEventListener('mousemove', (e) => moveTo(e.clientX, e.clientY), { passive: true });
 
   /* Hover affordance */
-  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .demo-link, .demo-video-tile, .poster-cta, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
+  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .demo-link, .demo-video-tile, .poster-cta, .nod-hotspot, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(hoverSelector)) el.classList.add('is-hover');
   });
@@ -2909,6 +2879,26 @@ const Archive = (() => {
   setTimeout(updateFromScroll, 50);
 
   return { setActive, flipActive, navigateTo };
+})();
+
+/* Nod plate — hotspots swap the in-phone caption (static mockup, not the app binary). */
+(function NodHotspots() {
+  const card = document.querySelector('[data-plate="4"]');
+  if (!card) return;
+  const el = card.querySelector('[data-role="nod-callout"]');
+  if (!el) return;
+  const copy = {
+    feast: 'Grand Feast · sharing-table path: one pooled pass over the menu so the group stops burning attention on “what should we get?”.',
+    agent: 'Agent Chat · manager–worker loop: Eye OCRs, Brain proposes ranked picks, Gatekeeper vetoes allergy clashes — you steer the conversation, not the pixels.',
+    solo: 'Solo tasting · fast knapsack-style shortlist for one diner under your caps; Gatekeeper still runs so shortcuts do not compromise safety.'
+  };
+  card.querySelectorAll('.nod-hotspot[data-nod]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const k = btn.dataset.nod;
+      if (copy[k]) el.textContent = copy[k];
+    });
+  });
 })();
 
 /* ==========================================================================
