@@ -16,10 +16,12 @@
 :root {
   --ink:     #0f0f0f;
   --ink-2:   #3a3a3a;
-  --ink-3:   #888;
+  --ink-3:   #7a766e;
   --paper:   #f8f6f1;
-  --archive: #0d0c0a;
-  --archive-2: #1a1714;
+  /* Archive: warm deep-umber instead of cold pure black — reads like a
+     gallery print room at low light, not a generic dark theme. */
+  --archive:   #1a1411;
+  --archive-2: #13100d;
   --accent:  #c8392b;
   --border:  #e0ddd6;
   --border-dark: #2a2622;
@@ -41,9 +43,9 @@
   --amber-hot: #fff0a8;   /* lock-in highlight */
 
   /* Layout */
-  --sidebar-w: 220px;
-  --topbar-h: 48px;
-  --content-max: 720px;
+  --sidebar-w: 230px;
+  --topbar-h: 52px;
+  --content-max: 780px;
 }
 
 /* ==========================================================================
@@ -62,8 +64,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17.5px;
+  line-height: 1.62;
   overflow-x: hidden;
   cursor: none;
   transition: background 0.6s var(--ease-out), color 0.6s var(--ease-out);
@@ -123,17 +125,17 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
 }
 .sidebar-brand-name {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1;
   letter-spacing: -0.01em;
   color: inherit;
 }
 .sidebar-brand-tag {
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
 .toc {
@@ -149,32 +151,32 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
 
 .toc-section {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  opacity: 0.4;
+  opacity: 0.45;
   padding: 14px 8px 6px;
 }
 
 .toc a {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  padding: 6px 8px;
+  gap: 10px;
+  padding: 7px 8px;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12.5px;
   letter-spacing: 0.04em;
   color: inherit;
-  opacity: 0.55;
+  opacity: 0.6;
   border-radius: 2px;
   transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
   position: relative;
 }
 .toc a:hover { opacity: 1; }
 .toc a .toc-num {
-  font-size: 9.5px;
-  opacity: 0.55;
-  width: 18px;
+  font-size: 10.5px;
+  opacity: 0.6;
+  width: 20px;
   flex-shrink: 0;
 }
 .toc a.is-active {
@@ -195,12 +197,12 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
 .sidebar-footer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 .sidebar-footer a:hover { opacity: 1; color: var(--amber); }
 
@@ -217,7 +219,7 @@ body.is-gated .sidebar { opacity: 0; pointer-events: none; }
   align-items: center;
   padding: 0 26px;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border);
@@ -429,9 +431,9 @@ button, a, input, textarea { cursor: none; }
 
 body.stage-archive .vignette {
   background: radial-gradient(ellipse at center,
-              transparent 55%,
-              rgba(0, 0, 0, 0.5) 100%);
-  opacity: 0.8;
+              transparent 60%,
+              rgba(0, 0, 0, 0.32) 100%);
+  opacity: 0.6;
 }
 
 /* Flow overlay removed in this revision — content stays sharp. */
@@ -469,10 +471,10 @@ body.stage-archive .vignette {
    ========================================================================== */
 .hero-headline {
   font-family: var(--serif);
-  font-size: clamp(38px, 5.6vw, 56px);
+  font-size: clamp(44px, 6.2vw, 72px);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  line-height: 1.04;
+  letter-spacing: -0.012em;
   color: var(--ink);
   margin-bottom: 6px;
 }
@@ -480,12 +482,12 @@ body.stage-archive .vignette {
 .hero-headline-2 {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(38px, 5.6vw, 56px);
+  font-size: clamp(44px, 6.2vw, 72px);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  line-height: 1.04;
+  letter-spacing: -0.012em;
   color: var(--ink-2);
-  margin-bottom: 38px;
+  margin-bottom: 44px;
 }
 
 .hero-rule {
@@ -497,7 +499,7 @@ body.stage-archive .vignette {
 
 .hero-rule-name {
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.32em;
   color: var(--ink-3);
   white-space: nowrap;
@@ -510,24 +512,24 @@ body.stage-archive .vignette {
 }
 
 .hero-bio {
-  font-size: 15.5px;
-  line-height: 1.78;
+  font-size: 18px;
+  line-height: 1.7;
   color: var(--ink-2);
   max-width: 58ch;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 .hero-bio strong { color: var(--ink); font-weight: 500; }
 
 .hero-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .hero-tag {
   font-family: var(--mono);
-  font-size: 11px;
-  padding: 4px 10px;
+  font-size: 12.5px;
+  padding: 5px 12px;
   border: 1px solid var(--border);
   border-radius: 2px;
   color: var(--ink-2);
@@ -537,7 +539,7 @@ body.stage-archive .vignette {
 /* Sound toggle now lives inside the sidebar */
 .audio-toggle {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.18em;
   color: inherit;
   background: none;
@@ -556,11 +558,11 @@ body.stage-archive .vignette {
    ========================================================================== */
 .section-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.28em;
   color: var(--ink-3);
   text-transform: uppercase;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
 
 .manifesto-grid {
@@ -583,25 +585,25 @@ body.stage-archive .vignette {
 
 .manifesto-item-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.16em;
   color: var(--ink-3);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .manifesto-item-value {
   font-family: var(--serif);
-  font-size: 18px;
-  line-height: 1.35;
+  font-size: 21px;
+  line-height: 1.3;
   color: var(--ink);
 }
 
 .manifesto-body {
-  font-size: 15.5px;
+  font-size: 18px;
   color: var(--ink-2);
-  line-height: 1.85;
+  line-height: 1.75;
   margin-bottom: 56px;
-  max-width: 580px;
+  max-width: 620px;
 }
 
 /* (Dual demo beat removed in this revision.) */
@@ -610,13 +612,13 @@ body.stage-archive .vignette {
 /* The thread map: explicit friction-to-project linkage right above the archive */
 .thread-map {
   list-style: none;
-  margin-top: 24px;
-  padding-top: 22px;
+  margin-top: 28px;
+  padding-top: 24px;
   border-top: 1px solid var(--border);
   display: grid;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--ink-2);
 }
 .thread-map li {
@@ -630,12 +632,12 @@ body.stage-archive .vignette {
 .thread-tag {
   display: inline-flex;
   align-items: center;
-  font-size: 10.5px;
+  font-size: 11.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--amber);
   border: 1px solid rgba(232, 184, 79, 0.45);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 2px;
   background: rgba(232, 184, 79, 0.04);
   white-space: nowrap;
@@ -653,17 +655,19 @@ body.stage-archive .vignette {
    11. ARCHIVE (Act 3) — sticky scroll, 6 flip cards
    ========================================================================== */
 .act-archive {
-  /* Container is tall: one viewport per card = 6 viewport-heights, plus a
+  /* Container is tall: one viewport per card = 8 viewport-heights, plus a
      small entry buffer so the first and last cards rest visibly. The sticky
      viewport sits below the fixed topbar so cards never get clipped. */
   position: relative;
-  height: calc((100vh - var(--topbar-h)) * 7);
-  background: var(--archive);
-  color: #e8e3d8;
+  height: calc((100vh - var(--topbar-h)) * 9);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.055), transparent 62%),
+    linear-gradient(180deg, #1a1411 0%, #13100d 55%, #0f0b09 100%);
+  color: #ece6d9;
   isolation: isolate;
 }
 @media (max-width: 880px) {
-  .act-archive { height: calc(100vh * 7); }
+  .act-archive { height: calc(100vh * 9); }
 }
 
 .archive-viewport {
@@ -686,9 +690,9 @@ body.stage-archive .vignette {
   top: 30px;
   left: 32px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.32em;
-  color: rgba(232, 227, 216, 0.55);
+  color: rgba(236, 230, 217, 0.55);
   text-transform: uppercase;
 }
 
@@ -697,13 +701,13 @@ body.stage-archive .vignette {
   top: 30px;
   right: 32px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.18em;
-  color: rgba(232, 227, 216, 0.5);
+  color: rgba(236, 230, 217, 0.5);
   transition: color 0.25s ease;
   text-transform: uppercase;
 }
-.archive-skip:hover { color: #e8e3d8; }
+.archive-skip:hover { color: #ece6d9; }
 
 .archive-plate-num {
   position: absolute;
@@ -711,9 +715,9 @@ body.stage-archive .vignette {
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12.5px;
   letter-spacing: 0.28em;
-  color: rgba(232, 227, 216, 0.55);
+  color: rgba(236, 230, 217, 0.58);
 }
 .archive-plate-num .sep {
   color: rgba(232, 227, 216, 0.25);
@@ -723,9 +727,9 @@ body.stage-archive .vignette {
 
 .card-stack {
   position: relative;
-  width: min(640px, 92vw);
-  height: min(440px, 62vh);
-  max-height: 440px;
+  width: min(720px, 92vw);
+  height: min(500px, 66vh);
+  max-height: 500px;
 }
 
 .card {
@@ -757,18 +761,18 @@ body.stage-archive .vignette {
 .card-face {
   position: absolute;
   inset: 0;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: linear-gradient(160deg, #1c1a17 0%, #110f0d 100%);
+  background: linear-gradient(162deg, #221d18 0%, #15110e 100%);
   box-shadow:
-    0 40px 80px -20px rgba(0, 0, 0, 0.75),
-    0 0 0 1px rgba(232, 227, 216, 0.08) inset;
+    0 50px 90px -24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(236, 230, 217, 0.07) inset;
 }
 
-.card-front { padding: 36px 40px; display: flex; flex-direction: column; }
-.card-back  { transform: rotateY(180deg); background: #060504; display: flex; align-items: center; justify-content: center; }
+.card-front { padding: 42px 48px; display: flex; flex-direction: column; }
+.card-back  { transform: rotateY(180deg); background: #0e0b08; display: flex; align-items: center; justify-content: center; }
 
 .card-friction {
   display: inline-flex;
@@ -776,12 +780,12 @@ body.stage-archive .vignette {
   gap: 8px;
   align-self: flex-start;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.18em;
   color: var(--amber);
   text-transform: uppercase;
-  margin-bottom: 18px;
-  padding: 4px 10px;
+  margin-bottom: 20px;
+  padding: 5px 11px;
   border: 1px solid rgba(232, 184, 79, 0.45);
   border-radius: 2px;
   background: rgba(232, 184, 79, 0.04);
@@ -793,19 +797,19 @@ body.stage-archive .vignette {
 
 .card-name {
   font-family: var(--serif);
-  font-size: clamp(40px, 6vw, 58px);
+  font-size: clamp(44px, 6.4vw, 64px);
   font-weight: 400;
   line-height: 1.02;
-  letter-spacing: -0.01em;
-  color: #f2efe8;
-  margin-bottom: 16px;
+  letter-spacing: -0.012em;
+  color: #f5f1e8;
+  margin-bottom: 18px;
 }
 
 .card-desc {
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: rgba(232, 227, 216, 0.75);
-  max-width: 440px;
+  font-size: 16.5px;
+  line-height: 1.62;
+  color: rgba(236, 230, 217, 0.8);
+  max-width: 520px;
   margin-bottom: auto;
 }
 
@@ -819,9 +823,9 @@ body.stage-archive .vignette {
 
 .card-status {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.12em;
-  padding: 3px 9px;
+  padding: 4px 11px;
   border-radius: 2px;
   text-transform: uppercase;
 }
@@ -833,19 +837,19 @@ body.stage-archive .vignette {
 
 .card-flip-hint {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.22em;
-  color: rgba(232, 227, 216, 0.45);
+  color: rgba(236, 230, 217, 0.5);
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .card-flip-hint .key {
-  border: 1px solid rgba(232, 227, 216, 0.3);
+  border: 1px solid rgba(236, 230, 217, 0.35);
   border-radius: 2px;
-  padding: 2px 6px;
-  font-size: 9px;
+  padding: 2px 7px;
+  font-size: 10.5px;
 }
 
 /* Card back content variants */
@@ -863,31 +867,64 @@ body.stage-archive .vignette {
   top: 16px;
   right: 18px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
-  color: rgba(232, 227, 216, 0.65);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 4px 10px;
+  color: rgba(236, 230, 217, 0.72);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 5px 11px;
   border-radius: 2px;
   text-transform: uppercase;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 5;
 }
+.card-back-open:hover { color: var(--amber); }
 
 .card-back-meta {
   position: absolute;
   bottom: 16px;
   left: 18px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
-  color: rgba(232, 227, 216, 0.55);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 4px 10px;
+  color: rgba(236, 230, 217, 0.58);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 11px;
   border-radius: 2px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  z-index: 4;
+}
+
+/* Back-of-card flip pill — always clickable, always visible. Sits above the
+   iframe so a 3-minute Loom can never trap the reader on the back face. */
+.card-back-flip {
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(236, 230, 217, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 6px 12px;
+  border: 1px solid rgba(232, 184, 79, 0.35);
+  border-radius: 2px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 6;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  cursor: none;
+}
+.card-back-flip:hover { color: var(--amber); border-color: var(--amber); }
+.card-back-flip .key {
+  border: 1px solid rgba(236, 230, 217, 0.4);
+  border-radius: 2px;
+  padding: 1px 6px;
+  font-size: 10px;
 }
 
 /* Spec sheet card-back — substantive content for non-iframe projects */
@@ -925,17 +962,17 @@ body.stage-archive .vignette {
 .card:not(.is-flipped) .card-back .reveal { transition-duration: 0s; transition-delay: 0s; }
 .spec-title {
   font-family: var(--serif);
-  font-size: 36px;
+  font-size: 42px;
   line-height: 1;
   color: var(--amber);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
 }
 .spec-sub {
   font-family: var(--sans);
-  font-size: 14.5px;
-  line-height: 1.45;
-  color: rgba(242, 239, 232, 0.72);
-  max-width: 46ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.78);
+  max-width: 48ch;
 }
 .spec-divider {
   height: 1px;
@@ -946,12 +983,12 @@ body.stage-archive .vignette {
 }
 .spec-list {
   display: grid;
-  grid-template-columns: 110px 1fr;
-  column-gap: 18px;
-  row-gap: 10px;
+  grid-template-columns: 128px 1fr;
+  column-gap: 20px;
+  row-gap: 11px;
   margin-top: 2px;
   font-family: var(--mono);
-  font-size: 11.5px;
+  font-size: 13px;
   line-height: 1.5;
 }
 .spec-list dt {
@@ -961,24 +998,395 @@ body.stage-archive .vignette {
   font-weight: 500;
 }
 .spec-list dd {
-  color: rgba(242, 239, 232, 0.82);
+  color: rgba(245, 241, 232, 0.86);
   letter-spacing: 0.02em;
 }
 .spec-note {
   margin-top: auto;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(242, 239, 232, 0.5);
-  padding-top: 18px;
-  border-top: 1px dashed rgba(232, 227, 216, 0.18);
+  color: rgba(245, 241, 232, 0.55);
+  padding-top: 20px;
+  border-top: 1px dashed rgba(236, 230, 217, 0.2);
+  max-width: 36ch;
 }
 
 @media (max-width: 640px) {
   .card-spec { padding: 38px 32px 36px; gap: 14px; }
-  .spec-title { font-size: 30px; }
-  .spec-list { grid-template-columns: 88px 1fr; font-size: 10.5px; column-gap: 12px; }
+  .spec-title { font-size: 32px; }
+  .spec-list { grid-template-columns: 96px 1fr; font-size: 11.5px; column-gap: 14px; }
+}
+
+/* ==========================================================================
+   Split card-back — video (or app mockup) + notes side-by-side.
+   Lets the reader watch without losing the "try app" CTA, and leaves room
+   for a persistent flip-back pill that iframes can't swallow.
+   ========================================================================== */
+.card-split {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  background: #0e0b08;
+}
+.card-split-media {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  border-right: 1px solid rgba(236, 230, 217, 0.08);
+}
+.card-split-media iframe,
+.card-split-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Poster treatment for plates whose demo video is still drafting. Keeps the
+   split layout coherent without shipping an embarrassing placeholder video. */
+.card-split-media-poster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(232, 184, 79, 0.18), transparent 55%),
+    repeating-linear-gradient(135deg, rgba(232, 184, 79, 0.04) 0 2px, transparent 2px 22px),
+    linear-gradient(180deg, #1a1411 0%, #0f0b09 100%);
+  color: rgba(245, 241, 232, 0.82);
+}
+.card-split-media-poster .poster-title {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.card-split-media-poster .poster-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.75);
+  letter-spacing: 0.04em;
+}
+.card-split-media-poster .poster-badge {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.7);
+  border: 1px solid rgba(232, 184, 79, 0.35);
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+.card-split-info {
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: rgba(245, 241, 232, 0.88);
+  overflow: auto;
+}
+.card-split-info::-webkit-scrollbar { width: 4px; }
+.card-split-info::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+
+.card-split-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.7);
+}
+.card-split-title {
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--amber);
+  letter-spacing: -0.012em;
+}
+.card-split-sub {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: rgba(245, 241, 232, 0.78);
+}
+.card-split-list {
+  list-style: none;
+  display: grid;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: rgba(245, 241, 232, 0.82);
+}
+.card-split-list li { padding-left: 16px; position: relative; line-height: 1.45; }
+.card-split-list li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--amber);
+  font-weight: 700;
+}
+.card-split-cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1a1411;
+  background: var(--amber);
+  padding: 12px 16px;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: none;
+}
+.card-split-cta:hover { background: var(--amber-hot); transform: translateY(-1px); }
+.card-split-note {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.5);
+  padding-top: 10px;
+  border-top: 1px dashed rgba(236, 230, 217, 0.2);
+}
+
+@media (max-width: 780px) {
+  .card-split { grid-template-columns: 1fr; grid-template-rows: 180px 1fr; }
+  .card-split-media { border-right: none; border-bottom: 1px solid rgba(236, 230, 217, 0.08); }
+  .card-split-info { padding: 22px 22px 18px; gap: 10px; }
+  .card-split-title { font-size: 28px; }
+}
+
+/* ==========================================================================
+   iPhone mockup — used on the Nod plate to show the app "live" instead of
+   paraphrased. Built in pure CSS so it degrades gracefully and can host
+   real interactive elements (not a flat screenshot).
+   ========================================================================== */
+.phone-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  padding: 24px 24px 24px 34px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(232, 184, 79, 0.08), transparent 60%),
+    #0e0b08;
+  align-items: center;
+}
+.phone {
+  position: relative;
+  width: 240px;
+  height: 480px;
+  border-radius: 44px;
+  padding: 8px;
+  background: linear-gradient(145deg, #2a2520 0%, #0c0a08 100%);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.75),
+    0 0 0 1.5px #363028 inset,
+    0 0 0 3px #0a0806 inset;
+  flex-shrink: 0;
+}
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 36px;
+  overflow: hidden;
+  background: #0a0908;
+}
+.phone-notch {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 22px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 8;
+}
+.phone-statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 22px 0;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  z-index: 7;
+  letter-spacing: 0.02em;
+}
+.phone-statusbar .bar-right { display: inline-flex; gap: 4px; align-items: center; }
+.phone-statusbar .bar-right .battery {
+  display: inline-block;
+  font-size: 9px;
+  background: #3bb34a;
+  color: #000;
+  font-weight: 600;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+/* Nod app UI */
+.nod-ui {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(10, 9, 8, 0.6) 0%, rgba(10, 9, 8, 0.05) 20%, rgba(10, 9, 8, 0.15) 50%, rgba(10, 9, 8, 0.85) 100%),
+    url('assets/nod-home.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  padding: 44px 22px 24px;
+  font-family: var(--sans);
+}
+.nod-ui::before {
+  /* Fallback tint when the jpg is missing */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(232, 184, 79, 0.16), transparent 55%),
+    linear-gradient(180deg, #1c160f 0%, #2a1e12 55%, #0f0a07 100%);
+  z-index: -1;
+}
+.nod-trinity {
+  display: grid;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: 32px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 400;
+}
+.nod-trinity-item {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  transition: opacity 0.8s ease, color 0.8s ease;
+  opacity: 0.4;
+}
+.nod-trinity-item.is-on { opacity: 1; color: #fff; }
+.nod-trinity-item .glyph {
+  font-size: 22px;
+  filter: saturate(0.8);
+}
+.nod-wordmark {
+  margin-top: 18px;
+  font-family: var(--sans);
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
+}
+.nod-wordmark .o {
+  color: var(--amber);
+  display: inline-block;
+  transform: translateY(-1px);
+}
+.nod-prompt {
+  margin-top: auto;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+.nod-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+.nod-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  color: #fff;
+  cursor: none;
+  transition: transform 0.2s ease;
+}
+.nod-btn:hover { transform: translateY(-2px); }
+.nod-btn-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #1a1411;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+.nod-btn-icon.is-hero { box-shadow: 0 4px 16px rgba(232, 184, 79, 0.45); }
+.nod-btn-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  text-align: center;
+}
+.nod-btn-sub {
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1;
+}
+.nod-footer {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Side notes to the right of the phone */
+.phone-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 8px;
+  color: rgba(245, 241, 232, 0.88);
+  max-height: 100%;
+  overflow: auto;
+}
+.phone-notes::-webkit-scrollbar { width: 4px; }
+.phone-notes::-webkit-scrollbar-thumb { background: rgba(232, 184, 79, 0.25); border-radius: 2px; }
+.phone-notes .card-split-title { font-size: 30px; }
+.phone-notes .card-split-sub { font-size: 13.5px; }
+.phone-notes .card-split-list { font-size: 11.5px; gap: 5px; }
+
+@media (max-width: 780px) {
+  .phone-stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding: 20px; gap: 16px; }
+  .phone { width: 200px; height: 400px; justify-self: center; }
+  .phone-notes { padding-right: 0; }
 }
 
 /* Archive card navigation buttons on edges */
@@ -1019,14 +1427,14 @@ body.stage-archive .vignette {
 }
 .bg-item-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.16em;
   color: var(--ink-3);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .bg-item-value {
-  font-size: 15.5px;
+  font-size: 17px;
   color: var(--ink-2);
   line-height: 1.55;
 }
@@ -1035,20 +1443,20 @@ body.stage-archive .vignette {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 .now-list li {
   display: flex;
-  gap: 14px;
-  font-size: 15.5px;
+  gap: 16px;
+  font-size: 17px;
   color: var(--ink-2);
   align-items: baseline;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .now-list li::before {
   content: '→';
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--accent);
   flex-shrink: 0;
 }
@@ -1060,24 +1468,24 @@ body.stage-archive .vignette {
 }
 .contact-link {
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--ink-2);
   border-bottom: 1px solid var(--border);
-  padding-bottom: 2px;
+  padding-bottom: 3px;
   letter-spacing: 0.04em;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 .contact-link:hover { color: var(--accent); border-color: var(--accent); }
 
 .coda-footer {
-  max-width: 720px;
+  max-width: 780px;
   margin: 0 auto;
   padding: 48px 24px 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.14em;
   color: var(--ink-3);
   text-transform: uppercase;
@@ -1095,9 +1503,9 @@ body.stage-archive .vignette {
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
 
-  .card-stack { width: 92vw; height: 62vh; max-height: 480px; }
-  .card-front { padding: 26px 24px; }
-  .card-name { font-size: clamp(34px, 10vw, 48px); }
+  .card-stack { width: 92vw; height: 66vh; max-height: 520px; }
+  .card-front { padding: 30px 26px; }
+  .card-name { font-size: clamp(36px, 10vw, 52px); }
   .archive-nav.prev { left: 14px; }
   .archive-nav.next { right: 14px; }
   .archive-label, .archive-skip { font-size: 9px; }
@@ -1265,11 +1673,13 @@ html:not(.js) .card-back { display: none; }
 
     <ul class="thread-map" aria-label="How the work maps to the manifesto">
       <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a> · a live counter in your editor</li>
-      <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="2">Cleanroll</a> · six windows collapsed into one run</li>
-      <li><span class="thread-tag">Foreign menu anxiety</span> → <a href="#archive" data-jump="3">Nod</a> · scan, decide in 30 s, eat</li>
-      <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="4">CyberTao</a> · an essay site, not a tool</li>
-      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="5">FFP</a> · a private tracker for miles &amp; status</li>
-      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="6">Pedalling</a> · a route map of how I got here</li>
+      <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">YVR e-GSE</a> · a Transformer + PPO for the tarmac</li>
+      <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a> · six windows collapsed into one run</li>
+      <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a> · scan, decide in 30 s, eat</li>
+      <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a> · an essay site, not a tool</li>
+      <li><span class="thread-tag">Road-test booking lottery</span> → <a href="#archive" data-jump="6">FlashSlot</a> · a watcher that pings when ICBC opens a slot</li>
+      <li><span class="thread-tag">Points programs sprawl</span> → <a href="#archive" data-jump="7">FFP</a> · a private tracker for miles &amp; status</li>
+      <li><span class="thread-tag">Drift in my own story</span> → <a href="#archive" data-jump="8">Pedalling</a> · a route map of how I got here</li>
     </ul>
   </section>
 
@@ -1327,12 +1737,65 @@ html:not(.js) .card-back { display: none; }
               </dl>
               <div class="spec-note reveal reveal-5">Press <span style="color:var(--amber)">F</span> again to flip back</div>
             </div>
-            <div class="card-back-meta reveal reveal-6">01 / 06 · DevValue</div>
+            <div class="card-back-meta reveal reveal-6">01 / 08 · DevValue</div>
           </div>
         </article>
 
-        <!-- Plate 02 — Cleanroll -->
+        <!-- Plate 02 — YVR e-GSE Capstone -->
         <article class="card" data-plate="2"
+                 data-href="https://www.linkedin.com/in/chriszhang">
+          <div class="card-face card-front">
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Manual airport charging schedules</span>
+            </div>
+            <div class="card-name">YVR e-GSE</div>
+            <p class="card-desc">
+              Capstone with Vancouver Airport. A Transformer forecasts each
+              aircraft's energy demand, a PPO agent schedules the chargers —
+              end-to-end ML for the physical infrastructure that moves planes.
+              90 % coverage, 9.2 % gain over the heuristic baseline.
+            </p>
+            <div class="card-footer">
+              <span class="card-status status-demo">Capstone</span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for demo</span>
+            </div>
+          </div>
+          <div class="card-face card-back">
+            <a class="card-back-open reveal reveal-1" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">↗ LinkedIn post</a>
+            <div class="card-split reveal reveal-2">
+              <div class="card-split-media card-split-media-poster" aria-label="YVR e-GSE simulation — video coming soon">
+                <div class="poster-title">e-GSE · Simulation</div>
+                <div class="poster-sub">Transformer forecaster +<br>PPO charging scheduler</div>
+                <div class="poster-badge">Video drops with LinkedIn post</div>
+              </div>
+              <div class="card-split-info">
+                <div class="card-split-kicker">YVR · MS Capstone · Apr 2026</div>
+                <div class="card-split-title">e-GSE Charging Optimizer</div>
+                <div class="card-split-sub">
+                  Built with YVR's electric ground-support team. Two models
+                  run together: a Transformer predicts energy demand per
+                  aircraft, a PPO policy picks charger + timeslot so every
+                  GSE unit is ready when the gate needs it.
+                </div>
+                <ul class="card-split-list">
+                  <li><strong>90 %</strong> coverage across a full day of gate ops</li>
+                  <li><strong>9.2 %</strong> efficiency gain vs. heuristic baseline</li>
+                  <li>Transformer forecaster · PPO scheduler (PyTorch)</li>
+                  <li>Sim built for YVR's charger topology &amp; flight schedule</li>
+                </ul>
+                <a class="card-split-cta" href="https://www.linkedin.com/in/chriszhang" target="_blank" rel="noopener">Read the write-up ↗</a>
+                <div class="card-split-note">Collaborators: YVR · Northeastern MSCS</div>
+              </div>
+            </div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-3">02 / 08 · YVR e-GSE</div>
+          </div>
+        </article>
+
+        <!-- Plate 03 — Cleanroll (split view: short video + try-app) -->
+        <article class="card" data-plate="3"
                  data-href="https://cleanroll.onrender.com/setup">
           <div class="card-face card-front">
             <div class="card-friction">
@@ -1352,25 +1815,44 @@ html:not(.js) .card-back { display: none; }
             </div>
           </div>
           <div class="card-face card-back">
-            <a class="card-back-open reveal reveal-1" href="https://cleanroll.onrender.com/setup" target="_blank" rel="noopener">↗ try the app</a>
-            <iframe class="card-back-iframe reveal reveal-2"
-                    data-src="https://www.loom.com/embed/5e0f9e11729b40e28ee022197ddde683?hideEmbedTopBar=true&autoplay=0"
-                    title="Cleanroll demo (Loom)"
-                    loading="lazy"
-                    frameborder="0"
-                    allow="fullscreen; clipboard-write"
-                    allowfullscreen></iframe>
-            <div class="card-back-meta reveal reveal-3">02 / 06 · Cleanroll · 2-minute demo</div>
+            <div class="card-split reveal reveal-2">
+              <div class="card-split-media">
+                <iframe data-src="https://www.loom.com/embed/5e0f9e11729b40e28ee022197ddde683?hideEmbedTopBar=true&autoplay=0&muted=1&hide_owner=1&hide_share=1&hide_title=1"
+                        title="Cleanroll demo (Loom)"
+                        loading="lazy"
+                        frameborder="0"
+                        allow="clipboard-write"></iframe>
+              </div>
+              <div class="card-split-info">
+                <div class="card-split-kicker">Cleanroll · Beta · Render</div>
+                <div class="card-split-title">Payroll, as one run</div>
+                <div class="card-split-sub">
+                  The one-bookkeeper company spends a full morning bouncing
+                  between six windows just to pay people. Cleanroll collapses
+                  that into one guided flow — setup, run, signed stub, CRA-ready.
+                </div>
+                <ul class="card-split-list">
+                  <li>CPP / EI / QPP · federal &amp; provincial tax</li>
+                  <li>Signed pay stubs · CRA-ready exports</li>
+                  <li>Designed for one-bookkeeper Canadian SMBs</li>
+                  <li>Stack: FastAPI · Postgres · Render · React</li>
+                </ul>
+                <a class="card-split-cta" href="https://cleanroll.onrender.com/setup" target="_blank" rel="noopener">Try the app ↗</a>
+                <div class="card-split-note">Onboarding first Canadian small businesses</div>
+              </div>
+            </div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-3">03 / 08 · Cleanroll</div>
           </div>
         </article>
 
-        <!-- Plate 03 — Nod -->
-        <article class="card" data-plate="3">
+        <!-- Plate 04 — Nod (live iPhone mockup, Plan A) -->
+        <article class="card" data-plate="4">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Friction</span>
               <span class="ftag-arrow">→</span>
-              <span class="ftag-name">Foreign menu anxiety</span>
+              <span class="ftag-name">Foreign-menu decision anxiety</span>
             </div>
             <div class="card-name">Nod</div>
             <p class="card-desc">
@@ -1380,35 +1862,78 @@ html:not(.js) .card-back { display: none; }
             </p>
             <div class="card-footer">
               <span class="card-status status-testflight">TestFlight</span>
-              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for a live look</span>
             </div>
           </div>
           <div class="card-face card-back">
-            <div class="card-spec">
-              <div class="spec-title reveal reveal-1">Nod</div>
-              <div class="spec-sub reveal reveal-2">
-                Built on a manager-worker multi-agent pattern: an OCR "Eye"
-                digitizes the menu, a "Brain" does cultural translation
-                (not literal), and a "Gatekeeper" critic blocks anything
-                that violates your allergies — even if the Brain suggested it.
+            <div class="phone-stage reveal reveal-2">
+              <div class="phone" role="img" aria-label="Nod iPhone mockup">
+                <div class="phone-screen">
+                  <div class="phone-notch"></div>
+                  <div class="phone-statusbar">
+                    <span>10:57</span>
+                    <span class="bar-right">
+                      <span aria-hidden="true">·:·</span>
+                      <span aria-hidden="true">⌃</span>
+                      <span class="battery">100</span>
+                    </span>
+                  </div>
+                  <div class="nod-ui" data-role="nod-ui">
+                    <div class="nod-trinity">
+                      <span class="nod-trinity-item is-on" data-step="0">Snap <span class="glyph" aria-hidden="true">📷</span></span>
+                      <span class="nod-trinity-item" data-step="1">Decode <span class="glyph" aria-hidden="true">🌐</span></span>
+                      <span class="nod-trinity-item" data-step="2">Trust <span class="glyph" aria-hidden="true">👆</span></span>
+                    </div>
+                    <div class="nod-wordmark">N<span class="o">O</span>D</div>
+
+                    <div class="nod-prompt">How are you dining today?</div>
+                    <div class="nod-actions">
+                      <button class="nod-btn" type="button" aria-label="Grand Feast">
+                        <span class="nod-btn-icon" aria-hidden="true">👥</span>
+                        <span class="nod-btn-title">GRAND<br>FEAST</span>
+                        <span class="nod-btn-sub">Sharing table</span>
+                      </button>
+                      <button class="nod-btn" type="button" aria-label="Agent Chat">
+                        <span class="nod-btn-icon is-hero" aria-hidden="true">💬</span>
+                        <span class="nod-btn-title">AGENT<br>CHAT</span>
+                        <span class="nod-btn-sub">AI Consensus</span>
+                      </button>
+                      <button class="nod-btn" type="button" aria-label="Solo Tasting">
+                        <span class="nod-btn-icon" aria-hidden="true">👤</span>
+                        <span class="nod-btn-title">SOLO<br>TASTING</span>
+                        <span class="nod-btn-sub">Just for you</span>
+                      </button>
+                    </div>
+                    <div class="nod-footer">⎔ Join a Table</div>
+                  </div>
+                </div>
               </div>
-              <div class="spec-divider reveal reveal-3"></div>
-              <dl class="spec-list reveal reveal-4">
-                <dt>Platform</dt><dd>iOS 26.1 · SwiftUI · Liquid Glass UI</dd>
-                <dt>Eye</dt><dd>Gemini 3.0 Flash — layout + currency aware OCR</dd>
-                <dt>Brain</dt><dd>Gemini 3.0 Pro — Sommelier persona, knapsack pick</dd>
-                <dt>Gatekeeper</dt><dd>Allergy-aware critic agent (always on)</dd>
-                <dt>Status</dt><dd>TestFlight · invite on request</dd>
-              </dl>
-              <div class="spec-note reveal reveal-5">Repo name: Ambrosia · open to private testers</div>
+              <div class="phone-notes">
+                <div class="card-split-kicker">Nod · iOS · TestFlight</div>
+                <div class="card-split-title">Ambrosia</div>
+                <div class="card-split-sub">
+                  A manager-worker agent loop. An OCR "Eye" digitises the
+                  menu, a "Brain" translates culturally (not literally),
+                  and a "Gatekeeper" critic blocks anything that violates
+                  your allergies — even when the Brain suggested it.
+                </div>
+                <ul class="card-split-list">
+                  <li>Eye · Gemini 3.0 Flash · layout + currency aware OCR</li>
+                  <li>Brain · Gemini 3.0 Pro · sommelier persona, knapsack pick</li>
+                  <li>Gatekeeper · allergy-aware critic (always on)</li>
+                  <li>Platform: iOS 26.1 · SwiftUI · Liquid Glass UI</li>
+                </ul>
+                <div class="card-split-note">Pre-release mockup · not final UI</div>
+              </div>
             </div>
-            <div class="card-back-meta reveal reveal-6">03 / 06 · Nod</div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-3">04 / 08 · Nod</div>
           </div>
         </article>
 
-        <!-- Plate 04 — CyberTao -->
+        <!-- Plate 05 — CyberTao -->
         <article class="card"
-                 data-plate="4"
+                 data-plate="5"
                  data-href="https://cybertao.netlify.app">
           <div class="card-face card-front">
             <div class="card-friction">
@@ -1435,12 +1960,56 @@ html:not(.js) .card-back { display: none; }
                     loading="lazy"
                     referrerpolicy="no-referrer"
                     sandbox="allow-scripts allow-same-origin"></iframe>
-            <div class="card-back-meta reveal reveal-3">04 / 06 · CyberTao</div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-3">05 / 08 · CyberTao</div>
           </div>
         </article>
 
-        <!-- Plate 05 — FFP -->
-        <article class="card" data-plate="5">
+        <!-- Plate 06 — ICBC FlashSlot -->
+        <article class="card" data-plate="6">
+          <div class="card-face card-front">
+            <div class="card-friction">
+              <span class="ftag-key">Friction</span>
+              <span class="ftag-arrow">→</span>
+              <span class="ftag-name">Road-test booking lottery</span>
+            </div>
+            <div class="card-name">FlashSlot</div>
+            <p class="card-desc">
+              ICBC releases road-test slots in unpredictable bursts. Refreshing
+              the page is a part-time job. FlashSlot watches the booking flow
+              for me and pings my phone the second a seat opens in my window.
+            </p>
+            <div class="card-footer">
+              <span class="card-status status-private">Personal</span>
+              <span class="card-flip-hint"><span class="key">F</span> flip for details</span>
+            </div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-spec">
+              <div class="spec-title reveal reveal-1">FlashSlot</div>
+              <div class="spec-sub reveal reveal-2">
+                A tiny headless watcher for ICBC's road-test booking. It logs
+                in, scans the calendar for open slots within my allowed window,
+                dedupes what it has already told me, and pushes a notification
+                when something new shows up. Hours saved → attention returned.
+              </div>
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
+                <dt>Role</dt><dd>Personal agent · runs on my own machine</dd>
+                <dt>Watches</dt><dd>ICBC booking calendar, filtered by centre + date range</dd>
+                <dt>Alerts</dt><dd>Phone push the moment a new slot appears</dd>
+                <dt>Stack</dt><dd>Python · Playwright · cron · Pushover</dd>
+                <dt>Status</dt><dd>Private · used for my own license path</dd>
+              </dl>
+              <div class="spec-note reveal reveal-5">The manifesto in one file: notice the friction → build the tool → get your attention back.</div>
+            </div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-6">06 / 08 · FlashSlot</div>
+          </div>
+        </article>
+
+        <!-- Plate 07 — FFP -->
+        <article class="card" data-plate="7">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Friction</span>
@@ -1475,13 +2044,14 @@ html:not(.js) .card-back { display: none; }
               </dl>
               <div class="spec-note reveal reveal-5">Happy to give a walkthrough over coffee</div>
             </div>
-            <div class="card-back-meta reveal reveal-6">05 / 06 · FFP</div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-6">07 / 08 · FFP</div>
           </div>
         </article>
 
-        <!-- Plate 06 — Pedalling -->
+        <!-- Plate 08 — Pedalling -->
         <article class="card"
-                 data-plate="6">
+                 data-plate="8">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">About</span>
@@ -1516,7 +2086,8 @@ html:not(.js) .card-back { display: none; }
               </dl>
               <div class="spec-note reveal reveal-5">Drafting · open soon at /pedalling</div>
             </div>
-            <div class="card-back-meta reveal reveal-6">06 / 06 · Pedalling</div>
+            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
+            <div class="card-back-meta reveal reveal-6">08 / 08 · Pedalling</div>
           </div>
         </article>
 
@@ -1525,7 +2096,7 @@ html:not(.js) .card-back { display: none; }
       <div class="archive-plate-num">
         <strong data-role="plate-current">01</strong>
         <span class="sep">/</span>
-        <span>06</span>
+        <span>08</span>
       </div>
     </div>
   </section>
@@ -1791,7 +2362,7 @@ const Cursor = (() => {
   window.addEventListener('mousemove', (e) => moveTo(e.clientX, e.clientY), { passive: true });
 
   /* Hover affordance */
-  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, [data-role="prev"], [data-role="next"]';
+  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .nod-btn, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(hoverSelector)) el.classList.add('is-hover');
   });
@@ -1964,8 +2535,10 @@ const Archive = (() => {
   }
 
   function lazyLoadFrame(card) {
-    const frame = card.querySelector('iframe[data-src]');
-    if (frame && !frame.src) frame.src = frame.dataset.src;
+    /* A card can now hold multiple iframes (split-view), so load them all */
+    card.querySelectorAll('iframe[data-src]').forEach((frame) => {
+      if (!frame.src) frame.src = frame.dataset.src;
+    });
   }
 
   function flipActive() {
@@ -1980,7 +2553,12 @@ const Archive = (() => {
   /* Click on card to flip */
   cards.forEach(card => {
     card.addEventListener('click', (e) => {
-      /* If an anchor/button inside was clicked, let it pass through */
+      /* A dedicated flip-back button always flips, even though it's a button */
+      if (e.target.closest('[data-role="flip-back"]')) {
+        flipActive();
+        return;
+      }
+      /* If another anchor/button inside was clicked, let it pass through */
       if (e.target.closest('a, button')) return;
       if (!card.classList.contains('is-active')) {
         const idx = cards.indexOf(card);
@@ -1998,7 +2576,7 @@ const Archive = (() => {
     if (prefersReducedMotion) { setActive(idx); return; }
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    const topbarH = window.innerWidth > 880 ? 48 : 0;
+    const topbarH = window.innerWidth > 880 ? 52 : 0;
     const effVh = vh - topbarH;
     const total = section.offsetHeight - effVh;
     const targetProgress = (idx + 0.4) / cards.length;
@@ -2049,7 +2627,7 @@ const Archive = (() => {
     if (prefersReducedMotion) return;
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    const topbarH = window.innerWidth > 880 ? 48 : 0;
+    const topbarH = window.innerWidth > 880 ? 52 : 0;
     const effVh = vh - topbarH;
     const total = rect.height - effVh;
     const traveled = clamp(topbarH - rect.top, 0, total);
@@ -2074,6 +2652,48 @@ const Archive = (() => {
   setTimeout(updateFromScroll, 50);
 
   return { setActive, flipActive, navigateTo };
+})();
+
+/* ==========================================================================
+   Nod mockup — cycle Snap → Decode → Trust highlight so the phone feels
+   alive even before the user taps anything. Runs only when the Nod card is
+   on-screen to avoid wasted ticks.
+   ========================================================================== */
+(function NodCycle() {
+  const root = document.querySelector('[data-role="nod-ui"]');
+  if (!root || prefersReducedMotion) return;
+  const items = root.querySelectorAll('.nod-trinity-item');
+  if (!items.length) return;
+  let i = 0;
+  let timer = null;
+
+  function tick() {
+    items.forEach((el, idx) => el.classList.toggle('is-on', idx === i));
+    i = (i + 1) % items.length;
+  }
+
+  function start() {
+    if (timer) return;
+    tick();
+    timer = setInterval(tick, 1800);
+  }
+  function stop() {
+    if (!timer) return;
+    clearInterval(timer);
+    timer = null;
+  }
+
+  /* IntersectionObserver so the cycle only burns CPU when visible. */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) start(); else stop();
+      });
+    }, { threshold: 0.25 });
+    io.observe(root);
+  } else {
+    start();
+  }
 })();
 
 /* ==========================================================================
