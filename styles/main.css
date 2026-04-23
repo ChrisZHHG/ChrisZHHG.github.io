@@ -750,6 +750,24 @@ html, body, body * { cursor: none !important; }
   gap: clamp(12px, 1.4vh, 20px);
   min-height: 0;
 }
+.card-front-dual-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr);
+  gap: clamp(16px, 2.2vw, 30px);
+  align-items: stretch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.card-front-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.card-front-visual {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
 .card-back  { transform: rotateY(180deg); background: #0e0b08; display: flex; align-items: center; justify-content: center; }
 
 /* Media-first front layout for cards that should attract via demo video. */
@@ -842,11 +860,12 @@ html, body, body * { cursor: none !important; }
 
 .card[data-plate="2"] .card-desc,
 .card[data-plate="5"] .card-desc {
-  margin-bottom: 0;
+  margin-bottom: 12px;
+  max-width: 44ch;
 }
 .card[data-plate="2"] .card-footer,
 .card[data-plate="5"] .card-footer {
-  margin-top: auto;
+  margin-top: 8px;
 }
 
 .card-status {
@@ -1493,6 +1512,13 @@ html, body, body * { cursor: none !important; }
   line-height: 1.12;
   color: rgba(226, 236, 246, 0.86);
   text-align: right;
+}
+
+@media (max-width: 980px) {
+  .card-front-dual-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(150px, 34vh);
+  }
 }
 @keyframes stoneFloat {
   0%, 100% { transform: translate(-50%, -50%) rotate(-3deg) scale(1); filter: blur(0px); }
