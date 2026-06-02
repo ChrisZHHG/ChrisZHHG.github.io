@@ -5,7 +5,12 @@ export const Capture = {
   maybeCaptureAtPoint() {},
 };
 
-export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
+export function initArchive({ Audio, Stage, isReducedMotion, clamp, scrollTo }) {
+  // Route programmatic scrolls through the Lenis spine when provided, so the
+  // smooth-scroll engine stays the single source of truth (no native/Lenis fight).
+  const scrollToY = typeof scrollTo === 'function'
+    ? (top) => scrollTo(top)
+    : (top) => window.scrollTo({ top, behavior: 'smooth' });
   const section = document.getElementById('archive');
   const stack = document.querySelector('[data-role="card-stack"]');
   if (!section || !stack) throw new SkipInitError('missing archive section or card stack');
@@ -35,9 +40,16 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
     idx = clamp(idx, 0, cards.length - 1);
     if (idx === current) return;
     cards.forEach((card, i) => {
+      // Remove old state classes
       card.classList.remove('is-active', 'is-prev', 'is-flipped');
       if (i === idx) card.classList.add('is-active');
       else if (i < idx) card.classList.add('is-prev');
+      // Set coverflow offset CSS custom props:
+      //   --o  = signed offset (negative = left side, positive = right side)
+      //   --ao = absolute offset (always >= 0, used for depth/dimming)
+      const o = i - idx;
+      card.style.setProperty('--o', o);
+      card.style.setProperty('--ao', Math.abs(o));
     });
     current = idx;
     if (plateNum) plateNum.textContent = String(idx + 1).padStart(2, '0');
@@ -45,34 +57,21 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
     lazyLoadFrame(cards[idx]);
   }
 
-  function flipActive() {
-    const active = cards[current];
-    if (!active) return;
-    active.classList.toggle('is-flipped');
-    if (!Audio.muted) {
-      const onFlipMotionDone = (e) => {
-        if (e.propertyName !== 'transform') return;
-        Audio.shutter();
-      };
-      active.addEventListener('transitionend', onFlipMotionDone, { once: true });
-    }
-    Capture.markFrame('archive');
-  }
+  // flipActive kept as a stub for API compatibility but does nothing
+  function flipActive() { /* flip is dead — no-op */ }
 
   cards.forEach((card) => {
     card.addEventListener('click', (e) => {
-      if (e.target.closest('[data-role="flip-back"]')) {
-        flipActive();
-        return;
-      }
-      if (e.target.closest('a, button')) return;
+      // Ignore clicks on interactive elements inside the focal card
+      if (e.target.closest('a, button, input, select, textarea')) return;
+      // If not focal, focus it (coverflow navigation)
       if (!card.classList.contains('is-active')) {
         const idx = cards.indexOf(card);
         if (!Audio.muted) Audio.softTick();
         setActive(idx);
         return;
       }
-      flipActive();
+      // Clicking the focal card body does nothing (content is already shown)
     });
   });
 
@@ -88,7 +87,7 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
     const targetProgress = (idx + 0.4) / cards.length;
     const sectionTopAbs = window.scrollY + rect.top;
     const targetY = sectionTopAbs + targetProgress * total - topbarH;
-    window.scrollTo({ top: targetY, behavior: 'smooth' });
+    scrollToY(targetY);
   }
 
   const onPrev = () => navigateTo(current - 1, 'button');
@@ -100,10 +99,7 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
     if (Stage.current !== 'archive') return;
     if (e.key === 'ArrowRight' || e.key === 'Right') { e.preventDefault(); navigateTo(current + 1, 'keyboard'); }
     else if (e.key === 'ArrowLeft' || e.key === 'Left') { e.preventDefault(); navigateTo(current - 1, 'keyboard'); }
-    else if (e.key.toLowerCase() === 'f' || (e.code === 'Space' && Stage.current === 'archive')) {
-      e.preventDefault();
-      flipActive();
-    }
+    // F key and Space: flip is dead — no longer bound
   };
   window.addEventListener('keydown', onKeydown);
 
@@ -120,10 +116,8 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp }) {
     const dy = e.changedTouches[0].clientY - touchStartY;
     if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
       navigateTo(current + (dx < 0 ? 1 : -1), 'swipe');
-    } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
-      if (e.target.closest('a, button')) return;
-      flipActive();
     }
+    // Tap on focal card: flip is dead — do nothing (content already visible)
   };
   stack.addEventListener('touchend', onTouchEnd);
 

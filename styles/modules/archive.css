@@ -74,60 +74,230 @@
 }
 .archive-plate-num strong { font-weight: 500; color: #e8e3d8; }
 
+/* ==========================================================================
+   CINEMA CAROUSEL — coverflow via CSS custom prop --o (offset from focal).
+   archive.js sets card.style.setProperty('--o', i - activeIndex) on each card.
+   o = 0 → focal (bright, full content); o ≠ 0 → latent (dim, compact teaser).
+   ========================================================================== */
+
 .card-stack {
   position: relative;
-  width: min(1560px, 82vw);
-  height: min(860px, 88vh);
-  max-height: 900px;
+  /* Narrower than the viewport so the flanking film cells have room to peek
+     at the sides — the carousel needs side gutters to read. */
+  width: min(1180px, 66vw);
+  height: min(820px, 84vh);
+  max-height: 880px;
+  /* Perspective lives here so transform-style: preserve-3d on children works */
+  perspective: 1700px;
 }
 
+/* Each card is absolutely positioned; driven by --o (signed) and --ao (absolute).
+   JS sets both: card.style.setProperty('--o', i - idx) and '--ao', Math.abs(i-idx).
+   Initial defaults cover the first paint before JS runs. */
 .card {
+  --o: 1;   /* signed offset from focal (JS sets this) */
+  --ao: 1;  /* absolute offset = |o| (JS sets this too) */
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
-  transition: opacity 0.22s var(--ease-out), transform 0.24s var(--ease-out);
-  opacity: 0;
+  transition:
+    transform 0.34s cubic-bezier(.22,1,.36,1),
+    filter     0.34s ease,
+    opacity    0.34s ease;
+
+  /* Coverflow position: lateral offset, depth recede, canted angle.
+     Neighbours sit close enough to flank the focal cell and read as a carousel. */
+  transform:
+    translateX(calc(var(--o) * 72%))
+    translateZ(calc(var(--ao) * -200px))
+    rotateY(calc(var(--o) * -34deg))
+    scale(0.62);
+
+  /* Depth of field: latent cells are dimmer and blur MORE the farther they sit
+     (bokeh). Focal cell (below) overrides filter to none = the sharp focal plane. */
+  filter: brightness(0.5) saturate(0.6) blur(calc(var(--ao) * 2px));
+
+  /* Neighbours clearly visible; fade out only at |o|>=3 */
+  opacity: clamp(0, 1.25 - var(--ao) * 0.42, 1);
+
+  /* z-index: cards closer to focal sit on top */
+  z-index: calc(10 - var(--ao));
+
+  /* Non-focal cards are not interactive (but we keep a hit layer below) */
   pointer-events: none;
-  /* Default position: slid off to the right */
-  transform: translateX(60%) scale(0.9) rotateY(0);
 }
 
-.card.is-prev {
-  opacity: 0;
-  transform: translateX(-60%) scale(0.9) rotateY(0);
-}
-
+/* Focal card (o = 0) */
 .card.is-active {
+  --o: 0;
+  transform: translateX(0) translateZ(0) rotateY(0) scale(1);
+  filter: none;
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(0) scale(1) rotateY(0);
+  z-index: 20;
 }
 
-.card.is-active.is-flipped {
-  transform: translateX(0) scale(1) rotateY(180deg);
+/* Latent cards need pointer-events so clicking focuses them */
+.card:not(.is-active) {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
+/* Remove is-prev and is-flipped — no longer used for positioning */
+/* (archive.js still sets is-prev for legibility; CSS ignores it for layout) */
+
+/* -----------------------------------------------------------------------
+   CARD FACES — flat layout (no 3D flip).
+   Both .card-front and .card-back sit in normal flow stacked via display.
+   On focal card: front teaser is hidden, back content is shown.
+   On latent cards: back content is hidden, only compact teaser visible.
+   ----------------------------------------------------------------------- */
+
+/* Shared card face: full-size rounded panel */
 .card-face {
   position: absolute;
   inset: 0;
   border-radius: 6px;
   overflow: hidden;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   background: linear-gradient(162deg, #221d18 0%, #15110e 100%);
   box-shadow:
     0 50px 90px -24px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(236, 230, 217, 0.07) inset;
+  /* backface-visibility irrelevant (no 3D flip), but keep for compat */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
+/* --- LATENT CARD LAYOUT: only .card-front shown, compact teaser only --- */
+
+/* card-front: always on top, full area; on latent cards shows the teaser */
 .card-front {
+  z-index: 2;
   padding: 42px 48px;
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 1.4vh, 20px);
   min-height: 0;
+  /* Visible by default (for latent cards) */
+  opacity: 1;
+  transition: opacity 0.2s ease;
 }
-.card-front-dual-main {
+
+/* card-back: behind front; revealed when focal, hidden when latent */
+.card-back {
+  z-index: 1;
+  background: #0e0b08;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Remove the old rotateY(180deg) — content is now in normal plane */
+  /* Hidden on non-focal cards */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+/* On focal card: show back content, hide front teaser */
+.card.is-active .card-back {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 3; /* above front */
+}
+
+/* Hide the full front face on focal card (back content replaces it) */
+.card.is-active .card-front {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* -----------------------------------------------------------------------
+   FILM-FRAME SKIN (CLAUDE.md §9) — the FORM is a 35mm frame, the CONTENT is
+   real & interactive. The focal card is dressed as a film cell: dark sprocket
+   strips (perforations) top & bottom, the live demo framed in the window.
+   ----------------------------------------------------------------------- */
+.card.is-active .card-back {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  /* warm film-base rails frame the image window left+right */
+  box-shadow:
+    inset 0 0 0 1px rgba(205, 184, 143, 0.10),
+    inset 8px 0 0 -4px rgba(10, 8, 6, 0.9),
+    inset -8px 0 0 -4px rgba(10, 8, 6, 0.9);
+}
+/* Every visible cell wears the sprocket strips → the carousel reads as one
+   continuous film: focal cell shows live content, latent cells show the teaser. */
+.card.is-active .card-back::before,
+.card.is-active .card-back::after,
+.card:not(.is-active) .card-front::before,
+.card:not(.is-active) .card-front::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 34px;
+  z-index: 6;
+  pointer-events: none;
+  /* dark film base */
+  background-color: #0b0907;
+  /* row of rounded amber perforations (35mm sprocket holes) */
+  background-image: radial-gradient(circle at center, #d4be96 0 6px, rgba(0, 0, 0, 0) 7.5px);
+  background-size: 34px 100%;
+  background-position: center;
+  background-repeat: repeat-x;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.55);
+}
+.card.is-active .card-back::before,
+.card:not(.is-active) .card-front::before { top: 0; }
+.card.is-active .card-back::after,
+.card:not(.is-active) .card-front::after { bottom: 0; }
+
+/* On latent cards: hide back content completely */
+.card:not(.is-active) .card-back {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Compact teaser layout — on latent cards show name + friction centered */
+.card:not(.is-active) .card-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+
+/* On latent cards hide heavy content — show only name + friction */
+.card:not(.is-active) .card-desc,
+.card:not(.is-active) .card-footer,
+.card:not(.is-active) .card-front-visual,
+.card:not(.is-active) .cybertao-stone-stage {
+  display: none;
+}
+
+/* Collapse the dual-main grid into a single column on latent cards
+   (for plate 2 where the name lives inside card-front-dual-main) */
+.card:not(.is-active) .card-front-dual-main {
+  display: block; /* override grid → single block, shows only card-front-copy */
+}
+.card:not(.is-active) .card-front-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* On latent cards: compact name */
+.card:not(.is-active) .card-name {
+  font-size: clamp(32px, 5vw, 52px);
+  margin-bottom: 0;
+}
+.card:not(.is-active) .card-friction {
+  margin-bottom: 0;
+  align-self: center;
+}
+
+/* Front dual-main for focal (active) card — on active the front is hidden
+   but for insurance: restore normal layout on active cards */
+.card.is-active .card-front-dual-main {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr);
   gap: clamp(16px, 2.2vw, 30px);
@@ -135,6 +305,9 @@
   min-height: 0;
   flex: 1 1 auto;
 }
+
+/* Normal front layout for ALL cards (used when active — front is at z3 via
+   .card.is-active .card-front override above, but display is block by default) */
 .card-front-copy {
   min-width: 0;
   display: flex;
@@ -145,7 +318,6 @@
   display: flex;
   align-items: stretch;
 }
-.card-back  { transform: rotateY(180deg); background: #0e0b08; display: flex; align-items: center; justify-content: center; }
 
 /* Media-first front layout for cards that should attract via demo video. */
 .card-front-media {
@@ -333,22 +505,10 @@
 .status-demo       { background: rgba(150, 90, 180, 0.18); color: #d2a8e0; border: 1px solid rgba(210, 168, 224, 0.35); }
 .status-private    { background: rgba(140, 140, 140, 0.15); color: #b8b4ab; border: 1px solid rgba(184, 180, 171, 0.3); }
 
-.card-flip-hint {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.22em;
-  color: rgba(236, 230, 217, 0.5);
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.card-flip-hint .key {
-  border: 1px solid rgba(236, 230, 217, 0.35);
-  border-radius: 2px;
-  padding: 2px 7px;
-  font-size: 10.5px;
-}
+/* Flip hint + flip-back button + "press F" note: dead UI — hide permanently */
+.card-flip-hint,
+.card-back-flip,
+.spec-note { display: none !important; }
 
 /* Card back content variants */
 .card-back-iframe {
@@ -437,27 +597,25 @@
   text-align: left;
 }
 
-/* Progressive reveal: hide card-back contents until the card is actually
-   flipped, then fade them in section-by-section so the reader builds the
-   picture instead of getting a wall of text. Delays are tuned to start
-   right as the 0.7s flip is finishing. */
+/* Progressive reveal: fade in back-content when the card becomes active.
+   Stagger delays start right as the card-back fades in (~0.28s). */
 .card-back .reveal {
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.22s var(--ease-out), transform 0.24s var(--ease-out);
+  transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
 }
-.card.is-flipped .card-back .reveal { opacity: 1; transform: translateY(0); }
+.card.is-active .card-back .reveal { opacity: 1; transform: translateY(0); }
 
-/* Stagger steps relative to flip end (~0.55s into the flip) */
-.card.is-flipped .card-back .reveal-1 { transition-delay: 0.55s; }
-.card.is-flipped .card-back .reveal-2 { transition-delay: 0.70s; }
-.card.is-flipped .card-back .reveal-3 { transition-delay: 0.85s; }
-.card.is-flipped .card-back .reveal-4 { transition-delay: 1.00s; }
-.card.is-flipped .card-back .reveal-5 { transition-delay: 1.20s; }
-.card.is-flipped .card-back .reveal-6 { transition-delay: 1.40s; }
+/* Stagger steps — offset from the card-back fade-in (0.28s) */
+.card.is-active .card-back .reveal-1 { transition-delay: 0.10s; }
+.card.is-active .card-back .reveal-2 { transition-delay: 0.20s; }
+.card.is-active .card-back .reveal-3 { transition-delay: 0.32s; }
+.card.is-active .card-back .reveal-4 { transition-delay: 0.44s; }
+.card.is-active .card-back .reveal-5 { transition-delay: 0.56s; }
+.card.is-active .card-back .reveal-6 { transition-delay: 0.70s; }
 
-/* When unflipping, snap everything back instantly so the next flip animates fresh */
-.card:not(.is-flipped) .card-back .reveal { transition-duration: 0s; transition-delay: 0s; }
+/* When leaving active state, snap everything back instantly so next reveal is fresh */
+.card:not(.is-active) .card-back .reveal { transition-duration: 0s; transition-delay: 0s; }
 .spec-title {
   font-family: var(--serif);
   font-size: 42px;
@@ -770,8 +928,8 @@
   opacity: 0;
   z-index: 6;
 }
-.card.is-flipped .phone-glow {
-  animation: phoneSweep 1.8s var(--ease-in-out) 0.08s 1 both;
+.card.is-active .phone-glow {
+  animation: phoneSweep 1.8s var(--ease-in-out) 0.3s 1 both;
 }
 
 /* In-phone tappable regions (screenshot is static; buttons explain the loop). */
@@ -944,11 +1102,11 @@
   opacity: 0.8;
 }
 .card[data-plate="5"]:hover .cybertao-stone,
-.card[data-plate="5"].is-flipped .cybertao-stone {
+.card[data-plate="5"].is-active .cybertao-stone {
   animation: stoneFloat 1.1s var(--ease-in-out) 1;
 }
 .card[data-plate="5"]:hover .cybertao-ring,
-.card[data-plate="5"].is-flipped .cybertao-ring {
+.card[data-plate="5"].is-active .cybertao-ring {
   animation: stoneRing 1.1s var(--ease-in-out) 1;
 }
 .cybertao-stone-copy {
@@ -989,7 +1147,7 @@
     radial-gradient(circle at 48% 46%, rgba(224, 244, 255, 0.18), rgba(62, 120, 140, 0.08) 26%, rgba(0,0,0,0) 64%);
   filter: blur(0px);
 }
-.card[data-plate="5"].is-flipped .cybertao-overload {
+.card[data-plate="5"].is-active .cybertao-overload {
   animation: cybertaoOverload 1.05s ease-out 1;
 }
 @keyframes cybertaoOverload {
@@ -1256,3 +1414,210 @@
 .archive-nav.prev { left: 32px; }
 .archive-nav.next { right: 32px; }
 .archive-nav[disabled] { opacity: 0.2; pointer-events: none; }
+
+/* ==========================================================================
+   FALLBACKS — Mobile + reduced-motion: readable vertical stack
+   On narrow screens or when user prefers no motion, discard the coverflow.
+   All 5 cards become full-width stacked panels with full content visible.
+   ========================================================================== */
+
+/* Shared rules for both fallbacks */
+@media (max-width: 880px), (pointer: coarse) {
+  /* Disable the coverflow mechanism entirely */
+  .card-stack {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    perspective: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  /* All cards: normal flow, full width, auto height */
+  .card {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+    transition: none !important;
+    --o: 0;
+  }
+
+  /* Always show BOTH front and back content (merged view) */
+  .card-face {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Show front content normally */
+  .card-front {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  /* Show back content below front content */
+  .card-back {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+    position: relative !important;
+    min-height: 400px;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  /* Override the latent-card hide rules so all content shows */
+  .card:not(.is-active) .card-desc,
+  .card:not(.is-active) .card-footer,
+  .card:not(.is-active) .card-front-visual,
+  .card:not(.is-active) .cybertao-stone-stage {
+    display: revert;
+  }
+  .card:not(.is-active) .card-front-dual-main {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr);
+  }
+  .card:not(.is-active) .card-front-copy {
+    align-items: flex-start;
+  }
+  .card:not(.is-active) .card-name {
+    font-size: clamp(44px, 6.4vw, 64px);
+    margin-bottom: 18px;
+  }
+  .card:not(.is-active) .card-friction {
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+  .card:not(.is-active) .card-front {
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  /* Always reveal back content (no animation delay) */
+  .card-back .reveal,
+  .card:not(.is-active) .card-back .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Sticky viewport becomes a scrollable container, not sticky-locked */
+  .archive-viewport {
+    position: relative;
+    height: auto;
+    overflow: visible;
+    display: block;
+    padding: 64px 0 48px;
+  }
+
+  /* Section: auto height */
+  .act-archive {
+    height: auto !important;
+  }
+
+  /* Navigation arrows and decorative labels don't suit mobile scroll */
+  .archive-nav { display: none; }
+  .archive-plate-num { display: none; }
+  /* Label and skip link: reposition from absolute to normal flow */
+  .archive-label {
+    position: relative;
+    top: auto; left: auto; right: auto;
+    display: block;
+    margin: 0 16px 4px;
+  }
+  .archive-skip {
+    position: relative;
+    top: auto; left: auto; right: auto;
+    display: block;
+    margin: 0 16px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No 3D transforms, no blur, no coverflow — show a simple readable stack */
+  .card-stack {
+    perspective: none;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  .card {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+    transition: none !important;
+  }
+
+  .card-face { position: relative; overflow: visible; }
+
+  .card-front,
+  .card-back {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+    position: relative !important;
+  }
+
+  .card-back { min-height: 400px; display: flex; align-items: stretch; }
+
+  .card:not(.is-active) .card-desc,
+  .card:not(.is-active) .card-footer,
+  .card:not(.is-active) .card-front-visual,
+  .card:not(.is-active) .cybertao-stone-stage { display: revert; }
+  .card:not(.is-active) .card-front-dual-main { display: grid !important; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr); }
+  .card:not(.is-active) .card-front-copy { align-items: flex-start; }
+  .card:not(.is-active) .card-name { font-size: clamp(44px, 6.4vw, 64px); margin-bottom: 18px; }
+  .card:not(.is-active) .card-friction { margin-bottom: 20px; align-self: flex-start; }
+  .card:not(.is-active) .card-front { align-items: flex-start; justify-content: flex-start; text-align: left; }
+
+  .card-back .reveal,
+  .card:not(.is-active) .card-back .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+  .archive-viewport { position: relative; height: auto; overflow: visible; display: block; padding: 24px 0 48px; }
+  .act-archive { height: auto !important; }
+  .archive-nav { display: none; }
+  .archive-plate-num { display: none; }
+}
+
+/* ==========================================================================
+   MOBILE HEIGHT FIX (C2 release-blocker)
+   The sticky-scroll containers (.act-archive 6.2×vh, .archive-viewport 100vh,
+   .card-stack 84vh) must collapse to content height on small screens, or the
+   stacked cards overflow and overlap the next section. Higher specificity
+   (.act-archive .card-stack) + !important guarantees this wins the cascade.
+   ========================================================================== */
+@media (max-width: 880px), (pointer: coarse) {
+  .act-archive { height: auto !important; min-height: 0 !important; }
+  .act-archive .archive-viewport {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  .act-archive .card-stack {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+  }
+}

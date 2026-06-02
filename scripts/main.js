@@ -4,6 +4,7 @@ import { createAudio, initAudioToggle } from './core/audio.js';
 import { initGrain } from './core/grain.js';
 import { createStage } from './core/stage.js';
 import { createFocalPlane } from './core/focal.js';
+import { createScroll } from './core/scroll.js';
 import { initCursor } from './core/cursor.js';
 import { createHealthMonitor } from './core/health.js';
 import { createBellows } from './core/bellows.js';
@@ -51,6 +52,13 @@ trackDisposable(safeInit('cursor', () => initCursor({
   isReducedMotion: reducedMotion.isReduced,
 }), hooks));
 
+// Smooth-scroll spine (Lenis). Created before the archive so its scrollTo can be
+// injected into the archive's programmatic navigation.
+const Scroll = trackDisposable(safeInit('scroll', () => createScroll({
+  isReducedMotion: reducedMotion.isReduced,
+  isCoarsePointer,
+}), hooks)) || { lenis: null, scrollTo() {}, dispose() {} };
+
 // Bellows oscillator: subtle ±1.5% scale breathing on the leather frame.
 // Starts after cursor (so --cx/--cy are writable) and before gate.
 trackDisposable(safeInit('bellows', () => createBellows({
@@ -64,6 +72,7 @@ const Archive = trackDisposable(safeInit('archive', () => initArchive({
   Stage,
   isReducedMotion: reducedMotion.isReduced,
   clamp,
+  scrollTo: Scroll.scrollTo,
 }), hooks)) || { navigateTo() {}, dispose() {} };
 
 trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));

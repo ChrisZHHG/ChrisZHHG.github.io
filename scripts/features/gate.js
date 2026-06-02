@@ -22,14 +22,17 @@ export function initGate({ body, isReducedMotion }) {
     if (dismissed) return;
     dismissed = true;
     gate.classList.add('is-leaving');
+    gate.setAttribute('aria-hidden', 'true');
     body.classList.remove('is-gated');
     try { localStorage.setItem(VISIT_KEY, '1'); } catch (_) {}
     setTimeout(() => gate.remove(), 750);
   }
 
-  const dismissEvents = ['click', 'touchend', 'keydown'];
+  // "scroll to enter" — wheel/touchmove count as scroll intent. click/key/touchend
+  // still work as fallbacks. All one-shot; whichever fires first dismisses.
+  const dismissEvents = ['click', 'touchend', 'keydown', 'wheel', 'touchmove'];
   dismissEvents.forEach((eventName) => {
-    window.addEventListener(eventName, dismiss, { once: true, capture: true });
+    window.addEventListener(eventName, dismiss, { once: true, capture: true, passive: true });
   });
 
   const failSafeTimer = setTimeout(dismiss, 6000);
