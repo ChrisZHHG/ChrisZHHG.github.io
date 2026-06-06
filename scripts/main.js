@@ -13,6 +13,7 @@ import { initArchive } from './features/archive.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
 import { initInterestFlips } from './features/interests.js';
 import { initThreadJumps, initScrollSpy, initBeforeUnloadFade } from './features/navigation.js';
+import { initAnalytics, showVisitCount } from './features/analytics.js';
 import { runSmokeChecks } from './features/smoke.js';
 import { renderDebugHealthBadge } from './features/debugBadge.js';
 
@@ -81,6 +82,8 @@ trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));
 trackDisposable(safeInit('thread-jumps', () => initThreadJumps(Archive), hooks));
 trackDisposable(safeInit('scroll-spy', () => initScrollSpy(), hooks));
 trackDisposable(safeInit('beforeunload', () => initBeforeUnloadFade(), hooks));
+safeInit('analytics', () => initAnalytics(), hooks);
+safeInit('visit-count', () => showVisitCount(), hooks);
 const smoke = safeInit('smoke', () => runSmokeChecks(), hooks);
 const status = health.report();
 safeInit('debug-badge', () => renderDebugHealthBadge({
