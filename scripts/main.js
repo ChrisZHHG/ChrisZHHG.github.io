@@ -72,6 +72,7 @@ const Archive = trackDisposable(safeInit('archive', () => initArchive({
   Audio,
   Stage,
   isReducedMotion: reducedMotion.isReduced,
+  isCoarsePointer,
   clamp,
   scrollTo: Scroll.scrollTo,
 }), hooks)) || { navigateTo() {}, dispose() {} };

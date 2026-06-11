@@ -5,7 +5,7 @@ export const Capture = {
   maybeCaptureAtPoint() {},
 };
 
-export function initArchive({ Audio, Stage, isReducedMotion, clamp, scrollTo }) {
+export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, clamp, scrollTo }) {
   // Route programmatic scrolls through the Lenis spine when provided, so the
   // smooth-scroll engine stays the single source of truth (no native/Lenis fight).
   const scrollToY = typeof scrollTo === 'function'
@@ -21,15 +21,54 @@ export function initArchive({ Audio, Stage, isReducedMotion, clamp, scrollTo }) 
   const plateNum = document.querySelector('[data-role="plate-current"]');
   if (!cards.length) throw new SkipInitError('no archive cards found');
 
-  let current = -1;
-  let inArchive = false;
-  let archiveDwellT = null;
-
   function lazyLoadFrame(card) {
     card.querySelectorAll('iframe[data-src]').forEach((frame) => {
       if (!frame.src) frame.src = frame.dataset.src;
     });
   }
+
+  // ── STATIC PATH: touch / narrow / reduced-motion ───────────────────────────
+  // The coverflow is a desktop-pointer mechanic. Running it anywhere else was
+  // the root cause of the broken mobile layout: it marks one card `.is-active`
+  // (which then escaped the mobile CSS, rendering its full desktop 2-column
+  // internals) and hijacks scroll. Here we run NO carousel at all — the CSS
+  // lays every card out as a plain vertical document — and only lazy-load each
+  // card's demo iframes as it scrolls into view.
+  const staticStack =
+    isCoarsePointer ||
+    isReducedMotion() ||
+    window.matchMedia('(max-width: 880px)').matches;
+  if (staticStack) {
+    let io = null;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            lazyLoadFrame(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '300px 0px' });
+      cards.forEach((card) => io.observe(card));
+    } else {
+      cards.forEach(lazyLoadFrame);
+    }
+    return {
+      setActive() {},
+      flipActive() {},
+      // Thread "jump to project" links still work: scroll to that card.
+      navigateTo(idx) {
+        const card = cards[clamp(idx, 0, cards.length - 1)];
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
+      dispose() { if (io) io.disconnect(); },
+    };
+  }
+
+  // ── CAROUSEL PATH: fine pointer, wide screen, motion allowed ────────────────
+  let current = -1;
+  let inArchive = false;
+  let archiveDwellT = null;
 
   function scheduleArchiveCapture() {
     if (archiveDwellT) clearTimeout(archiveDwellT);

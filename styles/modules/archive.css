@@ -1428,25 +1428,46 @@
    All 5 cards become full-width stacked panels with full content visible.
    ========================================================================== */
 
-/* Shared rules for both fallbacks */
-@media (max-width: 880px), (pointer: coarse) {
-  /* Disable the coverflow mechanism entirely */
+/* One static, vertical-document layout for EVERY non-carousel context:
+   narrow screens, touch devices, and reduced-motion. The carousel JS does NOT
+   run in any of these (see archive.js → staticStack), so no card is ever
+   `.is-active` here — which is exactly why every rule below is UNCONDITIONAL,
+   never scoped to `:not(.is-active)`. That scoping was the bug: the single
+   active card escaped the mobile rules and rendered its full desktop
+   2-column internals (the overflow / "乱码" you saw on the phone). */
+@media (max-width: 880px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  /* Un-pin the tall sticky scroll container → a plain flowing section. */
+  .act-archive {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .archive-viewport {
+    position: relative !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    display: block;
+    perspective: none;
+    padding: 48px 0 40px;
+  }
   .card-stack {
     width: 100%;
-    height: auto;
-    min-height: 0;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
     perspective: none;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
     padding: 0 16px;
   }
 
-  /* All cards: normal flow, full width, auto height */
+  /* Every card → static block, full width, no coverflow transform/dim/clip. */
   .card {
     position: relative;
     inset: auto;
     width: 100%;
+    height: auto;
     transform: none !important;
     filter: none !important;
     opacity: 1 !important;
@@ -1454,185 +1475,127 @@
     z-index: auto !important;
     transition: none !important;
     --o: 0;
+    --ao: 0;
   }
 
-  /* Always show BOTH front and back content (merged view) */
+  /* Both faces de-stacked from absolute overlap into normal vertical flow. */
   .card-face {
     position: relative;
+    height: auto;
     overflow: visible;
+    transform: none !important;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
   }
-
-  /* Show front content normally */
-  .card-front {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  /* Show back content below front content */
+  .card-front,
   .card-back {
+    position: relative !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     z-index: auto !important;
-    position: relative !important;
-    min-height: 400px;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-  }
-
-  /* Override the latent-card hide rules so all content shows */
-  .card:not(.is-active) .card-desc,
-  .card:not(.is-active) .card-footer,
-  .card:not(.is-active) .card-front-visual,
-  .card:not(.is-active) .cybertao-stone-stage {
-    display: revert;
-  }
-  /* Single-column layout on narrow screens — minmax(280px) overflows at 375px */
-  .card:not(.is-active) .card-front-dual-main {
+    height: auto !important;
+    min-height: 0 !important;
+    transform: none !important;
     display: flex !important;
     flex-direction: column;
-    gap: 16px;
+    align-items: stretch;
   }
-  .card:not(.is-active) .card-front-copy {
-    align-items: flex-start;
-  }
-  .card:not(.is-active) .card-name {
-    font-size: clamp(36px, 8vw, 52px);
-    margin-bottom: 14px;
-  }
-  .card:not(.is-active) .card-friction {
-    margin-bottom: 16px;
-    align-self: flex-start;
-  }
-  .card:not(.is-active) .card-front {
-    align-items: flex-start;
-    justify-content: flex-start;
-    text-align: left;
-  }
-  /* Hide duplicate project title in card-back (shown via .card-front already) */
-  .card-back .spec-title { display: none; }
-  /* Remove forced min-height; break the height:100%↔stretch circular inflation */
-  .card-back { min-height: 0 !important; align-items: flex-start !important; }
-  .phone-stage { height: auto !important; width: 100%; }
-  .phone-col { flex: 1 1 auto; min-width: 0; }
+  .card-front { padding: 28px 22px; }
 
-  /* Always reveal back content (no animation delay) */
-  .card-back .reveal,
-  .card:not(.is-active) .card-back .reveal {
+  /* Scroll-reveal animations off — everything is static and present. */
+  .card .reveal {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
   }
 
-  /* Sticky viewport becomes a scrollable container, not sticky-locked */
-  .archive-viewport {
-    position: relative;
-    height: auto;
-    overflow: visible;
-    display: block;
-    padding: 64px 0 48px;
+  /* Left-align ALL card content for clean mobile reading. The latent-card
+     centering rules are (0,3,0) specificity, so match+beat them with
+     !important rather than re-introducing :not(.is-active) scoping. */
+  .card-front,
+  .card-front-copy {
+    align-items: flex-start !important;
+    text-align: left !important;
+    min-width: 0;
   }
+  .card-name {
+    font-size: clamp(34px, 9vw, 52px) !important;
+    margin-bottom: 12px !important;
+    align-self: flex-start !important;
+  }
+  .card-friction { align-self: flex-start !important; margin-bottom: 14px !important; }
 
-  /* Section: auto height */
-  .act-archive {
+  /* The back panel repeats the project title — hide that duplicate. */
+  .card-back .spec-title { display: none; }
+
+  /* ── ROOT FIX: collapse EVERY bespoke internal 2-column layout to one
+        column. These grids (Smart Airport demo-stage, the split video+notes,
+        the Nod phone-stage, the hero/visual dual-main) were the real overflow
+        culprits — desktop 2-up grids with height:100%. ── */
+  .card-front-dual-main,
+  .card-split,
+  .demo-stage,
+  .phone-stage {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
     height: auto !important;
+    width: 100%;
+    gap: 16px;
   }
 
-  /* Navigation arrows and decorative labels don't suit mobile scroll */
-  .archive-nav { display: none; }
-  .archive-plate-num { display: none; }
-  /* Label and skip link: reposition from absolute to normal flow */
-  .archive-label {
-    position: relative;
-    top: auto; left: auto; right: auto;
-    display: block;
-    margin: 0 16px 4px;
+  /* Media frames lost their height:100% parent — give them a real 16:9 box. */
+  .card-front-media,
+  .card-split-media,
+  .demo-side-video-frame {
+    aspect-ratio: 16 / 9;
+    min-height: 200px;
+    width: 100%;
+    flex: none;
   }
+  /* Vertical dividers → horizontal now that the columns are stacked. */
+  .card-split-media {
+    border-right: none;
+    border-bottom: 1px solid rgba(236, 230, 217, 0.08);
+  }
+  .demo-side-video {
+    border-right: none;
+    border-bottom: 1px solid rgba(232, 184, 79, 0.18);
+  }
+
+  /* Detail / notes columns: full width, no inner scroll trap. */
+  .card-split-info,
+  .demo-side-detail,
+  .phone-notes {
+    overflow: visible;
+    padding: 22px 20px 20px;
+  }
+
+  /* Nod phone mock: center it, never let it stretch the row. */
+  .phone-col { align-items: center; min-width: 0; }
+  .phone { align-self: center; }
+
+  /* dt/dd spec list stays a tight 2-col, readable down to 360px. */
+  .spec-list { grid-template-columns: 88px 1fr; column-gap: 14px; }
+
+  /* Content the compact coverflow teaser hides on latent cards is shown in
+     full here. The latent hide rule is `.card:not(.is-active) X { display:none }`
+     at (0,3,0) specificity, so we must use !important with each element's real
+     display value to win. */
+  .card-desc { display: block !important; }
+  .card-footer,
+  .card-front-visual { display: flex !important; }
+  .cybertao-stone-stage { display: block !important; }
+
+  /* Carousel chrome that has no meaning in a static stack. */
+  .archive-nav,
+  .archive-plate-num { display: none; }
+  .archive-label,
   .archive-skip {
     position: relative;
     top: auto; left: auto; right: auto;
     display: block;
-    margin: 0 16px 16px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* No 3D transforms, no blur, no coverflow — show a simple readable stack */
-  .card-stack {
-    perspective: none;
-    width: 100%;
-    height: auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 0 16px;
-  }
-
-  .card {
-    position: relative;
-    inset: auto;
-    width: 100%;
-    transform: none !important;
-    filter: none !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: auto !important;
-    transition: none !important;
-  }
-
-  .card-face { position: relative; overflow: visible; }
-
-  .card-front,
-  .card-back {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: auto !important;
-    position: relative !important;
-  }
-
-  .card-back { min-height: 400px; display: flex; align-items: stretch; }
-
-  .card:not(.is-active) .card-desc,
-  .card:not(.is-active) .card-footer,
-  .card:not(.is-active) .card-front-visual,
-  .card:not(.is-active) .cybertao-stone-stage { display: revert; }
-  .card:not(.is-active) .card-front-dual-main { display: grid !important; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr); }
-  .card:not(.is-active) .card-front-copy { align-items: flex-start; }
-  .card:not(.is-active) .card-name { font-size: clamp(44px, 6.4vw, 64px); margin-bottom: 18px; }
-  .card:not(.is-active) .card-friction { margin-bottom: 20px; align-self: flex-start; }
-  .card:not(.is-active) .card-front { align-items: flex-start; justify-content: flex-start; text-align: left; }
-
-  .card-back .reveal,
-  .card:not(.is-active) .card-back .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-
-  .archive-viewport { position: relative; height: auto; overflow: visible; display: block; padding: 24px 0 48px; }
-  .act-archive { height: auto !important; }
-  .archive-nav { display: none; }
-  .archive-plate-num { display: none; }
-}
-
-/* ==========================================================================
-   MOBILE HEIGHT FIX (C2 release-blocker)
-   The sticky-scroll containers (.act-archive 6.2×vh, .archive-viewport 100vh,
-   .card-stack 84vh) must collapse to content height on small screens, or the
-   stacked cards overflow and overlap the next section. Higher specificity
-   (.act-archive .card-stack) + !important guarantees this wins the cascade.
-   ========================================================================== */
-@media (max-width: 880px), (pointer: coarse) {
-  .act-archive { height: auto !important; min-height: 0 !important; }
-  .act-archive .archive-viewport {
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
-  }
-  .act-archive .card-stack {
-    height: auto !important;
-    max-height: none !important;
-    min-height: 0 !important;
+    margin: 0 16px 8px;
   }
 }
