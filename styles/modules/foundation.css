@@ -459,6 +459,23 @@ html, body, body * { cursor: none !important; }
   .cursor { display: none; }
 }
 
+/* ── Auto low-power mode (set by scripts/core/perf.js on sustained jank) ─────
+   Sheds the effects that are cheap on a strong GPU but starve a weak one:
+   - the always-on bellows breathing (full-screen masked layer recomposited
+     every frame) is frozen;
+   - the mix-blend rim light is dropped;
+   - backdrop-filter blurs (repaint on scroll) are removed — the elements keep
+     their translucent background, just without the blur.
+   High-framerate machines never get this class, so their look is unchanged. */
+html.perf-lite .bellows { transform: none !important; will-change: auto; }
+html.perf-lite .bellows::before { display: none !important; }
+html.perf-lite *,
+html.perf-lite *::before,
+html.perf-lite *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* ==========================================================================
    5. AMBIENT BLUR
    Disabled by default: readers should never fight a permanently soft page.

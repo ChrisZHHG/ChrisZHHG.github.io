@@ -8,6 +8,7 @@ import { createScroll } from './core/scroll.js';
 import { initCursor } from './core/cursor.js';
 import { createHealthMonitor } from './core/health.js';
 import { createBellows } from './core/bellows.js';
+import { initPerfMode } from './core/perf.js';
 import { initGate } from './features/gate.js';
 import { initArchive } from './features/archive.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
@@ -62,8 +63,16 @@ const Scroll = trackDisposable(safeInit('scroll', () => createScroll({
 
 // Bellows oscillator: subtle ±1.5% scale breathing on the leather frame.
 // Starts after cursor (so --cx/--cy are writable) and before gate.
-trackDisposable(safeInit('bellows', () => createBellows({
+const Bellows = trackDisposable(safeInit('bellows', () => createBellows({
   isReducedMotion: reducedMotion.isReduced,
+}), hooks)) || { dispose() {} };
+
+// Auto low-power degrade: if frames are sustained-janky (weak GPU), add
+// html.perf-lite (CSS drops the costly full-screen effects) and stop the
+// always-on breathing loop. High-framerate machines never trip it.
+trackDisposable(safeInit('perf', () => initPerfMode({
+  isReducedMotion: reducedMotion.isReduced,
+  onDegrade: () => { try { Bellows.dispose(); } catch (_) {} },
 }), hooks));
 
 trackDisposable(safeInit('gate', () => initGate({ body, isReducedMotion: reducedMotion.isReduced }), hooks));

@@ -33,9 +33,12 @@ export function createScroll({ isReducedMotion, isCoarsePointer }) {
 
   // ── Lenis spine ──────────────────────────────────────────────────────────
   const lenis = new Lenis({
-    lerp: 0.1,          // ~the 35mm feel: weighty but responsive
+    // 0.13 settles a touch faster than the old 0.1 — keeps the weighty 35mm
+    // glide on a trackpad but feels more connected (less "floaty drift after
+    // you stop") on a Windows mouse wheel, where each notch is a discrete jump.
+    lerp: 0.13,
     smoothWheel: true,
-    wheelMultiplier: 1,
+    wheelMultiplier: 1.1,
   });
 
   // Lenis owns the scroll position; disable CSS smooth-scroll so they don't fight.
