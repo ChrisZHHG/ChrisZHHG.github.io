@@ -225,8 +225,8 @@
    13. MOBILE
    ========================================================================== */
 @media (max-width: 620px) {
-  .act-hero { padding: 48px 20px 64px; }
-  .act { padding: 72px 20px; }
+  .act.act-hero { padding: 40px 20px 48px; }
+  .act { padding: 56px 20px; }
   .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
   .interest-grid { grid-template-columns: 1fr; }

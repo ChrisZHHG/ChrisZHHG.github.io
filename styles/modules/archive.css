@@ -1491,19 +1491,21 @@
   .card:not(.is-active) .cybertao-stone-stage {
     display: revert;
   }
+  /* Single-column layout on narrow screens — minmax(280px) overflows at 375px */
   .card:not(.is-active) .card-front-dual-main {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 1fr);
+    display: flex !important;
+    flex-direction: column;
+    gap: 16px;
   }
   .card:not(.is-active) .card-front-copy {
     align-items: flex-start;
   }
   .card:not(.is-active) .card-name {
-    font-size: clamp(44px, 6.4vw, 64px);
-    margin-bottom: 18px;
+    font-size: clamp(36px, 8vw, 52px);
+    margin-bottom: 14px;
   }
   .card:not(.is-active) .card-friction {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     align-self: flex-start;
   }
   .card:not(.is-active) .card-front {
@@ -1511,6 +1513,12 @@
     justify-content: flex-start;
     text-align: left;
   }
+  /* Hide duplicate project title in card-back (shown via .card-front already) */
+  .card-back .spec-title { display: none; }
+  /* Remove forced min-height; break the height:100%↔stretch circular inflation */
+  .card-back { min-height: 0 !important; align-items: flex-start !important; }
+  .phone-stage { height: auto !important; width: 100%; }
+  .phone-col { flex: 1 1 auto; min-width: 0; }
 
   /* Always reveal back content (no animation delay) */
   .card-back .reveal,
