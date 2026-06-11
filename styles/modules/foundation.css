@@ -231,6 +231,20 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
 }
 .topbar-actions a:hover { opacity: 1; color: var(--amber); }
 
+/* Large desktop: wider content column and slightly wider sidebar */
+@media (min-width: 1440px) {
+  :root {
+    --content-max: 960px;
+    --sidebar-w: 252px;
+  }
+}
+@media (min-width: 1800px) {
+  :root {
+    --content-max: 1060px;
+    --sidebar-w: 268px;
+  }
+}
+
 /* Mobile: hide sidebar/topbar, full width content */
 @media (max-width: 880px) {
   .world { padding-left: 0; padding-top: 0; }
@@ -455,14 +469,22 @@ html, body, body * { cursor: none !important; }
   inset: 0;
   z-index: 99;
   pointer-events: none;
-  /* Deeper, slightly-raised-center falloff: the reading column (center ~55%)
-     stays fully clear, while corners drop toward the near-black tube wall.
-     This is the chiaroscuro that tells the eye where to look. */
-  background: radial-gradient(ellipse 92% 82% at 50% 43%,
+  /* Shifted right by sidebar/2 so the clear center tracks the visible content
+     area (not the raw viewport center). Symmetric at all desktop widths. */
+  background: radial-gradient(ellipse 92% 82% at calc(50% + calc(var(--sidebar-w) / 2)) 43%,
               transparent 54%,
               rgba(0, 0, 0, 0.20) 78%,
               rgba(5, 4, 3, 0.52) 100%);
   transition: opacity 0.24s var(--ease-out);
+}
+/* Mobile: no sidebar — revert to true viewport center */
+@media (max-width: 880px) {
+  .vignette {
+    background: radial-gradient(ellipse 92% 82% at 50% 43%,
+                transparent 54%,
+                rgba(0, 0, 0, 0.20) 78%,
+                rgba(5, 4, 3, 0.52) 100%);
+  }
 }
 
 .vignette { opacity: 1; }

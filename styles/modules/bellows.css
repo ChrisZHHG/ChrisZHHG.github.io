@@ -23,10 +23,7 @@
 }
 
 /* Rim light — a warm amber ring at the inner edge of the bellows opening.
-   Reads as "light from the bright content area spills onto the leather lip",
-   which is what defines a real camera's viewfinder opening. This is NOT
-   masked (it sits on .bellows, not .bellows__leather), so the ring appears
-   exactly where leather meets the clear center. */
+   Shifted right by sidebar/2 so the ring tracks the visible content area. */
 .bellows::before {
   content: '';
   position: absolute;
@@ -34,7 +31,7 @@
   pointer-events: none;
   z-index: 1;
   background: radial-gradient(
-    ellipse 72% 76% at 50% 50%,
+    ellipse 72% 76% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
     transparent 46%,
     rgba(220, 175, 85, 0.05) 50%,
     rgba(232, 188, 100, 0.14) 54%,
@@ -42,6 +39,18 @@
     transparent 64%
   );
   mix-blend-mode: screen;
+}
+@media (max-width: 880px) {
+  .bellows::before {
+    background: radial-gradient(
+      ellipse 72% 76% at 50% 50%,
+      transparent 46%,
+      rgba(220, 175, 85, 0.05) 50%,
+      rgba(232, 188, 100, 0.14) 54%,
+      rgba(220, 175, 85, 0.07) 58%,
+      transparent 64%
+    );
+  }
 }
 
 /* ── Leather frame ────────────────────────────────────────────────────────── */
@@ -63,8 +72,10 @@
   filter: brightness(1.45) contrast(1.18) saturate(1.08);
   opacity: 1;
 
+  /* Shifted right by sidebar/2: leather frame is symmetric around the visible
+     content area at every desktop viewport width, not just the raw viewport. */
   -webkit-mask-image: radial-gradient(
-    ellipse 70% 74% at 50% 50%,
+    ellipse 70% 74% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
     transparent 0%,
     transparent 50%,
     rgba(0, 0, 0, 0.30) 55%,
@@ -72,7 +83,7 @@
     #000 78%
   );
           mask-image: radial-gradient(
-    ellipse 70% 74% at 50% 50%,
+    ellipse 70% 74% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
     transparent 0%,
     transparent 50%,
     rgba(0, 0, 0, 0.30) 55%,
@@ -105,7 +116,43 @@
   border-bottom: 1px solid rgba(213, 164, 74, 0.45);
   border-right:  1px solid rgba(213, 164, 74, 0.45); }
 
+/* ── Large desktop: tighter frame at wide viewports ──────────────────────── */
+/* At 1440px+ the ellipse shift is already doing the right thing, but we also
+   tighten slightly so the leather frame stays prominent (not just thin slivers
+   at the very edges). */
+@media (min-width: 1440px) {
+  .bellows__leather {
+    -webkit-mask-image: radial-gradient(
+      ellipse 66% 72% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
+      transparent 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.30) 55%,
+      rgba(0, 0, 0, 0.85) 68%,
+      #000 78%
+    );
+            mask-image: radial-gradient(
+      ellipse 66% 72% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
+      transparent 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.30) 55%,
+      rgba(0, 0, 0, 0.85) 68%,
+      #000 78%
+    );
+  }
+  .bellows::before {
+    background: radial-gradient(
+      ellipse 68% 74% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
+      transparent 46%,
+      rgba(220, 175, 85, 0.05) 50%,
+      rgba(232, 188, 100, 0.14) 54%,
+      rgba(220, 175, 85, 0.07) 58%,
+      transparent 64%
+    );
+  }
+}
+
 /* ── Mobile ───────────────────────────────────────────────────────────────── */
+/* No sidebar — revert to true viewport center for the mask. */
 @media (max-width: 768px) {
   .bellows { transform: none; }
   .bellows__leather {

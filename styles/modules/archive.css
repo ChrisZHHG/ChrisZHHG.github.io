@@ -86,9 +86,16 @@
      at the sides — the carousel needs side gutters to read. */
   width: min(1180px, 66vw);
   height: min(820px, 84vh);
-  max-height: 880px;
+  max-height: 920px;
   /* Perspective lives here so transform-style: preserve-3d on children works */
   perspective: 1700px;
+}
+/* At 1440px+ allow cards to grow taller to fill the bigger viewport height */
+@media (min-width: 1440px) {
+  .card-stack {
+    width: min(1260px, 66vw);
+    height: min(900px, 84vh);
+  }
 }
 
 /* Each card is absolutely positioned; driven by --o (signed) and --ao (absolute).
