@@ -204,6 +204,48 @@
 }
 .contact-link:hover { color: var(--accent); border-color: var(--accent); }
 
+.contact-note {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+
+/* ── Advising ──────────────────────────────────────────────────────────── */
+.advising-intro {
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--ink-2);
+  max-width: 720px;
+  margin-bottom: 22px;
+}
+.advising-intro::after { content: none; }
+.advising-list { margin-bottom: 34px; }
+.advising-comics {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  max-width: 820px;
+}
+.advising-comic { margin: 0; }
+.advising-comic img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 50px -30px rgba(0, 0, 0, 0.6);
+}
+.advising-comic figcaption {
+  margin-top: 9px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
 .coda-footer {
   max-width: 780px;
   margin: 0 auto;
