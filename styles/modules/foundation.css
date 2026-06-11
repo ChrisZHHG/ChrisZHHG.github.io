@@ -68,8 +68,9 @@ body {
   transition: color 0.24s var(--ease-out);
 }
 
-/* Device without fine pointer falls back to native cursor */
-@media (pointer: coarse) {
+/* Touch-ONLY device (no trackpad/mouse) falls back to native cursor.
+   Touchscreen laptops keep the custom cursor — they have a fine pointer too. */
+@media (hover: none) and (pointer: coarse) {
   body { cursor: auto; }
 }
 
@@ -378,7 +379,7 @@ body:not(.is-gated) .gate { display: none; }
 /* Utility: force-hide native cursor on desktop to avoid flicker between
    custom viewfinder and OS pointer on mixed interactive surfaces. */
 html, body, body * { cursor: none !important; }
-@media (pointer: coarse) {
+@media (hover: none) and (pointer: coarse) {
   html, body, body * { cursor: auto !important; }
 }
 
@@ -452,8 +453,9 @@ html, body, body * { cursor: none !important; }
           drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
 }
 
-/* Hide cursor on touch devices */
-@media (pointer: coarse) {
+/* Hide cursor on touch-ONLY devices (phones/tablets). Touchscreen laptops
+   have a trackpad (hover: hover) so they keep the viewfinder cursor. */
+@media (hover: none) and (pointer: coarse) {
   .cursor { display: none; }
 }
 

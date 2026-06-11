@@ -1108,12 +1108,13 @@
   transform: translate(-50%, -50%);
   opacity: 0.8;
 }
-.card[data-plate="5"]:hover .cybertao-stone,
-.card[data-plate="5"].is-active .cybertao-stone {
+/* Stone floats on HOVER only — not automatically when the card becomes focal.
+   (Removed the .is-active trigger: it made the stone animate on its own as you
+   scrolled CyberTao into focus, which read as unintended.) */
+.card[data-plate="5"]:hover .cybertao-stone {
   animation: stoneFloat 1.1s var(--ease-in-out) 1;
 }
-.card[data-plate="5"]:hover .cybertao-ring,
-.card[data-plate="5"].is-active .cybertao-ring {
+.card[data-plate="5"]:hover .cybertao-ring {
   animation: stoneRing 1.1s var(--ease-in-out) 1;
 }
 .cybertao-stone-copy {
@@ -1435,7 +1436,7 @@
    never scoped to `:not(.is-active)`. That scoping was the bug: the single
    active card escaped the mobile rules and rendered its full desktop
    2-column internals (the overflow / "乱码" you saw on the phone). */
-@media (max-width: 880px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (max-width: 880px), (hover: none) and (pointer: coarse), (prefers-reduced-motion: reduce) {
   /* Un-pin the tall sticky scroll container → a plain flowing section. */
   .act-archive {
     height: auto !important;

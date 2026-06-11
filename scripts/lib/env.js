@@ -1,6 +1,13 @@
 export const root = document.documentElement;
 export const body = document.body;
-export const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+// "Touch-only device" = no hover AND coarse primary pointer (phones, tablets).
+// NOT a touchscreen laptop: those report (hover: hover) / (any-pointer: fine)
+// via their trackpad, so they correctly keep the desktop experience (custom
+// cursor + coverflow carousel). Using bare (pointer: coarse) here mis-classified
+// touchscreen Windows laptops (e.g. ThinkPad T14s in Edge) as phones — it hid
+// the cursor and forced the mobile static stack on a 1920px screen.
+export const isCoarsePointer =
+  window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
 export const lerp = (a, b, t) => a + (b - a) * t;
 export const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
