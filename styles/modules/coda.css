@@ -188,6 +188,65 @@
 }
 .interest-flip-btn:hover { border-color: var(--amber); color: var(--amber-hot); }
 
+/* ==========================================================================
+   CODA PEEL — #contact is the arrival: step out into the light.
+   As the section scrolls into view, warm amber floods from below
+   (the tunnel mouth opening outward). --focus (0→1) is set by sections.js.
+   ========================================================================== */
+.act-coda {
+  --focus: 0;
+  position: relative;
+  /* Lift opacity so content is always readable; full brightness on arrival */
+  opacity: calc(0.65 + 0.35 * var(--focus));
+  overflow: visible;
+}
+
+/* Warm light source expanding from below — the tunnel exit */
+.act-coda::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -60px;
+  width: 120%;
+  height: 500px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse 100% 60% at 50% 100%,
+    rgba(232, 184, 79, calc(0.28 * var(--focus))),
+    rgba(200, 130, 30, calc(0.12 * var(--focus))) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Halo ring around the section that expands on arrival */
+.act-coda::after {
+  content: '';
+  position: absolute;
+  inset: -48px -24px;
+  background: radial-gradient(
+    ellipse 80% 40% at 50% 80%,
+    rgba(232, 184, 79, calc(0.07 * var(--focus))),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.act-coda > * { position: relative; z-index: 1; }
+
+/* Contact section label brightens amber on arrival */
+.act-coda .section-label {
+  color: rgba(232, 184, 79, calc(0.38 + 0.45 * var(--focus)));
+  transition: color 0.1s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .act-coda { opacity: 1; }
+  .act-coda::before, .act-coda::after { display: none; }
+}
+
 .contact-links {
   display: flex;
   flex-wrap: wrap;

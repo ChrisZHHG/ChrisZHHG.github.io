@@ -1,24 +1,35 @@
 export function initSections({ isReducedMotion }) {
-  const sections = Array.from(document.querySelectorAll('.act-quiet'));
-  if (!sections.length) return { dispose() {} };
+  const quietSections = Array.from(document.querySelectorAll('.act-quiet'));
+  const codaSections  = Array.from(document.querySelectorAll('.act-coda'));
+  if (!quietSections.length && !codaSections.length) return { dispose() {} };
 
-  // Reduced-motion: skip animation, sections stay fully visible
+  // Reduced-motion: skip animation, everything stays fully visible
   if (isReducedMotion()) {
-    sections.forEach((s) => s.style.setProperty('--focus', '1'));
+    [...quietSections, ...codaSections].forEach((s) => s.style.setProperty('--focus', '1'));
     return { dispose() {} };
   }
 
   function update() {
     const vh = window.innerHeight;
     const center = vh / 2;
-    sections.forEach((s) => {
+
+    // Quiet sections: dim when off the focal plane, brighten when centered.
+    // Smoothness comes from Lenis's lerp — no CSS transition needed.
+    quietSections.forEach((s) => {
       const rect = s.getBoundingClientRect();
-      // Focus peaks when the section's vertical midpoint aligns with the viewport center.
-      // Fade window = 55% of viewport height on each side.
       const sectionMid = rect.top + rect.height / 2;
       const distance = Math.abs(sectionMid - center);
       const focus = Math.max(0, 1 - distance / (vh * 0.55));
       s.style.setProperty('--focus', focus.toFixed(3));
+    });
+
+    // Coda (#contact): arrival mechanic — warm light floods in as the section
+    // enters from the bottom. focus goes 0→1 as the section top travels from
+    // the fold (rect.top = vh) to 30% down from the viewport top (rect.top = vh*0.3).
+    codaSections.forEach((s) => {
+      const rect = s.getBoundingClientRect();
+      const arrival = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));
+      s.style.setProperty('--focus', arrival.toFixed(3));
     });
   }
 
