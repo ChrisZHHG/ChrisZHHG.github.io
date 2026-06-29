@@ -3,42 +3,62 @@ export function initSections({ isReducedMotion }) {
   const codaSections  = Array.from(document.querySelectorAll('.act-coda'));
   if (!quietSections.length && !codaSections.length) return { dispose() {} };
 
-  // Reduced-motion: skip animation, everything stays fully visible
   if (isReducedMotion()) {
     [...quietSections, ...codaSections].forEach((s) => s.style.setProperty('--focus', '1'));
     return { dispose() {} };
+  }
+
+  // Track which sections have already fired their flash this pass.
+  // When a section exits the focal plane it's removed from the set,
+  // so the flash replays on the next approach — like re-entering a tunnel.
+  const entered = new Set();
+
+  function triggerFlash(s) {
+    // Remove first to restart the animation if somehow already playing.
+    s.classList.remove('is-entering');
+    void s.offsetWidth; // force reflow
+    s.classList.add('is-entering');
   }
 
   function update() {
     const vh = window.innerHeight;
     const center = vh / 2;
 
-    // Quiet sections: dim when off the focal plane, brighten when centered.
-    // Smoothness comes from Lenis's lerp — no CSS transition needed.
     quietSections.forEach((s) => {
       const rect = s.getBoundingClientRect();
       const sectionMid = rect.top + rect.height / 2;
       const distance = Math.abs(sectionMid - center);
-      const focus = Math.max(0, 1 - distance / (vh * 0.55));
+
+      // Narrow window (30% vh): the transition dark→lit is sharp and binary,
+      // not a long gentle ramp — this is what gives the train-tunnel rhythm.
+      const focus = Math.max(0, 1 - distance / (vh * 0.30));
       s.style.setProperty('--focus', focus.toFixed(3));
+
+      // Flash: fire once as section arrives at the focal plane.
+      if (focus >= 0.85 && !entered.has(s)) {
+        entered.add(s);
+        triggerFlash(s);
+      }
+
+      // Reset: when the section leaves the focal plane, clear its state
+      // so the flash replays on the next approach.
+      if (focus < 0.35 && entered.has(s)) {
+        entered.delete(s);
+        s.classList.remove('is-entering');
+      }
     });
 
-    // Coda (#contact): arrival mechanic — warm light floods in as the section
-    // enters from the bottom. focus goes 0→1 as the section top travels from
-    // the fold (rect.top = vh) to 30% down from the viewport top (rect.top = vh*0.3).
+    // Coda: warm amber arrival as #contact enters from below.
     codaSections.forEach((s) => {
       const rect = s.getBoundingClientRect();
       const arrival = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));
       s.style.setProperty('--focus', arrival.toFixed(3));
     });
 
-    // Directional focal light: drift the amber bellows rim ring based on
-    // overall scroll progress. Range 46%→54%: ring starts slightly above center
-    // (light is ahead of you) and settles just below as you exit (you've passed
-    // through). Gives the tunnel illusion of moving toward and past a light.
+    // Directional focal light: amber rim ring drifts 46%→54% across full scroll.
     const maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
     const scrollProgress = Math.min(1, window.scrollY / maxScroll);
-    const focalY = 46 + scrollProgress * 8; // 46% at top, 54% at bottom
+    const focalY = 46 + scrollProgress * 8;
     document.documentElement.style.setProperty('--focal-y', focalY.toFixed(1) + '%');
   }
 

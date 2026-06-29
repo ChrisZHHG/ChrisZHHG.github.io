@@ -764,21 +764,32 @@ html.perf-lite *::after {
 .thread-map a:hover { color: var(--amber); border-color: var(--amber); }
 
 /* ==========================================================================
-   RACK-FOCUS ENGINE — quiet sections (interests / background / developing / writing)
-   Sections dim when off-center and develop (opacity + brightness + lift) when the
-   visitor scrolls them to the viewport focal plane. JS writes --focus (0–1).
-   Design Law #3: content at rest is always readable — minimum opacity 0.55.
+   RACK-FOCUS ENGINE + TUNNEL RHYTHM
+   Each quiet section is its own tunnel exit. JS writes --focus (0→1).
+   Baseline is genuine darkness (15% opacity) — the Bi Gan reading requires
+   real contrast so each flash has weight.
+   Focus window is narrow (30% vh): dark → lit is sharp, not gradual.
    ========================================================================== */
 .act-quiet {
   --focus: 0;
-  opacity: calc(0.55 + 0.45 * var(--focus));
-  filter: brightness(calc(0.7 + 0.3 * var(--focus)));
-  transform: translateY(calc((1 - var(--focus)) * 14px));
-  /* No transition: Lenis lerp already smooths the scroll, so --focus
-     updates are naturally smooth. Adding a CSS transition here causes
-     the animation to restart on every Lenis RAF frame. */
+  opacity: calc(0.15 + 0.85 * var(--focus));
+  filter: brightness(calc(0.3 + 0.7 * var(--focus)));
+  transform: translateY(calc((1 - var(--focus)) * 20px));
   will-change: opacity, filter, transform;
 }
+
+/* Flash (空白 beat): when a section arrives at the focal plane, JS adds
+   .is-entering. The animation overrides the continuous --focus filter for
+   0.65s: dark → overexposed → settled. Plays once per approach. */
+@keyframes sectionReveal {
+  0%   { filter: brightness(0.15) saturate(0.2); opacity: 0.2; }
+  52%  { filter: brightness(1.18) saturate(1.1); opacity: 1; }
+  100% { filter: brightness(1);                  opacity: 1; }
+}
+.act-quiet.is-entering {
+  animation: sectionReveal 0.65s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .act-quiet {
     opacity: 1;
@@ -786,6 +797,7 @@ html.perf-lite *::after {
     transform: none;
     will-change: auto;
   }
+  .act-quiet.is-entering { animation: none; }
 }
 
 /* ==========================================================================
