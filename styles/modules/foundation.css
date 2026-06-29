@@ -267,6 +267,22 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   padding: 80px 32px 96px;
   min-height: auto;
   display: block;
+  /* Tunnel mouth: a shallow 3D stage so text layers recede into depth.
+     Headline is the closest plane; bio/tags recede toward the tunnel wall. */
+  perspective: 1800px;
+  perspective-origin: 50% 30%;
+}
+
+.hero-headline    { transform: translateZ(28px); }
+.hero-headline-2  { transform: translateZ(12px); }
+.hero-rule        { transform: translateZ(0px);  }
+.hero-bio         { transform: translateZ(-12px); }
+.hero-tags        { transform: translateZ(-22px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-headline, .hero-headline-2, .hero-rule, .hero-bio, .hero-tags {
+    transform: none;
+  }
 }
 
 .act-archive {
