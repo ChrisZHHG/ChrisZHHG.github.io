@@ -86,7 +86,18 @@ trackDisposable(safeInit('perf', () => initPerfMode({
   onDegrade: () => { try { Bellows.dispose(); } catch (_) {} },
 }), hooks));
 
-trackDisposable(safeInit('gate', () => initGate({ body, isReducedMotion: reducedMotion.isReduced }), hooks));
+trackDisposable(safeInit('gate', () => initGate({
+  body,
+  isReducedMotion: reducedMotion.isReduced,
+  onDismiss() {
+    const hero = document.querySelector('#intro');
+    if (!hero) return;
+    hero.classList.remove('is-entering');
+    void hero.offsetWidth;
+    hero.classList.add('is-entering');
+    hero.addEventListener('animationend', () => hero.classList.remove('is-entering'), { once: true });
+  },
+}), hooks));
 
 const Archive = trackDisposable(safeInit('archive', () => initArchive({
   Audio,

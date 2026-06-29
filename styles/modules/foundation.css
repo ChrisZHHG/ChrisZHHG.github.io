@@ -790,6 +790,12 @@ html.perf-lite *::after {
   animation: sectionReveal 0.65s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 
+/* Hero flash fires once on gate dismiss — same 空白 pattern, slightly longer
+   so the visitor has time to register it before the gate fully leaves. */
+.act-hero.is-entering {
+  animation: sectionReveal 0.85s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .act-quiet {
     opacity: 1;
@@ -798,6 +804,7 @@ html.perf-lite *::after {
     will-change: auto;
   }
   .act-quiet.is-entering { animation: none; }
+  .act-hero.is-entering  { animation: none; }
 }
 
 /* ==========================================================================

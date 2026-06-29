@@ -1,6 +1,6 @@
 import { SkipInitError } from '../lib/safe.js';
 
-export function initGate({ body, isReducedMotion }) {
+export function initGate({ body, isReducedMotion, onDismiss }) {
   const gate = document.querySelector('[data-role="gate"]');
   if (!gate) throw new SkipInitError('missing [data-role="gate"]');
 
@@ -25,6 +25,7 @@ export function initGate({ body, isReducedMotion }) {
     gate.setAttribute('aria-hidden', 'true');
     body.classList.remove('is-gated');
     try { localStorage.setItem(VISIT_KEY, '1'); } catch (_) {}
+    if (typeof onDismiss === 'function') setTimeout(onDismiss, 80);
     setTimeout(() => gate.remove(), 750);
   }
 
