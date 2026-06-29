@@ -64,7 +64,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
   <nav class="toc" data-role="toc">
     <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
     <div class="toc-section">Work</div>
-    <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>What I build · 5 plates</span></a>
+    <a href="#archive" data-toc="archive"><span class="toc-num" aria-hidden="true">→</span><span>What I build · 5 plates</span></a>
     <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>Why I build</span></a>
     <a href="#interests" data-toc="interests"><span class="toc-num">02</span><span>Interests</span></a>
     <div class="toc-section">More</div>
@@ -163,7 +163,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
     <div class="archive-viewport">
 
       <div class="archive-label">What I Build — 5 Plates</div>
-      <a class="archive-skip" href="#background">skip archive ↓</a>
+      <a class="archive-skip" href="#interests">skip archive ↓</a>
 
       <button class="archive-nav prev" type="button" aria-label="Previous plate" data-role="prev">‹</button>
       <button class="archive-nav next" type="button" aria-label="Next plate" data-role="next">›</button>
@@ -172,8 +172,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 
         <!-- Plate 01 — DevValue -->
         <article class="card is-active"
-                 data-plate="1"
-                 data-href="https://marketplace.visualstudio.com/items?itemName=ChrisZhang.devvalue">
+                 data-plate="1">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Friction</span>
@@ -210,8 +209,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
         </article>
 
         <!-- Plate 02 — Smart Airport (YVR e-GSE Capstone) -->
-        <article class="card" data-plate="2"
-                 data-href="https://github.com/PCBZ/Smart_Airport">
+        <article class="card" data-plate="2">
           <div class="card-face card-front">
             <div class="card-front-dual-main">
               <div class="card-front-copy">
@@ -285,8 +283,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
         </article>
 
         <!-- Plate 03 — Cleanroll (split view: short video + try-app) -->
-        <article class="card" data-plate="3"
-                 data-href="https://cleanroll.onrender.com/setup">
+        <article class="card" data-plate="3">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Friction</span>
@@ -415,8 +412,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 
         <!-- Plate 05 — CyberTao -->
         <article class="card"
-                 data-plate="5"
-                 data-href="https://cybertao.netlify.app">
+                 data-plate="5">
           <div class="card-face card-front">
             <div class="card-friction">
               <span class="ftag-key">Question</span>
@@ -465,7 +461,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
             <div class="interest-name">FlashSlot</div>
             <p class="interest-desc">ICBC road-test watcher that scans openings and sends alerts as soon as a slot appears in my target window.</p>
             <div class="interest-meta">Python · Playwright · Pushover</div>
-            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+            <div class="interest-flip-hint">click for details</div>
           </div>
           <div class="interest-flip-face interest-back">
             <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">FlashSlot · Details</div>
@@ -474,7 +470,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <li>Personal agent to remove repetitive booking refresh loops.</li>
               <li>Runs privately on my own infra.</li>
             </ul>
-            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back">← back</button>
           </div>
         </div>
       </article>
@@ -485,7 +481,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
             <div class="interest-name">FFP</div>
             <p class="interest-desc">Single-tenant loyalty tracker across Aeroplan, Marriott, Hilton, IHG, and Amex MR with expiry/devaluation reminders.</p>
             <div class="interest-meta">FastAPI · Postgres · cron</div>
-            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+            <div class="interest-flip-hint">click for details</div>
           </div>
           <div class="interest-flip-face interest-back">
             <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">FFP · Details</div>
@@ -494,7 +490,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <li>Alerts on expiry, transfer-bonus windows, and devaluation risk.</li>
               <li>Single-tenant by design.</li>
             </ul>
-            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back">← back</button>
           </div>
         </div>
       </article>
@@ -505,7 +501,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
             <div class="interest-name">Mettle</div>
             <p class="interest-desc">Cycling, hiking, the gym — and the column where I write about movement as thinking, and where human effort and machine compute rhyme.</p>
             <div class="interest-meta">Cadence · trails · iron</div>
-            <div class="interest-flip-hint"><span class="key">F</span> flip for details</div>
+            <div class="interest-flip-hint">click for details</div>
           </div>
           <div class="interest-flip-face interest-back">
             <div class="interest-kicker" style="color:rgba(232,184,79,0.7)">Mettle · Details</div>
@@ -514,7 +510,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <li>Where ideas actually resolve: mid-ride, mid-trail, mid-set.</li>
               <li>Published as a column on Substack.</li>
             </ul>
-            <button type="button" class="interest-flip-btn" data-role="interest-flip-back"><span class="key">F</span> flip back</button>
+            <button type="button" class="interest-flip-btn" data-role="interest-flip-back">← back</button>
           </div>
         </div>
       </article>

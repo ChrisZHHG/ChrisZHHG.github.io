@@ -352,6 +352,8 @@
   :root { --vignette: 0; }
   body { transition: none !important; animation: none !important; }
   .cursor, .vignette, .grain-film, .grain-paper, .gate { display: none !important; }
+  /* Interest flip cards: remove 3D transition so the flip is instant */
+  .interest-flip-inner { transition: none !important; }
   body { cursor: auto; }
   .card-back .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 

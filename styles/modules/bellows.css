@@ -156,7 +156,7 @@
 
 /* ── Mobile ───────────────────────────────────────────────────────────────── */
 /* No sidebar — revert to true viewport center for the mask. */
-@media (max-width: 768px) {
+@media (max-width: 880px) {
   .bellows { transform: none; }
   .bellows__leather {
     background-size: 320px 320px;
