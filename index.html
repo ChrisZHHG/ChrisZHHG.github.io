@@ -63,16 +63,15 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
   </a>
   <nav class="toc" data-role="toc">
     <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
-    <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>Why I build</span></a>
     <div class="toc-section">Work</div>
     <a href="#archive" data-toc="archive"><span class="toc-num">→</span><span>What I build · 5 plates</span></a>
-    <a href="#interests" data-toc="interests"><span class="toc-num">02</span><span>Interests · 3 projects</span></a>
+    <a href="#thread" data-toc="thread"><span class="toc-num">01</span><span>Why I build</span></a>
+    <a href="#interests" data-toc="interests"><span class="toc-num">02</span><span>Interests</span></a>
     <div class="toc-section">More</div>
     <a href="#background" data-toc="background"><span class="toc-num">03</span><span>Background</span></a>
     <a href="#developing" data-toc="developing"><span class="toc-num">04</span><span>Developing</span></a>
     <a href="#writing" data-toc="writing"><span class="toc-num">05</span><span>Writing</span></a>
-    <a href="#advising" data-toc="advising"><span class="toc-num">06</span><span>Advising</span></a>
-    <a href="#contact" data-toc="contact"><span class="toc-num">07</span><span>Contact</span></a>
+    <a href="#contact" data-toc="contact"><span class="toc-num">06</span><span>Contact</span></a>
   </nav>
   <div class="sidebar-footer">
     <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
@@ -110,70 +109,17 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
     </div>
 
     <p class="hero-bio">
-      Strategic AI builder with 8+ years across Big 4 audit, enterprise finance,
-      and digital transformation — from <strong>Deloitte</strong> audit to leading a
-      corporate finance team, now in Technology Risk at <strong>KPMG</strong>, with an
-      <strong>MS in CS</strong> from Northeastern (Vancouver). I bring
-      <strong>structure to ambiguity</strong>, turning deep regulatory fluency into
-      small, sharp tools at the intersection of <strong>AI, finance, and product</strong>
-      — each removing a specific friction so attention lands where it matters.
+      Builds tools that remove friction from finance workflows. Former Big 4 auditor.
     </p>
 
     <div class="hero-tags">
-      <span class="hero-tag">MS CS · Northeastern (Vancouver)</span>
       <span class="hero-tag">Big 4 audit → finance → AI</span>
       <span class="hero-tag">Builder · systems × product × execution</span>
     </div>
   </section>
 
   <!-- =====================================================================
-       Act 2: Manifesto — The thread
-       ===================================================================== -->
-  <section class="act act-manifesto" id="thread" aria-label="Why I build">
-    <p class="section-label">Why I build</p>
-
-    <div class="manifesto-grid">
-      <div class="manifesto-item">
-        <div class="manifesto-item-label">Time</div>
-        <div class="manifesto-item-value">Your only non-renewable resource</div>
-      </div>
-      <div class="manifesto-item">
-        <div class="manifesto-item-label">Attention</div>
-        <div class="manifesto-item-value">How you choose to spend it</div>
-      </div>
-      <div class="manifesto-item">
-        <div class="manifesto-item-label">Friction</div>
-        <div class="manifesto-item-value">The attention cost of process — every switch, wait, and re-entry</div>
-      </div>
-      <div class="manifesto-item">
-        <div class="manifesto-item-label">Tools</div>
-        <div class="manifesto-item-value">What I build to remove it</div>
-      </div>
-    </div>
-
-    <p class="manifesto-body">
-      Every project below targets one specific friction — the
-      <strong>attention cost</strong> of staying inside a broken workflow
-      (re-checking, re-opening, re-explaining). I write that tax in plain
-      language first, then decide what shape the tool takes. Read the card
-      front and you already know which invoice it tears up.
-    </p>
-
-    <ul class="thread-map" aria-label="How the core work maps to the manifesto">
-      <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a> · a live counter in your editor</li>
-      <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">Smart Airport</a> · a Transformer + PPO for the tarmac</li>
-      <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a> · six windows collapsed into one run</li>
-      <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a> · scan, decide in 30 s, eat</li>
-      <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a> · an essay site, not a tool</li>
-    </ul>
-    <p class="manifesto-body" style="margin-top:18px; margin-bottom:0;">
-      Core work above is what I would put on a resume first.
-      Personal builds and ongoing writing live in <a href="#interests" style="text-decoration:underline; text-decoration-color:rgba(232,184,79,0.35);">Interests</a> below.
-    </p>
-  </section>
-
-  <!-- =====================================================================
-       Act 3: Archive — sticky-lock, horizontal card advance
+       Act 2: Archive — What I build (evidence first)
        ===================================================================== -->
   <section class="act act-archive" id="archive" aria-label="Archive of projects">
     <div class="archive-viewport">
@@ -197,12 +143,6 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <span class="ftag-name">AI cost opacity</span>
             </div>
             <div class="card-name">DevValue</div>
-            <p class="card-desc">
-              What did this feature actually cost? Official meters show the
-              model's token spend — DevValue adds the part they can't see,
-              your focus time × your rate, and tags the true cost to each
-              git branch, right in your editor.
-            </p>
             <div class="card-footer">
               <span class="card-status status-live">Live</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for how + results</span>
@@ -243,10 +183,6 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
                   <span class="ftag-name">Manual airport charging schedules</span>
                 </div>
                 <div class="card-name">Smart Airport</div>
-                <p class="card-desc">
-                  Watch the system run first. Then flip to see the architecture,
-                  training flow, and live simulation controls.
-                </p>
               </div>
               <div class="card-front-visual">
                 <div class="card-front-media" aria-label="Smart Airport walkthrough video">
@@ -320,11 +256,6 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <span class="ftag-name">Canadian payroll complexity</span>
             </div>
             <div class="card-name">Cleanroll</div>
-            <p class="card-desc">
-              A payroll engine that turns CPP / EI / QPP, federal + provincial
-              tax, and a signed pay stub into one short run. Built for the
-              one-bookkeeper company that wants payroll to be a non-event.
-            </p>
             <div class="card-footer">
               <span class="card-status status-beta">Beta</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for how + demo</span>
@@ -371,11 +302,6 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <span class="ftag-name">Foreign-menu decision anxiety</span>
             </div>
             <div class="card-name">Nod</div>
-            <p class="card-desc">
-              An iOS personal sommelier. Point the camera at a menu in any
-              language, get back three dishes that match your budget and your
-              allergies — with a critic agent that double-checks every pick.
-            </p>
             <div class="card-footer">
               <span class="card-status status-testflight">TestFlight</span>
               <span class="card-flip-hint"><span class="key">F</span> flip for how + prototype</span>
@@ -460,10 +386,6 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <span class="ftag-name">Thinking alongside machines</span>
             </div>
             <div class="card-name">CyberTao</div>
-            <p class="card-desc">
-              Essay + interface experiments on thinking with machines: where
-              speed helps, where judgment still has to stay human.
-            </p>
             <div class="cybertao-stone-stage" aria-hidden="true">
               <div class="cybertao-ring"></div>
               <div class="cybertao-stone"></div>
@@ -493,6 +415,43 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
         <span>05</span>
       </div>
     </div>
+  </section>
+
+  <!-- =====================================================================
+       Act 3: Manifesto — Why I build (pattern after evidence)
+       ===================================================================== -->
+  <section class="act act-manifesto" id="thread" aria-label="Why I build">
+    <p class="section-label">Why I build</p>
+
+    <div class="manifesto-grid">
+      <div class="manifesto-item">
+        <div class="manifesto-item-label">Time</div>
+        <div class="manifesto-item-value">Your only non-renewable resource</div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-item-label">Attention</div>
+        <div class="manifesto-item-value">How you choose to spend it</div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-item-label">Friction</div>
+        <div class="manifesto-item-value">The attention cost of process — every switch, wait, and re-entry</div>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-item-label">Tools</div>
+        <div class="manifesto-item-value">What I build to remove it</div>
+      </div>
+    </div>
+
+    <ul class="thread-map" aria-label="How the core work maps to the manifesto">
+      <li><span class="thread-tag">AI cost opacity</span> → <a href="#archive" data-jump="1">DevValue</a></li>
+      <li><span class="thread-tag">Manual airport charging</span> → <a href="#archive" data-jump="2">Smart Airport</a></li>
+      <li><span class="thread-tag">Canadian payroll complexity</span> → <a href="#archive" data-jump="3">Cleanroll</a></li>
+      <li><span class="thread-tag">Foreign-menu anxiety</span> → <a href="#archive" data-jump="4">Nod</a></li>
+      <li><span class="thread-tag">Thinking alongside machines</span> → <a href="#archive" data-jump="5">CyberTao</a></li>
+    </ul>
+    <p class="manifesto-body" style="margin-top:28px; margin-bottom:0;">
+      CyberTao is where this thinking lives. <a href="https://cybertao.netlify.app" target="_blank" rel="noopener" style="color:var(--accent);">→</a>
+    </p>
   </section>
 
   <section class="act" id="interests" aria-label="Interests">
@@ -612,57 +571,14 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
     <ul class="writing-list">
       <li class="writing-item">
         <div class="writing-item-title">The Matrix Wasn't a Warning. It Was a Spec Sheet.</div>
-        <p class="writing-item-sub">
-          Neo takes a cable to the skull and knows kung fu in seconds — which is
-          exactly how we now load skills into machines. The film's real subject was
-          never the robots; it's comfortable systems that harvest our attention and
-          time. Not a warning — a spec sheet.
-        </p>
         <a class="writing-item-link" href="https://chrisfromnowhere.substack.com/p/the-matrix-wasnt-a-warning-it-was" target="_blank" rel="noopener">Read on Substack ↗</a>
       </li>
       <li class="writing-item">
         <div class="writing-item-title">Mettle</div>
-        <p class="writing-item-sub">
-          A column on movement as thinking — cycling, hiking, the gym — and where
-          human effort and machine compute rhyme: throughput, cooling, throttling,
-          and the budget you spend to think clearly.
-        </p>
         <a class="writing-item-link" href="https://chrisfromnowhere.substack.com" target="_blank" rel="noopener">Follow on Substack ↗</a>
       </li>
     </ul>
     <a class="writing-item-link" href="https://chrisfromnowhere.substack.com" target="_blank" rel="noopener" style="margin-top: 26px;">All essays &amp; subscribe on Substack ↗</a>
-  </section>
-
-  <section class="act" id="advising" aria-label="Advising">
-    <p class="section-label">Advising</p>
-    <p class="advising-intro">
-      I help people make the non-CS → tech pivot — because I made it myself
-      (Big&nbsp;4 audit → builder), and I do it as a Career Peer Advisor and
-      Northeastern alum. A few things I keep telling people:
-    </p>
-    <ul class="now-list advising-list">
-      <li>You don't need a blank slate — you're already a complete story.</li>
-      <li>Interviewing is a muscle. Practice in a zero-risk room, not on a real offer.</li>
-      <li>A frozen answer isn't a verdict — it's a strategy that needs a tweak.</li>
-      <li>Most roles are filled before they're posted — alumni pipelines, coffee chats.</li>
-    </ul>
-    <div class="advising-comics">
-      <figure class="advising-comic">
-        <img src="assets/advising/transferable-skills.png"
-             alt="Four-panel comic: a first-semester student thinks their non-CS background is irrelevant; a Career Peer Advisor intercepts, decodes their transferable skills on a whiteboard, and they walk away with a complete narrative."
-             loading="lazy"
-             onerror="this.closest('.advising-comic').style.display='none'">
-        <figcaption>You are already a complete story.</figcaption>
-      </figure>
-      <figure class="advising-comic">
-        <img src="assets/advising/mock-interview.png"
-             alt="Four-panel comic: freezing in a real interview costs job offers; external coaches charge $300/hr; a free CPA mock-interview sandbox builds muscle memory so you walk in ready."
-             loading="lazy"
-             onerror="this.closest('.advising-comic').style.display='none'">
-        <figcaption>Practice for free. Be ready for the real thing.</figcaption>
-      </figure>
-    </div>
-    <a class="writing-item-link" href="https://www.linkedin.com/in/chris-zhang-562b0558/" target="_blank" rel="noopener" style="margin-top: 24px;">More on LinkedIn ↗</a>
   </section>
 
   <section class="act" id="contact" aria-label="Contact">

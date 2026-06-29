@@ -13,6 +13,7 @@ import { initGate } from './features/gate.js';
 import { initArchive } from './features/archive.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
 import { initInterestFlips } from './features/interests.js';
+import { initManifesto } from './features/manifesto.js';
 import { initThreadJumps, initScrollSpy, initBeforeUnloadFade } from './features/navigation.js';
 import { initAnalytics, showVisitCount } from './features/analytics.js';
 import { runSmokeChecks } from './features/smoke.js';
@@ -89,6 +90,7 @@ const Archive = trackDisposable(safeInit('archive', () => initArchive({
 trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));
 trackDisposable(safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks));
 trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));
+trackDisposable(safeInit('manifesto', () => initManifesto({ isReducedMotion: reducedMotion.isReduced }), hooks));
 trackDisposable(safeInit('thread-jumps', () => initThreadJumps(Archive), hooks));
 trackDisposable(safeInit('scroll-spy', () => initScrollSpy(), hooks));
 trackDisposable(safeInit('beforeunload', () => initBeforeUnloadFade(), hooks));

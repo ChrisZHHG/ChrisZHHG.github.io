@@ -323,7 +323,9 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   filter: blur(6px);
   pointer-events: none;
   z-index: 1;
-  animation: tunnelGlow 5s ease-in-out infinite;
+  animation:
+    tunnelLightIn 2s var(--ease-out) forwards,
+    tunnelGlowPulse 5s ease-in-out 2s infinite;
 }
 .gate.is-leaving { opacity: 0; transform: scale(1.06); pointer-events: none; }
 
@@ -338,8 +340,9 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   color: #f7f0e3;
   text-shadow: 0 0 26px rgba(232, 188, 100, 0.22);
   opacity: 0;
-  transform: translateY(10px);
-  animation: gateFade 1.2s var(--ease-out) forwards;
+  transform: translateY(6px) scale(0.72);
+  filter: blur(4px);
+  animation: gateFade 1.4s var(--ease-out) forwards;
 }
 .gate-line.it { font-style: italic; color: rgba(235, 205, 155, 0.82); animation-delay: 0.5s; }
 .gate-prompt {
@@ -355,7 +358,7 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
 }
 .gate-chevron { display: inline-block; margin-left: 0.3em; animation: gateChevron 2.4s ease-in-out 2.8s infinite; }
 @keyframes gateFade {
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: none; filter: none; }
 }
 @keyframes gatePulse {
   0%, 100% { opacity: 0.45; }
@@ -365,12 +368,20 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(3px); }
 }
-@keyframes tunnelGlow {
-  0%, 100% { opacity: 0.82; transform: translate(-50%, -50%) scale(1); }
-  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.05); }
+/* One-shot: orb grows from a distant pinpoint to fill the gate */
+@keyframes tunnelLightIn {
+  from { opacity: 0;    transform: translate(-50%, -50%) scale(0.12); }
+  60%  { opacity: 0.85; transform: translate(-50%, -50%) scale(0.9); }
+  to   { opacity: 1;    transform: translate(-50%, -50%) scale(1); }
+}
+/* Loop: gentle breathing after arrival */
+@keyframes tunnelGlowPulse {
+  0%, 100% { opacity: 0.88; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gate::before { animation: none; }
+  .gate::before { animation: none; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .gate-line    { animation: none; opacity: 1; transform: none; filter: none; }
   .gate-chevron { animation: none; }
   .gate-prompt  { animation: gateFade 1s var(--ease-out) 1.8s forwards; }
 }
@@ -636,36 +647,39 @@ html.perf-lite *::after {
 }
 
 .manifesto-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 40px;
 }
 
 .manifesto-item {
-  background: var(--paper);
-  padding: 22px 22px 20px;
-  transition: background 0.3s ease;
+  padding: 52px 0 56px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
-.manifesto-item:hover { background: #1b1511; }
+.manifesto-item:first-child { border-top: 1px solid var(--border); }
+.manifesto-item.is-revealed {
+  opacity: 1;
+  transform: none;
+}
 
 .manifesto-item-label {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.16em;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  font-family: var(--serif);
+  font-size: clamp(56px, 9vw, 108px);
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+  color: var(--ink);
+  text-transform: none;
+  margin-bottom: 16px;
 }
 .manifesto-item-value {
-  font-family: var(--serif);
-  font-size: 21px;
-  line-height: 1.3;
-  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 520px;
 }
 
 .manifesto-body {
