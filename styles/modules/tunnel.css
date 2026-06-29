@@ -9,4 +9,8 @@
 :root {
   --bellows-t: 0;
   --iris-t:    1;
+  /* Directional focal light: written by sections.js on scroll.
+     46% = light slightly ahead (approach), 54% = light just passed (exit).
+     The amber rim ring in .bellows::before reads this variable. */
+  --focal-y: 50%;
 }

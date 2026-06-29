@@ -23,7 +23,10 @@
 }
 
 /* Rim light — a warm amber ring at the inner edge of the bellows opening.
-   Shifted right by sidebar/2 so the ring tracks the visible content area. */
+   Shifted right by sidebar/2 so the ring tracks the visible content area.
+   --focal-y (written by sections.js, range 46%–54%) drifts the ring vertically:
+   it starts slightly above center (light ahead) and settles below as you
+   scroll through — giving the illusion of passing through a fixed light. */
 .bellows::before {
   content: '';
   position: absolute;
@@ -31,7 +34,7 @@
   pointer-events: none;
   z-index: 1;
   background: radial-gradient(
-    ellipse 72% 76% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
+    ellipse 72% 76% at calc(50% + calc(var(--sidebar-w) / 2)) var(--focal-y, 50%),
     transparent 46%,
     rgba(220, 175, 85, 0.05) 50%,
     rgba(232, 188, 100, 0.14) 54%,
@@ -43,7 +46,7 @@
 @media (max-width: 880px) {
   .bellows::before {
     background: radial-gradient(
-      ellipse 72% 76% at 50% 50%,
+      ellipse 72% 76% at 50% var(--focal-y, 50%),
       transparent 46%,
       rgba(220, 175, 85, 0.05) 50%,
       rgba(232, 188, 100, 0.14) 54%,
@@ -141,7 +144,7 @@
   }
   .bellows::before {
     background: radial-gradient(
-      ellipse 68% 74% at calc(50% + calc(var(--sidebar-w) / 2)) 50%,
+      ellipse 68% 74% at calc(50% + calc(var(--sidebar-w) / 2)) var(--focal-y, 50%),
       transparent 46%,
       rgba(220, 175, 85, 0.05) 50%,
       rgba(232, 188, 100, 0.14) 54%,

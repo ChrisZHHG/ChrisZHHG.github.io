@@ -31,6 +31,15 @@ export function initSections({ isReducedMotion }) {
       const arrival = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));
       s.style.setProperty('--focus', arrival.toFixed(3));
     });
+
+    // Directional focal light: drift the amber bellows rim ring based on
+    // overall scroll progress. Range 46%→54%: ring starts slightly above center
+    // (light is ahead of you) and settles just below as you exit (you've passed
+    // through). Gives the tunnel illusion of moving toward and past a light.
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
+    const scrollProgress = Math.min(1, window.scrollY / maxScroll);
+    const focalY = 46 + scrollProgress * 8; // 46% at top, 54% at bottom
+    document.documentElement.style.setProperty('--focal-y', focalY.toFixed(1) + '%');
   }
 
   window.addEventListener('scroll', update, { passive: true });
