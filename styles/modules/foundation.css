@@ -764,6 +764,31 @@ html.perf-lite *::after {
 .thread-map a:hover { color: var(--amber); border-color: var(--amber); }
 
 /* ==========================================================================
+   RACK-FOCUS ENGINE — quiet sections (interests / background / developing / writing)
+   Sections dim when off-center and develop (opacity + brightness + lift) when the
+   visitor scrolls them to the viewport focal plane. JS writes --focus (0–1).
+   Design Law #3: content at rest is always readable — minimum opacity 0.55.
+   ========================================================================== */
+.act-quiet {
+  --focus: 0;
+  opacity: calc(0.55 + 0.45 * var(--focus));
+  filter: brightness(calc(0.7 + 0.3 * var(--focus)));
+  transform: translateY(calc((1 - var(--focus)) * 14px));
+  /* No transition: Lenis lerp already smooths the scroll, so --focus
+     updates are naturally smooth. Adding a CSS transition here causes
+     the animation to restart on every Lenis RAF frame. */
+  will-change: opacity, filter, transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .act-quiet {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    will-change: auto;
+  }
+}
+
+/* ==========================================================================
    PUBLIC VISIT COUNTER — subtle footer readout (filled by analytics.js /count)
    ========================================================================== */
 .visit-count {
