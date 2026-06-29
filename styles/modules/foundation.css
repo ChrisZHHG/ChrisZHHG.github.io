@@ -712,6 +712,18 @@ html.perf-lite *::after {
   align-items: baseline;
   padding: 4px 0;
   line-height: 1.5;
+  transition: opacity 0.3s ease;
+}
+/* When the archive is scrolling and one project is focal, the matching
+   thread-map entry lights up. Non-matching entries dim subtly. */
+.thread-map.has-lit li:not(.is-lit) { opacity: 0.4; }
+.thread-map li.is-lit .thread-tag {
+  background: rgba(232, 184, 79, 0.14);
+  border-color: rgba(232, 184, 79, 0.8);
+}
+.thread-map li.is-lit a {
+  color: var(--amber);
+  border-color: var(--amber);
 }
 .thread-tag {
   display: inline-flex;

@@ -75,6 +75,9 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
     archiveDwellT = setTimeout(() => Capture.markFrame('archive'), 1600);
   }
 
+  // Thread-map items sync: one <li> per project, in order.
+  const threadItems = Array.from(document.querySelectorAll('.thread-map li'));
+
   function setActive(idx) {
     idx = clamp(idx, 0, cards.length - 1);
     if (idx === current) return;
@@ -90,6 +93,8 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
       card.style.setProperty('--o', o);
       card.style.setProperty('--ao', Math.abs(o));
     });
+    // Mirror active project onto the thread-map (visible when above #archive)
+    threadItems.forEach((li, i) => li.classList.toggle('is-lit', i === idx));
     current = idx;
     if (plateNum) plateNum.textContent = String(idx + 1).padStart(2, '0');
     scheduleArchiveCapture();
@@ -171,13 +176,16 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
     const progress = total > 0 ? traveled / total : 0;
     const idx = clamp(Math.floor(progress * cards.length + 0.15), 0, cards.length - 1);
 
+    const threadMap = document.querySelector('.thread-map');
     const enter = rect.top <= topbarH + 1 && rect.bottom >= effVh;
     if (enter && !inArchive) {
       inArchive = true;
       Stage.set('archive');
+      if (threadMap) threadMap.classList.add('has-lit');
     } else if (!enter && inArchive) {
       inArchive = false;
       Stage.set('paper');
+      if (threadMap) threadMap.classList.remove('has-lit');
     }
 
     if (enter) setActive(idx);

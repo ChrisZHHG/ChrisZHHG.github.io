@@ -123,7 +123,7 @@
 
   /* Depth of field: latent cells are dimmer and blur MORE the farther they sit
      (bokeh). Focal cell (below) overrides filter to none = the sharp focal plane. */
-  filter: brightness(0.5) saturate(0.6) blur(calc(var(--ao) * 2px));
+  filter: brightness(0.32) saturate(0.4) blur(calc(var(--ao) * 2.5px));
 
   /* Neighbours clearly visible; fade out only at |o|>=3 */
   opacity: clamp(0, 1.25 - var(--ao) * 0.42, 1);
@@ -135,14 +135,22 @@
   pointer-events: none;
 }
 
-/* Focal card (o = 0) */
+/* Focal card (o = 0) — the DEVELOP moment: negative resolves into photograph */
 .card.is-active {
   --o: 0;
   transform: translateX(0) translateZ(0) rotateY(0) scale(1);
-  filter: none;
   opacity: 1;
   pointer-events: auto;
   z-index: 20;
+  /* Animation overrides the transition for filter on entry. On exit the
+     transition on .card picks up and fades the filter back to latent state. */
+  animation: developReveal 0.7s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes developReveal {
+  0%   { filter: brightness(0.18) saturate(0.2) blur(3px); }
+  55%  { filter: brightness(1.18) saturate(1.1); }
+  100% { filter: none; }
 }
 
 /* Latent cards need pointer-events so clicking focuses them */
