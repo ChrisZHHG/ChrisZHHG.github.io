@@ -20,6 +20,15 @@ import { runSmokeChecks } from './features/smoke.js';
 import { renderDebugHealthBadge } from './features/debugBadge.js';
 
 document.documentElement.classList.add('js');
+
+// Compensate for Windows classic scrollbar (takes ~17px of layout width).
+// vw units include the scrollbar; this variable lets CSS subtract half of it
+// so elements using vw for centering stay visually centered.
+const scrollbarW = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+if (scrollbarW > 0) {
+  document.documentElement.style.setProperty('--scrollbar-w', scrollbarW + 'px');
+}
+
 const health = createHealthMonitor();
 const hooks = { onOk: health.onOk, onSkip: health.onSkip, onError: health.onError };
 const runtime = [];

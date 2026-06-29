@@ -28,7 +28,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1600px;
+  /* Shift centering left on Windows to account for the classic scrollbar
+     occupying space on the right. --scrollbar-w is set by main.js (0 on Mac). */
+  padding-right: var(--scrollbar-w, 0px);
 }
 @media (max-width: 880px) {
   .archive-viewport { top: 0; height: 100vh; }
