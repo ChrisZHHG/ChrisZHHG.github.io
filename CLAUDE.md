@@ -1,8 +1,11 @@
 # CLAUDE.md — chriszhang.me Action Manifesto
 
 > This is the north-star document for the site. Read it before touching anything.
-> **Last updated: June 2026 — North Star deepened with Bi Gan / Kaili Blues reading.**
-> When in doubt, this file wins — it reflects the most recent owner decisions.
+> **Last updated: July 2026 — reconciled with shipped code: hero now carries the
+> thesis, tunnel rhythm rebalanced, embeds click-to-load, `#thread` manifesto
+> confirmed removed, "flip cards" clarified. §0–§1 stay aspirational; §2/§4/§5
+> describe what actually ships.**
+> When in doubt, trust the CODE over this file, then fix the file.
 
 ---
 
@@ -51,12 +54,16 @@ Each section is a separate tunnel exit — its own moment of emergence.
 
 | # | Section (`id`) | Tunnel role | Target light state | Status |
 |---|---|---|---|---|
-| **00** | Gate (`.gate`) | Entering the train | Near-black. Thesis text develops from a distant pinpoint → flash → full. "Scroll to enter." | ✅ Built |
-| **01** | `#intro` (hero) | First tunnel — the person | Dark on approach. Flash on arrival. Headline at closest depth plane (translateZ 28px). | ✅ Built (flash pending) |
-| **02** | `#thread` (manifesto) | Second tunnel — the why | Kinetic serif words reveal sequentially. Thread-map links friction → project. | ✅ Built (flash pending) |
-| **03** | `#archive` (the work) | **The long tunnel — the what.** | DOM cinema carousel. Each card DEVELOPS (dark → overexposure flash → sharp). This IS the model for all other sections. | ✅ Built |
-| **04** | `#interests` `#background` `#developing` `#writing` | Quieter tunnels — the who | Currently: rack-focus dims to 55%, sharpens when centered. **Target: deepen darkness to 15–20%, add per-section flash on entry.** | ⚠️ Partially built |
-| **05** | `#contact` / coda | **Stepping off the train** | Amber arrival glow. End in warmth. | ✅ Built |
+| **00** | Gate (`.gate`) | Entering the train | Near-black. Thesis develops from a distant pinpoint → flash → full. "Scroll to enter." | ✅ Built |
+| **01** | `#intro` (hero) | First tunnel — the person | Fills the first screen; carries the thesis as the page `<h1>` (*Time is currency. / Attention is where you spend it.*) so the strongest line persists from the gate. Flashes once on gate dismiss. Depth planes via translateZ. | ✅ Built |
+| **02** | `#archive` (the work) | **The long tunnel — the what.** | DOM cinema carousel, ~48% of total scroll. Each card DEVELOPS (dark → overexposure flash → sharp). This IS the model for all other sections. | ✅ Built |
+| **03** | `#interests` `#background` `#developing` `#writing` | Quieter tunnels — the who | Genuine darkness (0.15 baseline) + a per-section flash fired on entering the focal band; each is `min-height: 80vh` so exactly one is lit at a time. | ✅ Built |
+| **04** | `#contact` / coda | **Stepping off the train** | Amber arrival glow floods from below. End in warmth. | ✅ Built |
+
+> There is **no `#thread` / manifesto section** — it was removed. The actual order
+> is `#intro → #archive → #interests → #background → #developing → #writing → #contact`.
+> `scripts/features/manifesto.js` + the `.thread-map` / `.manifesto-*` CSS are dead
+> code (no matching DOM) and are safe to delete — see §5.
 
 ---
 
@@ -79,67 +86,61 @@ Each section is a separate tunnel exit — its own moment of emergence.
 - **Windows scrollbar fix** — `--scrollbar-w` compensates centering on Windows.
 
 ### Hero (`#intro`)
-- **Spatial depth** — `perspective: 1800px`. Headline translateZ(28px), bio -12px, tags -22px.
+- **Carries the thesis** — the page `<h1>` is *Time is currency.* + *Attention is where you spend it.* (the gate's line, now persistent). This is the subject shot.
+- **Fills the first screen** — `min-height: calc(100vh - topbar)`, flex-centered, so the archive never bleeds in at scroll 0 (Design Law §3).
+- **Spatial depth** — `perspective: 1800px`. `.hero-headline` translateZ(28px), `.hero-headline-2` 12px, bio -12px, tags -22px.
+- **First flash** — on gate dismiss the hero gets a one-shot `.is-entering` flash (main.js `onDismiss`), establishing the 空白 beat from section one.
 
-### Manifesto (`#thread`)
-- **Kinetic reveal** (`scripts/features/manifesto.js`) — IntersectionObserver staggers `.is-revealed` 130ms apart. Large serif words (clamp 56px–108px).
-- **Thread-map sync** — `.is-lit` on matching `<li>` while archive is active; `has-lit` dims others to 0.4.
+### Manifesto (`#thread`) — REMOVED (dead code)
+- The section is gone from the DOM. `scripts/features/manifesto.js`, `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS still ship but have nothing to act on. Safe to delete (§5).
 
 ### Archive (`#archive`) — DOM Cinema Carousel
 - **DEVELOP mechanic** — `@keyframes developReveal`: brightness(0.18)/blur(3px) → brightness(1.18) overexposure → `filter: none`. **This is the canonical flash pattern.**
 - **Coverflow** — `--o` (signed offset), `--ao` (absolute). Latent cards: brightness(0.32), saturate(0.4), blur(2.5px × ao).
-- **Scroll-driven** — `updateFromScroll()` maps progress to active card index.
+- **Two-face cards** — each card has a `.card-front` (compact teaser, shown while latent) and `.card-back` (full detail, shown when focal via `.is-active`). This is NOT a 3D flip — the press-F/rotateY flip is dead (§5).
+- **Click-to-load embeds** (`scripts/features/embeds.js`) — heavy third-party iframes (HF Space, Loom, CyberTao, YouTube) carry `data-embed-src` and show a dark `.embed-poster` first. Loading on click kills the white cold-start, the wheel scroll-trap, and third-party console noise. Never auto-load these on view.
+- **Scroll-driven** — `updateFromScroll()` maps progress to active card index; section height is `*5` viewports (was `*6.2`).
 - **Fallback** — coarse-pointer / reduced-motion / ≤880px → static vertical stack.
 
 ### Rack-focus engine (`scripts/features/sections.js`)
-- **Quiet sections** — `--focus` (0→1) drives: `opacity: calc(0.55 + 0.45 * var(--focus))`, `brightness: calc(0.7 + 0.3 * var(--focus))`, `translateY: calc((1 - var(--focus)) * 14px)`. No CSS transition (Lenis lerp smooths).
+- **Quiet sections** — `--focus` (0→1, window 30% vh) drives: `opacity: calc(0.15 + 0.85 * var(--focus))`, `brightness: calc(0.3 + 0.7 * var(--focus))`, `translateY: calc((1 - var(--focus)) * 20px)`. Genuine darkness baseline (Design Law §1). No CSS transition (Lenis lerp smooths).
+- **Per-section flash** — fires once when a section's midpoint enters the focal band (`distance < 40% vh`) — a generous, momentum-proof trigger. The `sectionReveal` animation is **transient** (no `forwards`) and the class is dropped on `animationend`, so the section settles back to its `--focus` darkness — only the centered section stays lit.
 - **Coda arrival** — `--focus` 0→1 as `#contact` enters from below. Amber radial glow floods from bottom.
 - **Directional focal light** — `--focal-y` on `:root`, 46%→54% across full scroll, drives bellows amber rim ring.
 
-### Text surgery (confirmed June 2026)
-- Hero bio ≤12 words. Tags: 2 only. All card `.card-desc` deleted. Both `.manifesto-body` paragraphs deleted. Both `.writing-item-sub` deleted. `#advising` deleted.
-- Section order: `#intro → #thread → #archive → #interests → #background → #developing → #writing → #contact`
+### Periphery / leather (`styles/modules/bellows.css`)
+- Leather is pulled DOWN (`brightness(0.92)`, `opacity 0.7`) so the periphery reads as clean cinematic black, not busy brown noise. The amber rim ring + vignette are the framing, not the leather.
+
+### Text surgery
+- Hero bio ≤12 words. Tags: 2 only. All card `.card-desc` deleted. Both `.writing-item-sub` deleted. `#advising` deleted.
+- **Actual section order:** `#intro → #archive → #interests → #background → #developing → #writing → #contact` (no `#thread`).
 
 ---
 
 ## 5. What is dead (do not rebuild)
 
 - **WebGL / Three.js** — Cannot host interactive content. DOM carousel replaced it. Files removed.
-- **Flip cards** — No hidden back. Each project is one face. Never rebuild.
+- **The 3D card FLIP** — the press-`F` / `rotateY(180deg)` flip-to-back mechanic is gone (`flipActive` is a no-op stub; `.card-flip-hint` / `.card-back-flip` are `display:none`). Do NOT rebuild the flip. Note: cards still have a `.card-front` teaser + `.card-back` detail — those are swapped by focal state (`.is-active`), which is not a flip. Keep that.
+- **`#thread` / manifesto section** — removed from the DOM. `scripts/features/manifesto.js`, `initManifesto`, `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS are orphaned (no target). Safe to delete on the next code-cleanup pass; do not build new features on them.
 - **`#advising` section** — Diluted identity. Gone.
 - **`focus.mp4`** — Dead asset. Gone.
 
 ---
 
-## 6. Next build priorities — deepening the Bi Gan rhythm
+## 6. Build status — Bi Gan rhythm
 
-The rack-focus engine exists but is too gentle. It dims to 55% (still readable, never truly dark). The Bi Gan reading requires genuine darkness and a per-section flash. This is the remaining core work.
+The core rhythm work is **done** (July 2026):
 
-### Priority 1 — Deepen the darkness
-`act-quiet` baseline: 0.55 → **0.15**. Focus window: 55% vh → **30% vh** (sharper, more binary).
-```css
-.act-quiet {
-  opacity: calc(0.15 + 0.85 * var(--focus));
-  filter: brightness(calc(0.3 + 0.7 * var(--focus)));
-  transform: translateY(calc((1 - var(--focus)) * 20px));
-}
-```
-The visitor must feel genuinely in the dark between sections. 55% is not dark enough.
+- ✅ **Genuine darkness** — `.act-quiet` baseline 0.15, 30% vh window (was 0.55 / 55%).
+- ✅ **Per-section flash on entry** — `sectionReveal` fires when a section enters the focal band (`distance < 40% vh`); transient (no `forwards`) so darkness returns after. Momentum can't skip it.
+- ✅ **Hero flash** — one-shot on gate dismiss, landing on the thesis `<h1>`.
+- ✅ **Dwell** — quiet sections + coda are `min-height: 80vh`, so one tunnel exit fills the frame at a time (they used to be thin and get flown past).
+- ✅ **Clean black periphery** — leather toned down so contrast reads.
 
-### Priority 2 — Per-section flash on entry
-When `--focus` crosses ~0.85 (section arriving at focal plane), trigger `sectionReveal` animation:
-```css
-@keyframes sectionReveal {
-  0%   { filter: brightness(0.15); }
-  55%  { filter: brightness(1.15); }
-  100% { filter: none; }
-}
-```
-JS: track when `--focus` crosses 0.85 for the first time → add `.is-revealed` class → play keyframe. One-shot per scroll-into-view.
-Remove the class when section leaves the focal plane so the flash replays on next entry.
-
-### Priority 3 — Hero and manifesto flash
-`#intro` and `#thread` are always visible (near top, no approach from darkness). Add a one-time flash on first-load via `.gate` dismiss — when the gate lifts, the hero section should receive a brief `sectionReveal` flash, establishing the pattern from the very first section.
+### Remaining / nice-to-have
+- **Dead-code sweep** — delete `manifesto.js`, `initManifesto`/`initThreadJumps` wiring in `main.js`, and the `.thread-map` / `.manifesto-*` CSS (all orphaned, §5). Purely subtractive.
+- **Content** — "Former Big 4 auditor" wording (Chris is currently at KPMG, a Big 4 — see §8); tighten if it reads as inaccurate.
+- **`focal.js` / `iris.js` reserved vars** (`--iris-t`) — unused; remove if the iris transition is not coming.
 
 ---
 
@@ -159,7 +160,7 @@ P0 (blockers):
 ## 8. Non-Goals
 
 - No WebGL (permanent).
-- No flip cards (permanent).
+- No 3D card flip (permanent) — the press-`F` / `rotateY` flip. (The `.card-front` teaser ↔ `.card-back` detail swap on focal state is fine and current — that is not a flip.)
 - No required mouse operation to progress.
 - No competing metaphor (no light-meter, timecode, fps HUD, particle system).
 - No background color-ramp that sacrifices text contrast.
