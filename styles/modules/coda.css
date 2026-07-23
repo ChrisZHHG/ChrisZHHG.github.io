@@ -339,7 +339,6 @@
 @media (max-width: 620px) {
   .act.act-hero { padding: 40px 20px 48px; }
   .act { padding: 56px 20px; }
-  .manifesto-grid { grid-template-columns: 1fr; }
   .bg-grid { grid-template-columns: 1fr; }
   .interest-grid { grid-template-columns: 1fr; }
   .interest-flip-card { min-height: 320px; }
@@ -352,8 +351,6 @@
   .archive-label, .archive-skip { font-size: 9px; }
   .archive-label { left: 20px; top: 22px; }
   .archive-skip { right: 20px; top: 22px; }
-
-  .thread-map { font-size: 12px; }
 }
 
 /* ==========================================================================

@@ -52,11 +52,10 @@ export function createScroll({ isReducedMotion, isCoarsePointer }) {
   }
   rafId = requestAnimationFrame(raf);
 
-  // Smooth in-page anchor jumps (TOC, topbar, brand). Skip [data-jump] links —
-  // those are owned by the archive navigation feature (initThreadJumps).
+  // Smooth in-page anchor jumps (TOC, topbar, brand).
   const onAnchorClick = (e) => {
     const a = e.target.closest('a[href^="#"]');
-    if (!a || a.hasAttribute('data-jump')) return;
+    if (!a) return;
     const href = a.getAttribute('href');
     if (!href || href.length < 2) return;
     const target = document.querySelector(href);

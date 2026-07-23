@@ -1,24 +1,3 @@
-export function initThreadJumps(Archive) {
-  const links = Array.from(document.querySelectorAll('a[data-jump]'));
-  const handlers = [];
-  links.forEach((a) => {
-    const onClick = (e) => {
-      const n = parseInt(a.dataset.jump, 10);
-      if (Number.isFinite(n)) {
-        e.preventDefault();
-        Archive.navigateTo(n - 1);
-      }
-    };
-    a.addEventListener('click', onClick);
-    handlers.push([a, onClick]);
-  });
-  return {
-    dispose() {
-      handlers.forEach(([a, onClick]) => a.removeEventListener('click', onClick));
-    },
-  };
-}
-
 export function initScrollSpy() {
   const tocLinks = Array.from(document.querySelectorAll('[data-role="toc"] a'));
   if (!tocLinks.length) return { status: 'skipped', reason: 'missing toc links' };

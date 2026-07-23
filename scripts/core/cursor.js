@@ -65,7 +65,7 @@ export function initCursor({ Stage, FocalPlane, isCoarsePointer, isReducedMotion
   const onMouseMove = (e) => moveTo(e.clientX, e.clientY);
   window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-  const hoverSelector = 'a, button, .manifesto-item, .card-flip-hint, .card-split-cta, .demo-link, .demo-video-tile, .poster-cta, .nod-hotspot, [data-role="flip-back"], [data-role="prev"], [data-role="next"]';
+  const hoverSelector = 'a, button, .embed-poster, .card-split-cta, .demo-link, .nod-hotspot, [data-role="prev"], [data-role="next"]';
   const onMouseOver = (e) => {
     if (e.target.closest(hoverSelector)) el.classList.add('is-hover');
   };

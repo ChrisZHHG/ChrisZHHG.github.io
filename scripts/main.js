@@ -14,9 +14,8 @@ import { initArchive } from './features/archive.js';
 import { initEmbeds } from './features/embeds.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
 import { initInterestFlips } from './features/interests.js';
-import { initManifesto } from './features/manifesto.js';
 import { initSections } from './features/sections.js';
-import { initThreadJumps, initScrollSpy, initBeforeUnloadFade } from './features/navigation.js';
+import { initScrollSpy, initBeforeUnloadFade } from './features/navigation.js';
 import { initAnalytics, showVisitCount } from './features/analytics.js';
 import { runSmokeChecks } from './features/smoke.js';
 import { renderDebugHealthBadge } from './features/debugBadge.js';
@@ -100,22 +99,20 @@ trackDisposable(safeInit('gate', () => initGate({
   },
 }), hooks));
 
-const Archive = trackDisposable(safeInit('archive', () => initArchive({
+trackDisposable(safeInit('archive', () => initArchive({
   Audio,
   Stage,
   isReducedMotion: reducedMotion.isReduced,
   isCoarsePointer,
   clamp,
   scrollTo: Scroll.scrollTo,
-}), hooks)) || { navigateTo() {}, dispose() {} };
+}), hooks));
 
 trackDisposable(safeInit('embeds', () => initEmbeds(), hooks));
 trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));
 trackDisposable(safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks));
 trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));
-trackDisposable(safeInit('manifesto', () => initManifesto({ isReducedMotion: reducedMotion.isReduced }), hooks));
 trackDisposable(safeInit('sections', () => initSections({ isReducedMotion: reducedMotion.isReduced }), hooks));
-trackDisposable(safeInit('thread-jumps', () => initThreadJumps(Archive), hooks));
 trackDisposable(safeInit('scroll-spy', () => initScrollSpy(), hooks));
 trackDisposable(safeInit('beforeunload', () => initBeforeUnloadFade(), hooks));
 safeInit('analytics', () => initAnalytics(), hooks);
