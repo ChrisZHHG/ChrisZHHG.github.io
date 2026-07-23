@@ -253,6 +253,22 @@
   transition: color 0.1s ease;
 }
 
+/* Closing send-off — the emotional payoff as you step off the train: the hours
+   already spent are gone; make the rest count. Lands in the warm arrival glow. */
+.coda-closing {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.14;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  max-width: 22ch;
+  margin-bottom: 42px;
+}
+.coda-accent { color: var(--amber); font-style: italic; }
+@media (max-width: 620px) {
+  .coda-closing { font-size: clamp(26px, 7vw, 34px); margin-bottom: 32px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .act-coda { opacity: 1; }
   .act-coda::before, .act-coda::after { display: none; }
