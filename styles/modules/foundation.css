@@ -85,6 +85,11 @@ strong { font-weight: 500; }
   z-index: 1;
   padding-left: var(--sidebar-w);
   padding-top: var(--topbar-h);
+  /* Guard against any horizontal bleed (glow pseudo-elements, canted cards)
+     escaping to the document and creating a sideways scroll on mobile.
+     `clip` (not `hidden`) leaves overflow-y visible, so the archive's
+     position:sticky keeps working. */
+  overflow-x: clip;
 }
 
 /* Sidebar (kylemcgraw-style fixed TOC) */
@@ -265,8 +270,13 @@ body.is-gated .topbar { opacity: 0; pointer-events: none; }
   max-width: var(--content-max);
   margin: 0 auto;
   padding: 80px 32px 96px;
-  min-height: auto;
-  display: block;
+  /* Fill the first screen so the hero is its own clean "first tunnel" — the
+     archive no longer bleeds up into view at scroll 0 (one focal plane at a
+     time). Content is vertically centered: the person is the subject shot. */
+  min-height: calc(100vh - var(--topbar-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   /* Tunnel mouth: a shallow 3D stage so text layers recede into depth.
      Headline is the closest plane; bio/tags recede toward the tunnel wall. */
   perspective: 1800px;
@@ -772,22 +782,32 @@ html.perf-lite *::after {
    ========================================================================== */
 .act-quiet {
   --focus: 0;
+  /* Each quiet section is its own tunnel exit — give it room so it fills the
+     frame one at a time and the visitor actually dwells on it, instead of four
+     thin sections crammed into one screen that Lenis momentum flies past. */
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   opacity: calc(0.15 + 0.85 * var(--focus));
   filter: brightness(calc(0.3 + 0.7 * var(--focus)));
   transform: translateY(calc((1 - var(--focus)) * 20px));
   will-change: opacity, filter, transform;
 }
 
-/* Flash (空白 beat): when a section arrives at the focal plane, JS adds
-   .is-entering. The animation overrides the continuous --focus filter for
-   0.65s: dark → overexposed → settled. Plays once per approach. */
+/* Flash (空白 beat): when a section enters the focal band, JS adds .is-entering
+   for one shot. The animation is a TRANSIENT overexposure (dark → blown-out →
+   settle); it deliberately does NOT use `forwards`, so when it ends the section
+   returns to its continuous --focus brightness. That keeps genuine darkness
+   between sections (only the centered one is lit) while guaranteeing every
+   section still gets its flash on the way in — even at Lenis momentum speed. */
 @keyframes sectionReveal {
   0%   { filter: brightness(0.15) saturate(0.2); opacity: 0.2; }
   52%  { filter: brightness(1.18) saturate(1.1); opacity: 1; }
   100% { filter: brightness(1);                  opacity: 1; }
 }
 .act-quiet.is-entering {
-  animation: sectionReveal 0.65s cubic-bezier(.22, 1, .36, 1) forwards;
+  animation: sectionReveal 0.65s cubic-bezier(.22, 1, .36, 1);
 }
 
 /* Hero flash fires once on gate dismiss — same 空白 pattern, slightly longer

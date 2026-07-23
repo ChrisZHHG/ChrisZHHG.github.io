@@ -7,7 +7,6 @@
 <meta name="description" content="Former Big 4 auditor turned builder. Building tools that eliminate friction so your attention flows toward what actually matters.">
 <meta name="theme-color" content="#14100d">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="alternate icon" href="/favicon.ico">
 <link rel="canonical" href="https://chriszhang.me/">
 <script>
 /* Always prefer HTTPS on production domain to avoid browser "Not secure" UI. */
@@ -103,8 +102,11 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
       <div class="hero-rule-line"></div>
     </div>
 
+    <h1 class="hero-headline">Time is currency.</h1>
+    <p class="hero-headline-2">Attention is where you spend it.</p>
+
     <p class="hero-bio">
-      Builds tools that remove friction. Former Big 4 auditor.
+      Builds tools that remove friction. Former Big&nbsp;4 auditor.
     </p>
 
     <div class="hero-tags">
@@ -182,7 +184,8 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
                   <span class="card-front-media-label">walkthrough video</span>
                   <iframe
                     title="Smart Airport front preview video"
-                    data-src="https://www.youtube-nocookie.com/embed/7ae8t7nckHY?rel=0&modestbranding=1&playsinline=1"
+                    data-embed-src="https://www.youtube-nocookie.com/embed/7ae8t7nckHY?rel=0&modestbranding=1&playsinline=1"
+                    data-embed-label="walkthrough video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
                 </div>
@@ -214,7 +217,8 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
                   <div class="demo-live-frame">
                     <!-- Direct Gradio host — more reliable in iframes than /embed on some setups -->
                     <iframe title="Smart Airport — interactive dispatch (Hugging Face Space)"
-                      data-src="https://devil02047-smart-airport-demo.hf.space"
+                      data-embed-src="https://devil02047-smart-airport-demo.hf.space"
+                      data-embed-label="live demo · Smart Airport"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
                       referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -256,7 +260,8 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
           <div class="card-face card-back">
             <div class="card-split reveal reveal-2">
               <div class="card-split-media">
-                <iframe data-src="https://www.loom.com/embed/5e0f9e11729b40e28ee022197ddde683?hideEmbedTopBar=true&autoplay=0&muted=1&hide_owner=1&hide_share=1&hide_title=1"
+                <iframe data-embed-src="https://www.loom.com/embed/5e0f9e11729b40e28ee022197ddde683?hideEmbedTopBar=true&autoplay=0&muted=1&hide_owner=1&hide_share=1&hide_title=1"
+                        data-embed-label="demo video · Cleanroll"
                         title="Cleanroll demo (Loom)"
                         loading="lazy"
                         frameborder="0"
@@ -390,7 +395,8 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
           <div class="card-face card-back">
             <a class="card-back-open reveal reveal-1" href="https://cybertao.netlify.app" target="_blank" rel="noopener">↗ open site</a>
             <iframe class="card-back-iframe reveal reveal-2"
-                    data-src="https://cybertao.netlify.app"
+                    data-embed-src="https://cybertao.netlify.app"
+                    data-embed-label="live site · CyberTao"
                     title="CyberTao live site preview"></iframe>
             <div class="cybertao-overload" aria-hidden="true"></div>
             <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>

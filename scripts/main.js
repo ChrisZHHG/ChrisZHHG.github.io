@@ -11,6 +11,7 @@ import { createBellows } from './core/bellows.js';
 import { initPerfMode } from './core/perf.js';
 import { initGate } from './features/gate.js';
 import { initArchive } from './features/archive.js';
+import { initEmbeds } from './features/embeds.js';
 import { initNodHotspots, initNodDemoPanel } from './features/nod.js';
 import { initInterestFlips } from './features/interests.js';
 import { initManifesto } from './features/manifesto.js';
@@ -108,6 +109,7 @@ const Archive = trackDisposable(safeInit('archive', () => initArchive({
   scrollTo: Scroll.scrollTo,
 }), hooks)) || { navigateTo() {}, dispose() {} };
 
+trackDisposable(safeInit('embeds', () => initEmbeds(), hooks));
 trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));
 trackDisposable(safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks));
 trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));

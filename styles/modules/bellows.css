@@ -72,8 +72,13 @@
   background-repeat: repeat;
   background-position: center center;
 
-  filter: brightness(1.45) contrast(1.18) saturate(1.08);
-  opacity: 1;
+  /* Was brightness(1.45): that actively lifted the leather so its pebbled weave
+     read as loud brown "noise" across the whole periphery, diluting the
+     cinematic black and fighting the content. Pulled down + slightly
+     translucent so the leather still frames the very edge as a material, but
+     the dark areas read as clean black — the contrast each flash needs. */
+  filter: brightness(0.92) contrast(1.12) saturate(1.02);
+  opacity: 0.7;
 
   /* Shifted right by sidebar/2: leather frame is symmetric around the visible
      content area at every desktop viewport width, not just the raw viewport. */

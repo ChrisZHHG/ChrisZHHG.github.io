@@ -18,6 +18,9 @@ export function initSections({ isReducedMotion }) {
     s.classList.remove('is-entering');
     void s.offsetWidth; // force reflow
     s.classList.add('is-entering');
+    // The flash is transient (no `forwards`): drop the class when it ends so the
+    // section settles back to its continuous --focus brightness (darkness returns).
+    s.addEventListener('animationend', () => s.classList.remove('is-entering'), { once: true });
   }
 
   function update() {
@@ -34,17 +37,20 @@ export function initSections({ isReducedMotion }) {
       const focus = Math.max(0, 1 - distance / (vh * 0.30));
       s.style.setProperty('--focus', focus.toFixed(3));
 
-      // Flash: fire once as section arrives at the focal plane.
-      if (focus >= 0.85 && !entered.has(s)) {
+      // Flash fires once the section enters the focal band (within 40% vh of
+      // center). A generous, momentum-proof trigger — a fast Lenis fling still
+      // crosses the band, so no section is ever skipped (the old focus>=0.85
+      // window was only ~40px tall and easy to fly past).
+      const inBand = distance < vh * 0.40;
+      if (inBand && !entered.has(s)) {
         entered.add(s);
         triggerFlash(s);
       }
 
-      // Reset: when the section leaves the focal plane, clear its state
-      // so the flash replays on the next approach.
-      if (focus < 0.35 && entered.has(s)) {
+      // Re-arm once the section leaves the band, so the flash replays on the
+      // next approach — like re-entering a tunnel.
+      if (!inBand && entered.has(s)) {
         entered.delete(s);
-        s.classList.remove('is-entering');
       }
     });
 

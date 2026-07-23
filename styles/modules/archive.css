@@ -4,11 +4,13 @@
 .act-archive {
   max-width: none;
   padding: 0;
-  /* Container is tall: one viewport per card = 8 viewport-heights, plus a
-     small entry buffer so the first and last cards rest visibly. The sticky
-     viewport sits below the fixed topbar so cards never get clipped. */
+  /* ~1 viewport of scroll per card (5 cards → 5 sticky screens). Tightened
+     from 6.2 so the archive stops dominating the whole page — it was ~61% of
+     total scroll, which read as an endless scroll-jack before the "who I am"
+     sections. The sticky viewport sits below the fixed topbar so cards never
+     get clipped. */
   position: relative;
-  height: calc((100vh - var(--topbar-h)) * 6.2);
+  height: calc((100vh - var(--topbar-h)) * 5);
   background:
     radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
     linear-gradient(180deg, #3a3026 0%, #2f2720 100%);
@@ -536,6 +538,64 @@
   border: none;
   object-fit: cover;
 }
+
+/* Click-to-load poster over a heavy third-party embed (scripts/features/embeds.js).
+   Dark + on-brand so no white cold-start shows; wheeling over it scrolls the
+   page (it is our element, not the iframe → no scroll-trap). */
+.embed-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  cursor: none;
+  color: rgba(245, 241, 232, 0.92);
+  background:
+    radial-gradient(ellipse 66% 58% at 50% 42%, rgba(232, 184, 79, 0.12), transparent 64%),
+    linear-gradient(180deg, #16110d 0%, #0a0807 100%);
+  transition: background 0.25s ease;
+}
+.embed-poster:hover {
+  background:
+    radial-gradient(ellipse 66% 58% at 50% 42%, rgba(232, 184, 79, 0.2), transparent 64%),
+    linear-gradient(180deg, #1b1510 0%, #0c0908 100%);
+}
+.embed-poster-play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  color: var(--amber);
+  background: rgba(10, 8, 6, 0.7);
+  border: 1px solid rgba(232, 184, 79, 0.5);
+  box-shadow: 0 0 20px rgba(232, 184, 79, 0.14);
+  transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+.embed-poster:hover .embed-poster-play {
+  transform: scale(1.07);
+  border-color: rgba(255, 235, 166, 0.85);
+}
+.embed-poster-label {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: rgba(245, 241, 232, 0.94);
+}
+.embed-poster-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 184, 79, 0.75);
+}
+.embed-poster.is-loading .embed-poster-hint { color: rgba(245, 241, 232, 0.5); }
+.embed-poster.is-loading .embed-poster-play { opacity: 0.5; }
 
 .card-back-open {
   position: absolute;
