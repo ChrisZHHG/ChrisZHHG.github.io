@@ -62,8 +62,8 @@ Each section is a separate tunnel exit — its own moment of emergence.
 
 > There is **no `#thread` / manifesto section** — it was removed. The actual order
 > is `#intro → #archive → #interests → #background → #developing → #writing → #contact`.
-> `scripts/features/manifesto.js` + the `.thread-map` / `.manifesto-*` CSS are dead
-> code (no matching DOM) and are safe to delete — see §5.
+> Its code (`manifesto.js`, `.thread-map` / `.manifesto-*` CSS) was deleted in the
+> July 2026 cleanup — see §5.
 
 ---
 
@@ -91,8 +91,8 @@ Each section is a separate tunnel exit — its own moment of emergence.
 - **Spatial depth** — `perspective: 1800px`. `.hero-headline` translateZ(28px), `.hero-headline-2` 12px, bio -12px, tags -22px.
 - **First flash** — on gate dismiss the hero gets a one-shot `.is-entering` flash (main.js `onDismiss`), establishing the 空白 beat from section one.
 
-### Manifesto (`#thread`) — REMOVED (dead code)
-- The section is gone from the DOM. `scripts/features/manifesto.js`, `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS still ship but have nothing to act on. Safe to delete (§5).
+### Manifesto (`#thread`) — REMOVED
+- The section and all its code are gone: `manifesto.js` deleted, `initManifesto` / `initThreadJumps` removed, `.thread-map` / `.manifesto-*` CSS stripped (July 2026). Do not rebuild.
 
 ### Archive (`#archive`) — DOM Cinema Carousel
 - **DEVELOP mechanic** — `@keyframes developReveal`: brightness(0.18)/blur(3px) → brightness(1.18) overexposure → `filter: none`. **This is the canonical flash pattern.**
@@ -121,7 +121,7 @@ Each section is a separate tunnel exit — its own moment of emergence.
 
 - **WebGL / Three.js** — Cannot host interactive content. DOM carousel replaced it. Files removed.
 - **The 3D card FLIP** — the press-`F` / `rotateY(180deg)` flip-to-back mechanic is gone (`flipActive` is a no-op stub; `.card-flip-hint` / `.card-back-flip` are `display:none`). Do NOT rebuild the flip. Note: cards still have a `.card-front` teaser + `.card-back` detail — those are swapped by focal state (`.is-active`), which is not a flip. Keep that.
-- **`#thread` / manifesto section** — removed from the DOM. `scripts/features/manifesto.js`, `initManifesto`, `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS are orphaned (no target). Safe to delete on the next code-cleanup pass; do not build new features on them.
+- **`#thread` / manifesto section** — fully removed (July 2026): DOM, `manifesto.js`, `initManifesto` / `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS. Do not rebuild.
 - **`#advising` section** — Diluted identity. Gone.
 - **`focus.mp4`** — Dead asset. Gone.
 
@@ -138,7 +138,6 @@ The core rhythm work is **done** (July 2026):
 - ✅ **Clean black periphery** — leather toned down so contrast reads.
 
 ### Remaining / nice-to-have
-- **Dead-code sweep** — delete `manifesto.js`, `initManifesto`/`initThreadJumps` wiring in `main.js`, and the `.thread-map` / `.manifesto-*` CSS (all orphaned, §5). Purely subtractive.
 - **Content** — "Former Big 4 auditor" wording (Chris is currently at KPMG, a Big 4 — see §8); tighten if it reads as inaccurate.
 - **`focal.js` / `iris.js` reserved vars** (`--iris-t`) — unused; remove if the iris transition is not coming.
 
