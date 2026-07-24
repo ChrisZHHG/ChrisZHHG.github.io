@@ -371,28 +371,63 @@ html.perf-lite *::after {
   inset: 0;
   z-index: 99;
   pointer-events: none;
-  /* Shifted right by sidebar/2 so the clear center tracks the visible content
-     area (not the raw viewport center). Symmetric at all desktop widths. */
-  background: radial-gradient(ellipse 92% 82% at calc(50% + calc(var(--sidebar-w) / 2)) 43%,
+  /* Centered now that there's no sidebar — the clear zone tracks the reading
+     column, which sits at the true viewport center. */
+  background: radial-gradient(ellipse 92% 82% at 50% 43%,
               transparent 54%,
               rgba(0, 0, 0, 0.20) 78%,
               rgba(5, 4, 3, 0.52) 100%);
   transition: opacity 0.24s var(--ease-out);
+  opacity: 1;
 }
-/* Mobile: no sidebar — revert to true viewport center */
-@media (max-width: 880px) {
-  .vignette {
-    background: radial-gradient(ellipse 92% 82% at 50% 43%,
-                transparent 54%,
-                rgba(0, 0, 0, 0.20) 78%,
-                rgba(5, 4, 3, 0.52) 100%);
-  }
-}
-
-.vignette { opacity: 1; }
 
 /* Flow overlay removed in this revision — content stays sharp. */
 .flow-blur, .flow-ghost { display: none; }
+
+/* ==========================================================================
+   PILLARBOX — ultrawide tunnel walls
+   On wide screens the reading column is a narrow centered band with big dark
+   gutters (intentional letterbox). To keep those gutters reading as deliberate
+   tunnel walls — not an "island floating in black" — soft dark strips hug the
+   column: near-black at the far edges, fading to transparent as they approach
+   the content. Their width tracks the real gutter, so it scales with viewport.
+   ========================================================================== */
+.pillarbox { display: none; }
+@media (min-width: 1600px) {
+  .pillarbox {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 96;
+    pointer-events: none;
+  }
+  .pillarbox::before,
+  .pillarbox::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /* the gutter beside the reading column, plus a little overlap so the wall
+       kisses the column edge with no hard seam */
+    width: calc((100vw - var(--content-max)) / 2 + 48px);
+  }
+  .pillarbox::before {
+    left: 0;
+    background: linear-gradient(90deg,
+      rgba(4, 3, 2, 0.98) 0%,
+      rgba(4, 3, 2, 0.85) 18%,
+      rgba(4, 3, 2, 0.5) 46%,
+      transparent 100%);
+  }
+  .pillarbox::after {
+    right: 0;
+    background: linear-gradient(270deg,
+      rgba(4, 3, 2, 0.98) 0%,
+      rgba(4, 3, 2, 0.85) 18%,
+      rgba(4, 3, 2, 0.5) 46%,
+      transparent 100%);
+  }
+}
 
 /* ==========================================================================
    6. FILM GRAIN
