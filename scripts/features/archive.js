@@ -125,7 +125,7 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
     if (source !== 'scroll' && !Audio.muted) Audio.softTick();
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    const topbarH = window.innerWidth > 880 ? 52 : 0;
+    const topbarH = 0; // topbar removed — sticky archive viewport sits at top:0
     const effVh = vh - topbarH;
     const total = section.offsetHeight - effVh;
     const targetProgress = (idx + 0.4) / cards.length;
@@ -169,23 +169,20 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
     if (isReducedMotion()) return;
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
-    const topbarH = window.innerWidth > 880 ? 52 : 0;
+    const topbarH = 0; // topbar removed — sticky archive viewport sits at top:0
     const effVh = vh - topbarH;
     const total = rect.height - effVh;
     const traveled = clamp(topbarH - rect.top, 0, total);
     const progress = total > 0 ? traveled / total : 0;
     const idx = clamp(Math.floor(progress * cards.length + 0.15), 0, cards.length - 1);
 
-    const threadMap = document.querySelector('.thread-map');
     const enter = rect.top <= topbarH + 1 && rect.bottom >= effVh;
     if (enter && !inArchive) {
       inArchive = true;
       Stage.set('archive');
-      if (threadMap) threadMap.classList.add('has-lit');
     } else if (!enter && inArchive) {
       inArchive = false;
       Stage.set('paper');
-      if (threadMap) threadMap.classList.remove('has-lit');
     }
 
     if (enter) setActive(idx);

@@ -54,42 +54,43 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
   <div class="gate-prompt">scroll to enter <span class="gate-chevron" aria-hidden="true">↓</span></div>
 </div>
 
-<!-- Sidebar TOC -->
-<aside class="sidebar" aria-label="Table of contents">
-  <a class="sidebar-brand" href="#intro">
-    <span class="sidebar-brand-name">Chris Zhang</span>
-    <span class="sidebar-brand-tag">Builder · Vancouver</span>
-  </a>
-  <nav class="toc" data-role="toc">
-    <a href="#intro" data-toc="intro"><span class="toc-num">00</span><span>About</span></a>
-    <a href="#archive" data-toc="archive"><span class="toc-num">01</span><span>Work · 5 plates</span></a>
-    <a href="#interests" data-toc="interests"><span class="toc-num">02</span><span>Interests</span></a>
-    <a href="#background" data-toc="background"><span class="toc-num">03</span><span>Background</span></a>
-    <a href="#developing" data-toc="developing"><span class="toc-num">04</span><span>Developing</span></a>
-    <a href="#writing" data-toc="writing"><span class="toc-num">05</span><span>Writing</span></a>
-    <a href="#contact" data-toc="contact"><span class="toc-num">06</span><span>Contact</span></a>
+<!-- Minimal viewfinder chrome — a wordmark + an INDEX trigger. No persistent
+     nav rail: this floats over the film and auto-fades while scrolling. -->
+<div class="chrome" data-role="chrome">
+  <a class="chrome-brand" href="#intro">Chris Zhang</a>
+  <button class="chrome-index" type="button" data-role="index-open"
+          aria-haspopup="dialog" aria-expanded="false" aria-controls="index-menu">
+    <span class="chrome-index-word">Index</span>
+    <span class="chrome-index-mark" aria-hidden="true"></span>
+  </button>
+</div>
+
+<!-- Full-screen chapter overlay (hidden until INDEX is opened). Keeps
+     data-role="toc" so the scroll-spy still lights the current chapter, and a
+     .audio-toggle so the sound control keeps working from here. -->
+<div class="index-menu" id="index-menu" data-role="index-menu" role="dialog"
+     aria-modal="true" aria-label="Index" hidden>
+  <button class="index-close" type="button" data-role="index-close" aria-label="Close index">✕ close</button>
+  <nav class="index-list" data-role="toc" aria-label="Sections">
+    <a href="#intro" data-toc="intro"><span class="index-num">00</span><span class="index-name">About</span></a>
+    <a href="#archive" data-toc="archive"><span class="index-num">01</span><span class="index-name">Work</span></a>
+    <a href="#interests" data-toc="interests"><span class="index-num">02</span><span class="index-name">Interests</span></a>
+    <a href="#background" data-toc="background"><span class="index-num">03</span><span class="index-name">Background</span></a>
+    <a href="#developing" data-toc="developing"><span class="index-num">04</span><span class="index-name">Developing</span></a>
+    <a href="#writing" data-toc="writing"><span class="index-num">05</span><span class="index-name">Writing</span></a>
+    <a href="#contact" data-toc="contact"><span class="index-num">06</span><span class="index-name">Contact</span></a>
   </nav>
-  <div class="sidebar-footer">
+  <div class="index-footer">
     <button class="audio-toggle" type="button" aria-pressed="false" title="Toggle sound">
       <span class="audio-label">sound · on</span>
     </button>
-    <a href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub ↗</a>
-    <a href="https://www.linkedin.com/in/chris-zhang-562b0558/" target="_blank" rel="noopener">LinkedIn ↗</a>
-    <a href="https://x.com/Kintectian" target="_blank" rel="noopener">X ↗</a>
+    <div class="index-links">
+      <a href="https://github.com/ChrisZHHG" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/chris-zhang-562b0558/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://x.com/Kintectian" target="_blank" rel="noopener">X ↗</a>
+    </div>
   </div>
-</aside>
-
-<!-- Top status bar -->
-<header class="topbar" role="banner">
-  <span class="topbar-status">
-    Cosmopolitan · Building practical AI tools
-  </span>
-  <div class="topbar-actions">
-    <a href="#archive">Work</a>
-    <a href="#interests">Interests</a>
-    <a href="#contact">Get in touch</a>
-  </div>
-</header>
+</div>
 
 <main class="world">
 

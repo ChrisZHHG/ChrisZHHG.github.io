@@ -15,7 +15,9 @@ import Lenis from '../lib/lenis.mjs';
  * @param {{ isReducedMotion: () => boolean, isCoarsePointer: boolean }} options
  */
 export function createScroll({ isReducedMotion, isCoarsePointer }) {
-  const topbarH = () => (window.innerWidth > 880 ? 52 : 0);
+  // No topbar anymore (removed with the sidebar chrome), so in-page anchor
+  // jumps land the target flush at the top — no stale offset gap.
+  const topbarH = () => 0;
 
   // ── Native fallback ──────────────────────────────────────────────────────
   if (isReducedMotion() || isCoarsePointer) {

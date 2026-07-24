@@ -35,9 +35,12 @@
   --amber: #e8b84f;       /* classic viewfinder amber */
   --amber-hot: #fff0a8;   /* lock-in highlight */
 
-  /* Layout */
-  --sidebar-w: 230px;
-  --topbar-h: 52px;
+  /* Layout — no persistent chrome anymore (the sidebar TOC + topbar were
+     removed; nav lives in the minimal viewfinder + INDEX overlay, chrome.css).
+     These stay at 0 so the existing calc()s that referenced them — vignette
+     centering, the archive's sticky top offset — resolve to "no chrome". */
+  --sidebar-w: 0px;
+  --topbar-h: 0px;
   --content-max: 860px;
 }
 
@@ -78,13 +81,14 @@ a { color: inherit; text-decoration: none; }
 strong { font-weight: 500; }
 
 /* ==========================================================================
-   3. LAYOUT — Sidebar TOC, Top status bar, Main column
+   3. LAYOUT — full-bleed cinematic frame (no persistent chrome)
+   The old fixed sidebar TOC + topbar were removed: they read as "normal
+   website" chrome and broke the film. Navigation now lives in a minimal
+   viewfinder chrome (a wordmark + an INDEX overlay) — see chrome.css.
    ========================================================================== */
 .world {
   position: relative;
   z-index: 1;
-  padding-left: var(--sidebar-w);
-  padding-top: var(--topbar-h);
   /* Guard against any horizontal bleed (glow pseudo-elements, canted cards)
      escaping to the document and creating a sideways scroll on mobile.
      `clip` (not `hidden`) leaves overflow-y visible, so the archive's
@@ -92,170 +96,12 @@ strong { font-weight: 500; }
   overflow-x: clip;
 }
 
-/* Sidebar (kylemcgraw-style fixed TOC) */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: var(--sidebar-w);
-  z-index: 200;
-  padding: 26px 22px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  border-right: 1px solid var(--border);
-  background: rgba(20, 16, 13, 0.94);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background 0.24s var(--ease-out), border-color 0.24s var(--ease-out), color 0.24s var(--ease-out);
-}
-body.is-gated .sidebar { opacity: 0; pointer-events: none; }
-
-.sidebar-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.sidebar-brand-name {
-  font-family: var(--serif);
-  font-size: 26px;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  color: inherit;
-}
-.sidebar-brand-tag {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.6;
-}
-
-.toc {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-  overflow-y: auto;
-  margin: 0 -8px;
-  padding: 0 4px;
-}
-.toc::-webkit-scrollbar { width: 0; }
-
-.toc-section {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  opacity: 0.45;
-  padding: 14px 8px 6px;
-}
-
-.toc a {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 7px 8px;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  color: inherit;
-  opacity: 0.6;
-  border-radius: 2px;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
-  position: relative;
-}
-.toc a:hover { opacity: 1; }
-.toc a .toc-num {
-  font-size: 10.5px;
-  opacity: 0.6;
-  width: 20px;
-  flex-shrink: 0;
-}
-.toc a.is-active {
-  opacity: 1;
-  color: var(--amber);
-}
-.toc a.is-active::before {
-  content: '';
-  position: absolute;
-  left: -22px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 1px;
-  background: var(--amber);
-}
-
-.sidebar-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-.sidebar-footer a:hover { opacity: 1; color: var(--amber); }
-
-/* Top status bar */
-.topbar {
-  position: fixed;
-  top: 0;
-  left: var(--sidebar-w);
-  right: 0;
-  height: var(--topbar-h);
-  z-index: 199;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 26px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-  background: rgba(20, 16, 13, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background 0.24s var(--ease-out), border-color 0.24s var(--ease-out), color 0.24s var(--ease-out);
-}
-body.is-gated .topbar { opacity: 0; pointer-events: none; }
-
-.topbar-status {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  opacity: 0.7;
-}
-.topbar-actions {
-  display: flex;
-  gap: 18px;
-  opacity: 0.65;
-}
-.topbar-actions a:hover { opacity: 1; color: var(--amber); }
-
-/* Large desktop: wider content column and slightly wider sidebar */
+/* Large desktop: wider content column */
 @media (min-width: 1440px) {
-  :root {
-    --content-max: 960px;
-    --sidebar-w: 252px;
-  }
+  :root { --content-max: 960px; }
 }
 @media (min-width: 1800px) {
-  :root {
-    --content-max: 1060px;
-    --sidebar-w: 268px;
-  }
-}
-
-/* Mobile: hide sidebar/topbar, full width content */
-@media (max-width: 880px) {
-  .world { padding-left: 0; padding-top: 0; }
-  .sidebar { display: none; }
-  .topbar { display: none; }
+  :root { --content-max: 1060px; }
 }
 
 .act {
