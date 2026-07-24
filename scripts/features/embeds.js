@@ -29,15 +29,21 @@ export function initEmbeds() {
     const holder = frame.parentElement;
     if (!holder) return;
 
+    // Video embeds carry autoplay=1 in their src, so the single poster click
+    // both loads AND starts playback — no second "start" (the native play
+    // button) to hunt for. Interactive apps (HF Space, CyberTao) have no
+    // playback, so they just load. Reflect that in the poster's wording.
+    const src = frame.dataset.embedSrc || '';
+    const isVideo = /youtube|youtu\.be|loom\.com|vimeo/.test(src);
     const label = frame.getAttribute('data-embed-label') || 'live demo';
     const poster = document.createElement('button');
     poster.type = 'button';
     poster.className = 'embed-poster';
-    poster.setAttribute('aria-label', 'Load ' + label);
+    poster.setAttribute('aria-label', (isVideo ? 'Play ' : 'Load ') + label);
     poster.innerHTML =
       '<span class="embed-poster-play" aria-hidden="true">▶</span>' +
       '<span class="embed-poster-label">' + label + '</span>' +
-      '<span class="embed-poster-hint">click to load</span>';
+      '<span class="embed-poster-hint">' + (isVideo ? 'click to play' : 'click to load') + '</span>';
 
     frame.style.display = 'none';
     holder.appendChild(poster);

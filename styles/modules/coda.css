@@ -257,16 +257,21 @@
    already spent are gone; make the rest count. Lands in the warm arrival glow. */
 .coda-closing {
   font-family: var(--serif);
-  font-size: clamp(28px, 4vw, 46px);
-  line-height: 1.14;
-  letter-spacing: -0.012em;
+  font-size: clamp(30px, 4.4vw, 48px);
+  letter-spacing: -0.014em;
   color: var(--ink);
-  max-width: 22ch;
+  max-width: 24ch;
   margin-bottom: 42px;
 }
+/* Each sentence is its own beat (Burma-Shave rhythm): the two lines inside a
+   beat stay tight (line-height 1.06), and a bigger pause separates the two
+   beats. Line breaks are deliberate (<br> in the markup), not left to reflow,
+   so no article ever dangles at a line end. */
+.coda-line { display: block; line-height: 1.06; }
+.coda-line + .coda-line { margin-top: 0.62em; }
 .coda-accent { color: var(--amber); font-style: italic; }
 @media (max-width: 620px) {
-  .coda-closing { font-size: clamp(26px, 7vw, 34px); margin-bottom: 32px; }
+  .coda-closing { font-size: clamp(27px, 7.4vw, 36px); margin-bottom: 32px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
