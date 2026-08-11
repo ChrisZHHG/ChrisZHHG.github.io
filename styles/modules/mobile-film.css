@@ -1,0 +1,100 @@
+/* ==========================================================================
+   MOBILE — 35mm vertical film reel
+   The phone experience is a strip of full-screen film frames you thumb-flick
+   through: pure scroll, no taps required, each frame one idea. Lenis is off on
+   touch, so this rides native scroll + CSS scroll-snap — smooth, and nothing
+   to operate but your thumb. Desktop is untouched (this whole file is inside
+   the touch / narrow media query).
+   ========================================================================== */
+@media (max-width: 880px), (hover: none) and (pointer: coarse) {
+
+  /* ── The reel ────────────────────────────────────────────────────────────
+     Proximity (not mandatory) so a frame that runs a little long can still be
+     read without the snap fighting the reader. */
+  html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  /* ── Each frame fills the screen, centres its one idea, and snaps ──────── */
+  .act-hero,
+  #archive .card,
+  .act-quiet,
+  .act-coda {
+    scroll-snap-align: start;
+    min-height: 100vh;      /* fallback */
+    min-height: 100svh;     /* accounts for mobile browser chrome */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Film cells sit flush — no gaps, so it reads as one continuous strip. */
+  .card-stack { gap: 0 !important; padding: 0 !important; }
+  #archive .card { padding: 8vh 20px !important; }
+
+  /* ── Trim to one idea per frame ─────────────────────────────────────────
+     The gym-floor phone wants the punch, not the spec sheet. Hide the bulky
+     interactive panels, metric tiles, footnotes and link rows; the CTA and the
+     one-line pitch stay. */
+  .nod-demo-panel,
+  .nod-callout,
+  .demo-metrics,
+  .demo-links,
+  .demo-video-youtube,
+  .card-split-note,
+  .spec-note,
+  .card-front-media-label,
+  .phone-caption {
+    display: none !important;
+  }
+
+  /* Long descriptions clamp to a few lines instead of running the frame long. */
+  .card-split-sub,
+  .spec-sub,
+  .demo-sec-sub,
+  .card-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-split-list,
+  .demo-side-detail .card-split-list {
+    /* keep at most the first two bullets — one idea, not a manual */
+    max-height: 4.6em;
+    overflow: hidden;
+  }
+
+  /* Shrink the phone mock so it + a headline + CTA fit one screen. */
+  .phone { width: 150px !important; height: 305px !important; }
+
+  /* ── Film-cell skin: a thin sprocket rail down each edge so the whole reel
+        reads as film running through the gate as you scroll. Fixed to the
+        viewport (the "gate"); the frames move past it. ── */
+  .film-rail {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 16px;
+    z-index: 95;
+    pointer-events: none;
+    background-color: rgba(6, 5, 4, 0.72);
+    background-image: radial-gradient(circle at center,
+      rgba(212, 190, 150, 0.5) 0 2.4px, rgba(0, 0, 0, 0) 3.6px);
+    background-size: 16px 30px;
+    background-repeat: repeat-y;
+    background-position: center;
+  }
+  .film-rail-l { left: 0; }
+  .film-rail-r { right: 0; }
+}
+
+/* The rails only exist on the mobile reel. */
+.film-rail { display: none; }
+@media (max-width: 880px), (hover: none) and (pointer: coarse) {
+  .film-rail { display: block; }
+}
