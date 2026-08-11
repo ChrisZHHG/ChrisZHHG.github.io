@@ -4,13 +4,11 @@
 .act-archive {
   max-width: none;
   padding: 0;
-  /* ~1 viewport of scroll per card (5 cards → 5 sticky screens). Tightened
-     from 6.2 so the archive stops dominating the whole page — it was ~61% of
-     total scroll, which read as an endless scroll-jack before the "who I am"
-     sections. The sticky viewport sits below the fixed topbar so cards never
-     get clipped. */
+  /* ~1 viewport of scroll per card (6 cards → 6 sticky screens): the 身 pillar
+     (Train with Intention), the four-tool bench, then the 心 pillar (CyberTao).
+     Kept at ~1 screen/card so the archive doesn't dominate the whole page. */
   position: relative;
-  height: calc((100vh - var(--topbar-h)) * 5);
+  height: calc((100vh - var(--topbar-h)) * 6);
   background:
     radial-gradient(ellipse at 50% 30%, rgba(232, 184, 79, 0.09), transparent 62%),
     linear-gradient(180deg, #3a3026 0%, #2f2720 100%);
@@ -18,7 +16,8 @@
   isolation: isolate;
 }
 @media (max-width: 880px) {
-  .act-archive { height: calc(100vh * 6.2); }
+  /* Overridden to height:auto by the static-stack block below; kept in sync. */
+  .act-archive { height: calc(100vh * 6); }
 }
 
 .archive-viewport {
@@ -444,6 +443,28 @@
   background: rgba(0, 0, 0, 0.62);
   padding: 3px 8px;
   border-radius: 2px;
+}
+
+/* Pillar kicker — marks the two 身/心 flagship cards (body: Train with
+   Intention; mind: CyberTao). The four bench cards omit it. Only shows on the
+   latent teaser (the focal card hides its front), so it centres with the
+   teaser; the mobile stack forces it left (below). */
+.card-pillar {
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--amber);
+  opacity: 0.92;
+  margin-bottom: 14px;
+}
+.card-pillar .cjk {
+  font-family: var(--serif);
+  font-size: 17px;
+  letter-spacing: 0;
+  margin-right: 8px;
+  vertical-align: -1px;
 }
 
 .card-friction {
@@ -1595,6 +1616,7 @@
     align-self: flex-start !important;
   }
   .card-friction { align-self: flex-start !important; margin-bottom: 14px !important; }
+  .card-pillar { align-self: flex-start !important; }
 
   /* The back panel repeats the project title — hide that duplicate. */
   .card-back .spec-title { display: none; }
