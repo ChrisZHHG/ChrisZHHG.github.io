@@ -12,6 +12,33 @@
  *
  * No-ops on desktop and under reduced-motion.
  */
+/**
+ * initReelProgress — writes --reel-progress (0 at the top → 1 at the end) to
+ * :root on scroll. The dawn layer (styles) uses it to warm/brighten the scene
+ * as you descend: the dark tunnel gives way to light, culminating at the coda.
+ * The Bi Gan "light at the end" arc, made continuous. Runs on every viewport.
+ */
+export function initReelProgress() {
+  const root = document.documentElement;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const max = (document.body.scrollHeight - window.innerHeight) || 1;
+    const p = Math.min(1, Math.max(0, window.scrollY / max));
+    root.style.setProperty('--reel-progress', p.toFixed(3));
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+  return {
+    dispose() {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    },
+  };
+}
+
 export function initFilmReel({ isCoarsePointer, isReducedMotion } = {}) {
   const isMobileReel = isCoarsePointer || window.matchMedia('(max-width: 880px)').matches;
   if (!isMobileReel) return { status: 'skipped', reason: 'not the mobile reel' };

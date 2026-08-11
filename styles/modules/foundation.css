@@ -366,6 +366,27 @@ html.perf-lite *::after {
    ========================================================================== */
 .ambient-blur { display: none; }
 
+/* Dawn — the light at the end of the tunnel, made continuous. A warm glow
+   rising from below whose strength tracks scroll progress (--reel-progress,
+   written by features/filmReel.js → initReelProgress). Sits behind the content
+   (z-index 0) so it warms the dark periphery + the transparent sections as you
+   descend, never washing text. Dark tunnel at the top → warm arrival at the
+   coda. (CLAUDE.md §0 Bi Gan north star.) */
+.dawn {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 78% at 50% 88%,
+      rgba(240, 200, 120, 0.20) 0%,
+      rgba(213, 164, 74, 0.09) 34%,
+      transparent 64%);
+  opacity: var(--reel-progress, 0);
+  transition: opacity 0.12s linear;
+  will-change: opacity;
+}
+
 .vignette {
   position: fixed;
   inset: 0;

@@ -75,6 +75,17 @@
   .card-front::before, .card-front::after,
   .card-back::before,  .card-back::after { display: none !important; }
 
+  /* EMBED COLLAPSE FIX (the CyberTao "错位"): its back is a bare .card-back-iframe
+     that is display:none until loaded, so the holder had no in-flow child → 0
+     height → the poster + "open site" + meta all stacked on one spot. Give the
+     holder a real media box like the other embed cards get. */
+  .card-back-embed { min-height: 260px !important; }
+  .card-back-embed .card-back-iframe,
+  .card-back-embed .embed-poster { position: absolute !important; inset: 0 !important; height: 100% !important; }
+  /* The decorative "NN / 06" corner chip is absolute and overlaps CTAs/content
+     in the stack (also seen on Cleanroll's bottom). The reel doesn't need it. */
+  .card-back-meta { display: none !important; }
+
   /* ── The perforations — live inside .world, so they SCROLL WITH the film ─
      (this is what makes it read as real film running, not a fixed border). */
   .film-rail {

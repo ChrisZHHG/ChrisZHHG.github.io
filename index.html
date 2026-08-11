@@ -32,6 +32,9 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
 </div>
 
 <!-- Ambient layers (kept very subtle; everything heavy was cut) -->
+<!-- Dawn: a warm glow that grows with scroll progress (--reel-progress) so the
+     dark tunnel gives way to light as you descend — the "light at the end". -->
+<div class="dawn" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 <div class="pillarbox" aria-hidden="true"></div>
 <div class="grain-paper" aria-hidden="true"></div>
@@ -451,7 +454,7 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
               <span class="card-flip-hint"><span class="key">F</span> flip for site</span>
             </div>
           </div>
-          <div class="card-face card-back">
+          <div class="card-face card-back card-back-embed">
             <a class="card-back-open reveal reveal-1" href="https://cybertao.netlify.app" target="_blank" rel="noopener">↗ open site</a>
             <iframe class="card-back-iframe reveal reveal-2"
                     data-embed-src="https://cybertao.netlify.app"
