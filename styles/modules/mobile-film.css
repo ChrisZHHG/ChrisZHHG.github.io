@@ -75,11 +75,21 @@
   .card-front::before, .card-front::after,
   .card-back::before,  .card-back::after { display: none !important; }
 
-  /* EMBED COLLAPSE FIX (the CyberTao "错位"): its back is a bare .card-back-iframe
-     that is display:none until loaded, so the holder had no in-flow child → 0
-     height → the poster + "open site" + meta all stacked on one spot. Give the
-     holder a real media box like the other embed cards get. */
-  .card-back-embed { min-height: 260px !important; }
+  /* EMBED COLLAPSE FIX (the CyberTao "错位"). Root cause is a WebKit / iOS
+     Safari flexbug: the static-stack makes .card-back a flex column, and this
+     card's children are ALL position:absolute (the iframe is display:none until
+     loaded, poster/open/meta are absolute) — so the flex box has no in-flow
+     content, and Safari does NOT honor min-height on it → it collapses to 0 and
+     everything piles on one spot. Chromium honored the min-height, which is why
+     it only broke on the phone. Engine-agnostic fix: make the holder a plain
+     BLOCK with an EXPLICIT height (not min-height on an empty flex box), which
+     every engine sizes reliably. Ref: philipwalton/flexbugs #217. */
+  .card-back-embed {
+    display: block !important;
+    position: relative !important;
+    height: 300px !important;
+    min-height: 300px !important;
+  }
   .card-back-embed .card-back-iframe,
   .card-back-embed .embed-poster { position: absolute !important; inset: 0 !important; height: 100% !important; }
   /* The decorative "NN / 06" corner chip is absolute and overlaps CTAs/content
