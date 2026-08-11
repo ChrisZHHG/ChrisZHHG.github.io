@@ -96,6 +96,50 @@
      in the stack (also seen on Cleanroll's bottom). The reel doesn't need it. */
   .card-back-meta { display: none !important; }
 
+  /* ── FIT EACH CELL TO ONE FRAME ─────────────────────────────────────────
+     Cells felt "narrow-long" — content ran past one screen so you scrolled a
+     tall column instead of flicking frame→frame. Shrink the visuals, keep only
+     the punch of the copy, tighten gaps — so each cell composes inside one gate
+     (content centred, film-base + frame line above/below = a real frame). */
+  #archive .card { padding: 3vh 24px !important; }
+  .card-name { font-size: clamp(28px, 7.2vw, 38px) !important; margin-bottom: 6px !important; }
+  /* The mobile stack shows the front teaser AND the full back, so phone/embed
+     cards double up and run long. Tighten the teaser (padding, gaps, friction). */
+  #archive .card-front { padding: 12px 20px !important; gap: 8px !important; }
+  .card-friction { margin-bottom: 6px !important; padding: 4px 9px !important; }
+  .card-pillar { margin-bottom: 8px !important; }
+
+  /* Interests: the cards use a 3D rotateY flip (tap → back). On the reel that's
+     an extra tap we don't want, AND WebKit renders the back face MIRRORED in
+     this nested preserve-3d + absolute context (text came out backwards on the
+     phone). Flatten to the front face only: a clean static interest cell — no
+     3D, no flip, no mirror — and it drops the cards well under one screen. */
+  .interest-grid { gap: 12px !important; }
+  .interest-flip-card { perspective: none !important; min-height: 0 !important; }
+  .interest-flip-inner { position: relative !important; transform: none !important; transform-style: flat !important; transition: none !important; }
+  .interest-flip-face { position: relative !important; transform: none !important; backface-visibility: visible !important; -webkit-backface-visibility: visible !important; box-shadow: none !important; }
+  .interest-back,
+  .interest-flip-hint,
+  .interest-flip-btn { display: none !important; }
+
+  /* Visuals: sized so visual + headline + CTA fit one screen. */
+  .phone { width: 108px !important; height: 219px !important; }
+  .card-back-embed { height: 200px !important; min-height: 200px !important; }
+  .cybertao-stone-stage { min-height: 140px !important; margin-top: 8px !important; }
+  .card-front-media, .card-split-media, .demo-side-video-frame { min-height: 148px !important; }
+  .demo-live-panel { min-height: 120px !important; }
+
+  /* Copy: on a card that already carries a big visual, the bullet lists / spec
+     tables push it long — drop them on the reel and clamp the blurb to 2 lines.
+     (Text-only cards like DevValue keep their spec list — see the guard below.) */
+  .card-split-list { display: none !important; }
+  .card-split-sub, .demo-sec-sub, .card-desc { -webkit-line-clamp: 2 !important; }
+
+  /* Tighten the internal 2-up→1-col stacks so they don't add dead vertical gaps. */
+  .phone-stage, .card-split, .demo-stage { gap: 10px !important; }
+  .phone-notes, .card-split-info, .demo-side-detail { gap: 6px !important; padding: 12px 14px !important; }
+  .phone-notes .card-split-title, .card-split-title, .demo-sec-title { font-size: 24px !important; }
+
   /* ── The perforations — live inside .world, so they SCROLL WITH the film ─
      (this is what makes it read as real film running, not a fixed border). */
   .film-rail {
