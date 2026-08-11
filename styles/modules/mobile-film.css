@@ -75,25 +75,8 @@
   .card-front::before, .card-front::after,
   .card-back::before,  .card-back::after { display: none !important; }
 
-  /* EMBED COLLAPSE FIX (the CyberTao "错位"). Root cause is a WebKit / iOS
-     Safari flexbug: the static-stack makes .card-back a flex column, and this
-     card's children are ALL position:absolute (the iframe is display:none until
-     loaded, poster/open/meta are absolute) — so the flex box has no in-flow
-     content, and Safari does NOT honor min-height on it → it collapses to 0 and
-     everything piles on one spot. Chromium honored the min-height, which is why
-     it only broke on the phone. Engine-agnostic fix: make the holder a plain
-     BLOCK with an EXPLICIT height (not min-height on an empty flex box), which
-     every engine sizes reliably. Ref: philipwalton/flexbugs #217. */
-  .card-back-embed {
-    display: block !important;
-    position: relative !important;
-    height: 300px !important;
-    min-height: 300px !important;
-  }
-  .card-back-embed .card-back-iframe,
-  .card-back-embed .embed-poster { position: absolute !important; inset: 0 !important; height: 100% !important; }
   /* The decorative "NN / 06" corner chip is absolute and overlaps CTAs/content
-     in the stack (also seen on Cleanroll's bottom). The reel doesn't need it. */
+     in the stack (seen on Cleanroll's bottom). The reel doesn't need it. */
   .card-back-meta { display: none !important; }
 
   /* ── FIT EACH CELL TO ONE FRAME ─────────────────────────────────────────
@@ -140,6 +123,37 @@
   .phone-notes, .card-split-info, .demo-side-detail { gap: 6px !important; padding: 12px 14px !important; }
   .phone-notes .card-split-title, .card-split-title, .demo-sec-title { font-size: 24px !important; }
 
+  /* ── USE THE FULL FRAME WIDTH ────────────────────────────────────────────
+     The cells read "narrow-long" mainly because horizontal padding STACKED:
+     card 24px + .card-spec 32px (or .card-front 20px) meant body copy only got
+     ~281px of a 393px screen — wasted width, more wrapping, more length, worse
+     reading. Flatten the nested padding to ONE step so the frame is actually
+     used: ~341px of copy (+21%), fewer wrapped lines, shorter reel. */
+  .act-hero,
+  .act-quiet,
+  .act-coda {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  #archive .card { padding: 3vh 16px !important; }
+  #archive .card-front { padding: 12px 10px !important; }
+  .card-spec { padding: 16px 12px !important; }
+  .phone-notes,
+  .card-split-info,
+  .demo-side-detail { padding: 12px 12px !important; }
+
+  /* IMAX-ish framing where an aspect ratio actually reads as film: the picture
+     windows. 4:3 gives a wide, film-frame picture instead of a tall slot.
+     (The text cells can't be literal 4:3 — on a portrait phone that's only
+     ~260px tall, too short for a paragraph — so the ratio lives on the image.) */
+  .cybertao-stone-stage,
+  .card-front-media,
+  .card-split-media,
+  .demo-side-video-frame {
+    aspect-ratio: 4 / 3 !important;
+    height: auto !important;
+  }
+
   /* ── The perforations — live inside .world, so they SCROLL WITH the film ─
      (this is what makes it read as real film running, not a fixed border). */
   .film-rail {
@@ -147,16 +161,16 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 22px;
+    width: 14px;
     z-index: 6;
     pointer-events: none;
     background-color: #0b0806;                       /* film-base edge */
     background-image:
-      radial-gradient(ellipse 7px 5px at center,
+      radial-gradient(ellipse 5px 4px at center,
         rgba(226, 208, 170, 0.5) 0 52%,
         rgba(226, 208, 170, 0.08) 66%,
         transparent 74%);
-    background-size: 22px 30px;                       /* perforation pitch */
+    background-size: 14px 26px;                       /* perforation pitch */
     background-repeat: repeat-y;
     background-position: center;
   }
@@ -172,10 +186,10 @@
     border: 1.5px solid rgba(232, 184, 79, 0.55);
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
   }
-  .film-gate-tick.tl { top: 46px;    left: 30px;  border-right: none; border-bottom: none; }
-  .film-gate-tick.tr { top: 46px;    right: 30px; border-left: none;  border-bottom: none; }
-  .film-gate-tick.bl { bottom: 22px; left: 30px;  border-right: none; border-top: none; }
-  .film-gate-tick.br { bottom: 22px; right: 30px; border-left: none;  border-top: none; }
+  .film-gate-tick.tl { top: 46px;    left: 20px;  border-right: none; border-bottom: none; }
+  .film-gate-tick.tr { top: 46px;    right: 20px; border-left: none;  border-bottom: none; }
+  .film-gate-tick.bl { bottom: 22px; left: 20px;  border-right: none; border-top: none; }
+  .film-gate-tick.br { bottom: 22px; right: 20px; border-left: none;  border-top: none; }
 
   /* Each cell "seats" in the gate with a brief develop flash (added by JS on
      entry) — the 空白 beat, now per frame. */

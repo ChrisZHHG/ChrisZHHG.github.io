@@ -550,16 +550,6 @@
 .card-back-flip,
 .spec-note { display: none !important; }
 
-/* Card back content variants */
-.card-back-iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  object-fit: cover;
-}
-
 /* Click-to-load poster over a heavy third-party embed (scripts/features/embeds.js).
    Dark + on-brand so no white cold-start shows; wheeling over it scrolls the
    page (it is our element, not the iframe → no scroll-trap). */
@@ -1233,27 +1223,6 @@
 @keyframes stoneRing {
   0%, 100% { transform: translate(-50%, -50%) scale(0.94); opacity: 0.6; }
   50%      { transform: translate(-50%, -50%) scale(1.04); opacity: 0.9; }
-}
-
-/* CyberTao back — real embed plus localized overload blur pulse. */
-.cybertao-overload {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  opacity: 0;
-  background:
-    radial-gradient(circle at 48% 46%, rgba(224, 244, 255, 0.18), rgba(62, 120, 140, 0.08) 26%, rgba(0,0,0,0) 64%);
-  filter: blur(0px);
-}
-.card[data-plate="5"].is-active .cybertao-overload {
-  animation: cybertaoOverload 1.05s ease-out 1;
-}
-@keyframes cybertaoOverload {
-  0%   { opacity: 0; filter: blur(0px); }
-  18%  { opacity: 0.8; filter: blur(8px); }
-  60%  { opacity: 0.35; filter: blur(3px); }
-  100% { opacity: 0; filter: blur(0px); }
 }
 
 @media (max-width: 780px) {

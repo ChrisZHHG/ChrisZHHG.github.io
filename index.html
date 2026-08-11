@@ -451,18 +451,26 @@ if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1)$/.test(location
             </div>
             <div class="card-footer">
               <span class="card-status status-live">Live</span>
-              <span class="card-flip-hint"><span class="key">F</span> flip for site</span>
             </div>
           </div>
-          <div class="card-face card-back card-back-embed">
-            <a class="card-back-open reveal reveal-1" href="https://cybertao.netlify.app" target="_blank" rel="noopener">↗ open site</a>
-            <iframe class="card-back-iframe reveal reveal-2"
-                    data-embed-src="https://cybertao.netlify.app"
-                    data-embed-label="live site · CyberTao"
-                    title="CyberTao live site preview"></iframe>
-            <div class="cybertao-overload" aria-hidden="true"></div>
-            <button type="button" class="card-back-flip reveal reveal-3" data-role="flip-back" aria-label="Flip back"><span class="key">F</span>flip back</button>
-            <div class="card-back-meta reveal reveal-3">06 / 06 · CyberTao</div>
+          <!-- No embedded preview: CyberTao is a live site, so this face just says
+               what it is and sends you there. (Squeezing the whole site into a
+               small iframe overflowed on phones and read as garbage.) -->
+          <div class="card-face card-back">
+            <div class="card-spec">
+              <div class="spec-title reveal reveal-1">CyberTao</div>
+              <div class="spec-sub reveal reveal-2">
+                Where I think out loud about working alongside machines — and what
+                stays worth doing yourself.
+              </div>
+              <div class="spec-divider reveal reveal-3"></div>
+              <dl class="spec-list reveal reveal-4">
+                <dt>Form</dt><dd>Live site · essays + experiments</dd>
+                <dt>Asks</dt><dd>What remains uniquely yours?</dd>
+                <dt>Stack</dt><dd>Static site · Netlify</dd>
+              </dl>
+              <a class="card-split-cta reveal reveal-5" href="https://cybertao.netlify.app" target="_blank" rel="noopener">Open CyberTao ↗</a>
+            </div>
           </div>
         </article>
 
