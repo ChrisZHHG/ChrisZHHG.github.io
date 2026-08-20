@@ -148,6 +148,14 @@ ticks are pinned to the viewport. Every section is one frame cell
 - **`#thread` / manifesto section** — fully removed (July 2026): DOM, `manifesto.js`, `initManifesto` / `initThreadJumps`, and the `.thread-map` / `.manifesto-*` CSS. Do not rebuild.
 - **`#advising` section** — Diluted identity. Gone.
 - **`focus.mp4`** — Dead asset. Gone.
+- **CyberTao's CSS-drawn stone** — `.cybertao-stone-stage` / `-stone` / `-ring` /
+  `-stone-copy` + the `stoneFloat` / `stoneRing` keyframes (August 2026). A ring,
+  a blob and an absolutely-positioned line, all sized in px against a 16/7 box:
+  its height had to be re-tuned for every viewport and it kept pushing the
+  card's only CTA out of the mobile frame. Replaced by `.cybertao-cover` — a
+  screenshot of the live site in an `aspect-ratio` box, so height follows width
+  on every engine. **Rule this generalizes:** a card's cover should be an image
+  in a ratio box, never px-sized CSS art.
 
 ---
 
