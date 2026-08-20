@@ -1,10 +1,11 @@
 # CLAUDE.md — chriszhang.me Action Manifesto
 
 > This is the north-star document for the site. Read it before touching anything.
-> **Last updated: July 2026 — reconciled with shipped code: hero now carries the
-> thesis, tunnel rhythm rebalanced, embeds click-to-load, `#thread` manifesto
-> confirmed removed, "flip cards" clarified. §0–§1 stay aspirational; §2/§4/§5
-> describe what actually ships.**
+> **Last updated: August 2026 — added §4 "Mobile — the 35mm reel" (the touch
+> path had shipped undocumented) and refreshed §6. Earlier July reconciliation:
+> hero carries the thesis, tunnel rhythm rebalanced, embeds click-to-load,
+> `#thread` manifesto confirmed removed, "flip cards" clarified. §0–§1 stay
+> aspirational; §2/§4/§5 describe what actually ships.**
 > When in doubt, trust the CODE over this file, then fix the file.
 
 ---
@@ -115,6 +116,29 @@ Each section is a separate tunnel exit — its own moment of emergence.
 - Hero bio ≤12 words. Tags: 2 only. All card `.card-desc` deleted. Both `.writing-item-sub` deleted. `#advising` deleted.
 - **Actual section order:** `#intro → #archive → #interests → #background → #developing → #writing → #contact` (no `#thread`).
 
+### Mobile — the 35mm reel (`styles/modules/mobile-film.css`, `scripts/features/filmReel.js`)
+Touch / ≤880px gets its own literalization of the same metaphor: instead of the
+carousel, the page IS a strip of film running past a fixed gate. Perforation
+rails live inside `.world` so they travel with the scroll; the gate's corner
+ticks are pinned to the viewport. Every section is one frame cell
+(`scroll-snap-align: start`, `min-height: 100svh`) and seats with a
+`filmSeat` flash — the 空白 beat, per frame. Pure scroll: no taps to progress.
+- **One frame = one screen.** Budget against **`100svh` ≈ 660px on a 393×852
+  phone** — Safari's URL bar + toolbar eat ~190pt, so the device's screen height
+  is the wrong number to design to (that mistake is what put CTAs below the
+  fold). Verify in a real 393×660 viewport, not a 393×852 one.
+- **One frame, one thing.** The static stack renders BOTH card faces (there is
+  no focal state to swap them), so anything a frame says twice gets cut on the
+  reel: the back kicker that repeats the 身/心 pillar, the pinned pill that
+  repeats an in-flow CTA, a second play poster.
+- **Thumbs, not cursors.** Every link gets a 44px-tall hit area, expanded with a
+  pseudo-element so nothing shifts visually. Not square — a 44px box around the
+  coda's 9px "X" would let its neighbour swallow the tap.
+- **No focal dressing in the stack.** `archive.js` doesn't run here, so the
+  markup's initial `is-active` (plate 01) must not keep its desktop focal
+  styling — archive.css's static-stack block resets it.
+- Fallback within the fallback: reduced-motion drops `filmSeat` + smooth scroll.
+
 ---
 
 ## 5. What is dead (do not rebuild)
@@ -137,9 +161,27 @@ The core rhythm work is **done** (July 2026):
 - ✅ **Dwell** — quiet sections + coda are `min-height: 80vh`, so one tunnel exit fills the frame at a time (they used to be thin and get flown past).
 - ✅ **Clean black periphery** — leather toned down so contrast reads.
 
+Mobile fit is **done** (August 2026), verified in Chromium mobile emulation at
+393/390/412/430px wide: all 12 frames land at exactly one screen, no horizontal
+overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
+
 ### Remaining / nice-to-have
-- **Content** — "Former Big 4 auditor" wording (Chris is currently at KPMG, a Big 4 — see §8); tighten if it reads as inaccurate.
-- **`focal.js` / `iris.js` reserved vars** (`--iris-t`) — unused; remove if the iris transition is not coming.
+- ~~"Former Big 4 auditor" wording~~ — done: `#background` now lists the roles
+  plainly (Technology Risk — KPMG / Audit & Assurance — Deloitte / Finance
+  Controller — Nanjing Vanke), no "Big 4" claim to mis-read.
+- **`--iris-t`** — declared in `tunnel.css` for a `scripts/core/iris.js` that
+  does not exist and read by nothing. Delete both the var and its doc comment.
+- **Clamped copy on the reel** — `.card-split-sub` is clamped to 2 lines, so the
+  身 plate's blurb ends mid-sentence ("…turns your…"). Either accept the
+  ellipsis as "there's more" or write a ≤60-char first sentence that lands whole
+  in two lines at 393px.
+- **Very small phones** (375×553, SE 2/3) still run 2-13% over one frame on the
+  visual-heavy plates. Nothing clips — the reel snaps by proximity — but it's
+  the one width where a frame is not a frame.
+- **Real WebKit** — the August fit pass was verified on Chromium mobile
+  emulation only; this environment can't run Playwright's WebKit (host libs
+  missing). iOS-specific layout bugs (see the flexbug history in the git log)
+  can only be caught on real WebKit or a device.
 
 ---
 
