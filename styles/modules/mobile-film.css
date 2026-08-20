@@ -108,7 +108,7 @@
   /* Visuals: sized so visual + headline + CTA fit one screen. */
   .phone { width: 108px !important; height: 219px !important; }
   .card-back-embed { height: 200px !important; min-height: 200px !important; }
-  .cybertao-stone-stage { min-height: 140px !important; margin-top: 8px !important; }
+  .cybertao-cover { margin-top: 8px !important; }
   .card-front-media, .card-split-media, .demo-side-video-frame { min-height: 148px !important; }
   /* min-height was holding a box for the live-demo iframe; with the iframe off
      the reel (see below) it was just 120px of empty black under the CTA. */
@@ -191,15 +191,11 @@
      "Open Hugging Face Space ↗" carry the live demo one tap away. */
   .demo-live-frame { display: none !important; }
 
-  /* CyberTao's stone is decoration (aria-hidden) and its line "what remains
-     uniquely yours?" is repeated three rows down in the spec list — at 4/3
-     (265px) it pushed "Open CyberTao ↗", the closing pillar's only CTA, below
-     the gate. Short letterbox instead: still a picture, inside the frame. */
-  .cybertao-stone-stage {
-    aspect-ratio: auto !important;
-    height: 108px !important;
-    min-height: 0 !important;
-  }
+  /* CyberTao's cover needs no height rule at all now: it's an image in an
+     aspect-ratio box, so its height follows the frame width (~100px at 393px)
+     instead of being re-tuned per viewport. That is what the hand-set 108px
+     that used to live here — and the 88px below it, and the 140px above —
+     were all standing in for. See .cybertao-cover in archive.css. */
 
   /* Reclaim the frame's own margins. These panels inherit desktop's generous
      inner padding, and in the stack it compounds: card → face → panel, three
@@ -274,7 +270,6 @@
      by proximity — so this is fit, not repair.) */
   @media (max-width: 380px) {
     .phone { width: 96px !important; height: 195px !important; }
-    .cybertao-stone-stage { height: 88px !important; }
     .spec-sub { -webkit-line-clamp: 2 !important; }
     .interest-desc { font-size: 14px !important; }
   }
