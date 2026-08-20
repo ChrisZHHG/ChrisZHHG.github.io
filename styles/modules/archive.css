@@ -1590,6 +1590,20 @@
   /* The back panel repeats the project title — hide that duplicate. */
   .card-back .spec-title { display: none; }
 
+  /* The header comment above says "no card is ever `.is-active` here" — that
+     stopped being true when the 身 plate was added: it ships `class="card
+     is-active"` in the markup (the carousel's initial focal card) and
+     archive.js never runs in the stack to take it off. So that ONE card kept
+     its desktop FOCAL dressing here — 40px of film-rail padding top and
+     bottom on the back face, i.e. 80px of a ~660px phone frame, which is why
+     its closing paragraph and CTA fell below the fold while every other plate
+     fit. A static stack has no focal state; strip it. */
+  .card.is-active .card-back {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
   /* ── ROOT FIX: collapse EVERY bespoke internal 2-column layout to one
         column. These grids (Smart Airport demo-stage, the split video+notes,
         the Nod phone-stage, the hero/visual dual-main) were the real overflow

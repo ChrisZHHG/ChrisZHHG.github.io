@@ -97,7 +97,7 @@
      this nested preserve-3d + absolute context (text came out backwards on the
      phone). Flatten to the front face only: a clean static interest cell — no
      3D, no flip, no mirror — and it drops the cards well under one screen. */
-  .interest-grid { gap: 12px !important; }
+  .interest-grid { gap: 10px !important; }
   .interest-flip-card { perspective: none !important; min-height: 0 !important; }
   .interest-flip-inner { position: relative !important; transform: none !important; transform-style: flat !important; transition: none !important; }
   .interest-flip-face { position: relative !important; transform: none !important; backface-visibility: visible !important; -webkit-backface-visibility: visible !important; box-shadow: none !important; }
@@ -110,7 +110,9 @@
   .card-back-embed { height: 200px !important; min-height: 200px !important; }
   .cybertao-stone-stage { min-height: 140px !important; margin-top: 8px !important; }
   .card-front-media, .card-split-media, .demo-side-video-frame { min-height: 148px !important; }
-  .demo-live-panel { min-height: 120px !important; }
+  /* min-height was holding a box for the live-demo iframe; with the iframe off
+     the reel (see below) it was just 120px of empty black under the CTA. */
+  .demo-live-panel { min-height: 0 !important; }
 
   /* Copy: on a card that already carries a big visual, the bullet lists / spec
      tables push it long — drop them on the reel and clamp the blurb to 2 lines.
@@ -142,16 +144,139 @@
   .card-split-info,
   .demo-side-detail { padding: 12px 12px !important; }
 
-  /* IMAX-ish framing where an aspect ratio actually reads as film: the picture
-     windows. 4:3 gives a wide, film-frame picture instead of a tall slot.
-     (The text cells can't be literal 4:3 — on a portrait phone that's only
-     ~260px tall, too short for a paragraph — so the ratio lives on the image.) */
-  .cybertao-stone-stage,
+  /* The picture windows carry the film ratio (the text cells can't — a literal
+     4:3 cell on a portrait phone is ~260px tall, too short for a paragraph).
+     All three of these windows hold VIDEO, so 16:9 is both the honest ratio —
+     4:3 just letterboxed them in black — and ~45px shorter per frame. */
   .card-front-media,
   .card-split-media,
   .demo-side-video-frame {
-    aspect-ratio: 4 / 3 !important;
+    aspect-ratio: 16 / 9 !important;
     height: auto !important;
+  }
+
+  /* ── ONE FRAME, ONE THING ───────────────────────────────────────────────
+     The static stack renders BOTH faces of every card — desktop's latent
+     teaser AND the focal detail — because on the reel there is no focal state
+     to swap them. Two costs, both visible on a phone:
+
+     (a) Every plate said itself twice: the 身 plate carried "身 · Body" in the
+         front pillar and again in the back kicker, and offered the same URL as
+         a pinned pill AND a full-width button; Smart Airport showed a play
+         poster on the front and a second one on the back.
+     (b) It blew the frame budget. The earlier pass measured "one screen" as
+         852px — that's the iPhone's SCREEN, not its viewport. Safari's URL bar
+         plus toolbar take ~190pt of it, so the honest frame (what 100svh
+         resolves to) is ~660px. Re-measured there, the doubled cells ran
+         785–828px and the part that fell below the gate was the closing
+         paragraph and the CTA — exactly the part that asks for a tap.
+
+     So: front = identity (pillar · friction · name · status), back =
+     substance, and whatever the frame says twice is cut. */
+
+  /* The back kicker repeats the front's 身/心 pillar on the two flagships. */
+  .card:has(.card-pillar) .card-split-kicker { display: none !important; }
+  /* One CTA per frame: drop the pinned pill where the back already carries a
+     full-width button to the same place (it was a 28px tap target anyway).
+     Cards whose only link IS the pill — DevValue's "↗ install" — keep it.
+     :has() is iOS 16.4+; engines without it just keep today's two, so this
+     can only improve. */
+  .card-back:has(.card-split-cta) .card-back-open { display: none !important; }
+  /* The name sat in a pool of dead space above the status chip. */
+  .card-footer { margin-top: 8px !important; }
+
+  /* Smart Airport ran two play posters in one frame. On a phone a 200px
+     Gradio Space is unusable anyway, so keep the walkthrough video — the
+     artifact you can actually hand someone — and let the panel's label and
+     "Open Hugging Face Space ↗" carry the live demo one tap away. */
+  .demo-live-frame { display: none !important; }
+
+  /* CyberTao's stone is decoration (aria-hidden) and its line "what remains
+     uniquely yours?" is repeated three rows down in the spec list — at 4/3
+     (265px) it pushed "Open CyberTao ↗", the closing pillar's only CTA, below
+     the gate. Short letterbox instead: still a picture, inside the frame. */
+  .cybertao-stone-stage {
+    aspect-ratio: auto !important;
+    height: 108px !important;
+    min-height: 0 !important;
+  }
+
+  /* Reclaim the frame's own margins. These panels inherit desktop's generous
+     inner padding, and in the stack it compounds: card → face → panel, three
+     paddings deep, before a word of copy. Centred content doesn't miss it —
+     the cells that already fit look identical — it only buys the tall ones
+     their last 60-80px. */
+  .phone-stage { padding: 10px 12px !important; }
+  .card-spec { padding: 14px 12px !important; }
+  .demo-side-detail { padding: 10px 12px !important; }
+  .card-front-dual-main { gap: 10px !important; }
+  /* "身 Body · strength & conditioning" wrapped to two lines at 393px — buy
+     the line back from the tracking, not from the type size. */
+  .card-pillar { letter-spacing: 0.14em !important; }
+
+  /* Interests ran 889px, so the third cell — the movement column — sat below
+     the gate. Tighten the cards rather than clamp the copy: nothing here is
+     worth hiding, it just needs to be less spendthrift with height. */
+  .act-quiet, .act-coda { padding-top: 48px !important; padding-bottom: 24px !important; }
+  .section-label { margin-bottom: 14px !important; }
+  .interest-front { padding: 12px 14px 10px !important; }
+  .interest-name { font-size: 26px !important; margin-top: 6px !important; }
+  .interest-desc { margin-top: 8px !important; font-size: 14.5px !important; line-height: 1.5 !important; }
+  .interest-meta { padding-top: 6px !important; }
+
+  /* The archive's desktop carousel chrome — the label and "skip archive ↓" —
+     sits between the hero frame and the first plate in the stack, so it made a
+     ~130px band that belongs to no frame: you saw "SKIP ARCHIVE ↓" sliced by
+     the gate edge above the 身 plate. The reel is pure scroll (and INDEX
+     handles jumps), so the skip link has no job here; keep the label as a slim
+     title card for the section. */
+  .archive-skip { display: none !important; }
+  .archive-viewport { padding: 12px 0 0 !important; }
+
+  /* ── Thumbs, not cursors ────────────────────────────────────────────────
+     Audited every link at 393px: "X" in the coda was a 9×27px target, the
+     Substack links 22px tall, the pinned pills 28px. Apple's floor is 44.
+     Padding would move an underline or shift a pinned pill, so expand the HIT
+     AREA with a pseudo-element instead — nothing moves by a pixel.
+     Deliberately NOT square: a 44px-wide box around a 9px "X" would reach
+     past the flex gap and let its neighbour (Email, painted later) swallow the
+     taps aimed at it. A tall target that always hits the link you aimed at
+     beats a square one that sometimes opens the wrong app. */
+  .contact-link,
+  .writing-item-link,
+  .card-back-open,
+  .demo-open-tab,
+  .chrome-index,
+  .chrome-brand { position: relative; }
+  .contact-link::after,
+  .writing-item-link::after,
+  .card-back-open::after,
+  .demo-open-tab::after,
+  .chrome-index::after,
+  .chrome-brand::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 44px;
+  }
+  /* Coda row: widen the gap so each link can also grow sideways without
+     poaching its neighbour's taps (26px gap − 24px of expansion = 2px clear). */
+  .contact-links { gap: 26px !important; }
+  .contact-link::after { left: -12px; right: -12px; }
+
+  /* ── Narrow phones (13 mini, SE 2/3) ────────────────────────────────────
+     The same copy in a narrower column wraps more, so the visual-heavy plates
+     run a few percent long there. Buy the lines back from the pictures, not
+     from the words. (Frames only ever run long, never clip — the reel snaps
+     by proximity — so this is fit, not repair.) */
+  @media (max-width: 380px) {
+    .phone { width: 96px !important; height: 195px !important; }
+    .cybertao-stone-stage { height: 88px !important; }
+    .spec-sub { -webkit-line-clamp: 2 !important; }
+    .interest-desc { font-size: 14px !important; }
   }
 
   /* ── The perforations — live inside .world, so they SCROLL WITH the film ─
