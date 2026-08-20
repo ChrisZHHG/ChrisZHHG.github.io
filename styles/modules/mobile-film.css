@@ -57,15 +57,14 @@
   .phone-caption {
     display: none !important;
   }
-  .card-split-sub,
-  .spec-sub,
-  .demo-sec-sub,
-  .card-desc {
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  /* NO line clamps. There used to be two rounds of -webkit-line-clamp here (3
+     lines, then 2) and they were cutting a lot: Smart Airport showed 41px of a
+     162px paragraph — a quarter of it — Nod 28%, Cleanroll 40%, DevValue 60%,
+     each ending in an ellipsis mid-sentence. That buys the one-screen frame by
+     breaking Design Law §5: content at the focal plane is always fully
+     readable. The law outranks the rhythm, so the paragraphs run in full and
+     the four frames that carry a dense one run ~1.1-1.2 screens. That is what
+     `scroll-snap-type: proximity` above is for. */
   .card-split-list { max-height: 4.6em; overflow: hidden; }
   .phone { width: 150px !important; height: 305px !important; }
 
@@ -114,11 +113,11 @@
      the reel (see below) it was just 120px of empty black under the CTA. */
   .demo-live-panel { min-height: 0 !important; }
 
-  /* Copy: on a card that already carries a big visual, the bullet lists / spec
-     tables push it long — drop them on the reel and clamp the blurb to 2 lines.
-     (Text-only cards like DevValue keep their spec list — see the guard below.) */
+  /* Copy: on a card that already carries a big visual, the desktop bullet list
+     restates the paragraph above it — the paragraph is the one that has to
+     survive, so the list is what goes. (Text-only cards like DevValue keep
+     their spec table.) The blurb itself is never clamped: see above. */
   .card-split-list { display: none !important; }
-  .card-split-sub, .demo-sec-sub, .card-desc { -webkit-line-clamp: 2 !important; }
 
   /* Tighten the internal 2-up→1-col stacks so they don't add dead vertical gaps. */
   .phone-stage, .card-split, .demo-stage { gap: 10px !important; }
@@ -137,7 +136,10 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
   }
-  #archive .card { padding: 3vh 16px !important; }
+  /* 3vh top+bottom was 40px of a 660px frame. The cells are flex-centred, so
+     the ones that already fit look identical — this only buys the long ones
+     their last 24px. The film base + frame line still read as the frame. */
+  #archive .card { padding: 8px 16px !important; }
   #archive .card-front { padding: 12px 10px !important; }
   .card-spec { padding: 16px 12px !important; }
   .phone-notes,
@@ -146,14 +148,23 @@
 
   /* The picture windows carry the film ratio (the text cells can't — a literal
      4:3 cell on a portrait phone is ~260px tall, too short for a paragraph).
-     All three of these windows hold VIDEO, so 16:9 is both the honest ratio —
-     4:3 just letterboxed them in black — and ~45px shorter per frame. */
+     2:1 rather than the desktop 16:9: with the paragraphs now running in full,
+     Smart Airport and Nod were the two frames over one screen, and the 22px a
+     wider window gives back is exactly what puts their CTA above the fold. A
+     click-to-load poster reads fine in a wider window, and it's the more
+     cinematic crop of the two. (4:3 was worse than both — it letterboxed these
+     videos in black AND cost 45px.) */
   .card-front-media,
   .card-split-media,
   .demo-side-video-frame {
-    aspect-ratio: 16 / 9 !important;
+    aspect-ratio: 2 / 1 !important;
     height: auto !important;
   }
+
+  /* "VANCOUVER AIRPORT AUTHORITY · MS CAPSTONE" wrapped to two lines at 393px.
+     Same trade as the 身/心 pillar above: buy the line back from the tracking,
+     never from the type size. */
+  .demo-sec-kicker { letter-spacing: 0.1em !important; }
 
   /* ── ONE FRAME, ONE THING ───────────────────────────────────────────────
      The static stack renders BOTH faces of every card — desktop's latent
@@ -270,7 +281,6 @@
      by proximity — so this is fit, not repair.) */
   @media (max-width: 380px) {
     .phone { width: 96px !important; height: 195px !important; }
-    .spec-sub { -webkit-line-clamp: 2 !important; }
     .interest-desc { font-size: 14px !important; }
   }
 
