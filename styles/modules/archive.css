@@ -938,55 +938,10 @@
   background: #0a0908;
   isolation: isolate;
 }
-/* Omit the fake Dynamic Island — it stole vertical space from the real UI art. */
-.phone-notch { display: none; }
-
-.phone-statusbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 34px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0 18px 6px;
-  font-family: 'SF Pro Text', var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  color: #fff;
-  z-index: 7;
-  pointer-events: none;
-}
-.phone-statusbar .bar-right { display: inline-flex; gap: 5px; align-items: center; }
-.phone-statusbar .bar-right svg { display: block; height: 10px; width: auto; }
-.phone-statusbar .battery {
-  position: relative;
-  display: inline-block;
-  width: 22px;
-  height: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 2.5px;
-  padding: 1px;
-}
-.phone-statusbar .battery::after {
-  content: '';
-  position: absolute;
-  right: -3px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.5px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 1px;
-}
-.phone-statusbar .battery-fill {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: #3bb34a;
-  border-radius: 1px;
-}
+/* No fake Dynamic Island and no fake status bar: both phone mocks are filled
+   with a real screenshot that carries its own header, so drawing "10:57" and a
+   battery on top of it just collided with the app's own top row (on a phone
+   Nod's "Snap" read as "Sn10:57p"). The UI art doesn't need furniture. */
 
 /* The actual screen content — authentic app screenshot */
 .phone-screen-img {

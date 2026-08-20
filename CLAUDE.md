@@ -131,6 +131,13 @@ ticks are pinned to the viewport. Every section is one frame cell
   no focal state to swap them), so anything a frame says twice gets cut on the
   reel: the back kicker that repeats the 身/心 pillar, the pinned pill that
   repeats an in-flow CTA, a second play poster.
+- **No line clamps, ever.** Truncating a paragraph to buy the one-screen frame
+  breaks Design Law §5 (content at the focal plane is always fully readable),
+  and the law outranks the rhythm. When a frame is too tall, take the height
+  from padding, from a picture's ratio, or from the words themselves — never
+  from an ellipsis. (Two rounds of `-webkit-line-clamp` were cutting Smart
+  Airport to 25% of its paragraph, Nod to 28%.) Hiding a desktop bullet list
+  that restates the paragraph is fine; cutting the paragraph is not.
 - **Thumbs, not cursors.** Every link gets a 44px-tall hit area, expanded with a
   pseudo-element so nothing shifts visually. Not square — a 44px box around the
   coda's 9px "X" would let its neighbour swallow the tap.
@@ -179,13 +186,18 @@ overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
   Controller — Nanjing Vanke), no "Big 4" claim to mis-read.
 - **`--iris-t`** — declared in `tunnel.css` for a `scripts/core/iris.js` that
   does not exist and read by nothing. Delete both the var and its doc comment.
-- **Clamped copy on the reel** — `.card-split-sub` is clamped to 2 lines, so the
-  身 plate's blurb ends mid-sentence ("…turns your…"). Either accept the
-  ellipsis as "there's more" or write a ≤60-char first sentence that lands whole
-  in two lines at 393px.
-- **Very small phones** (375×553, SE 2/3) still run 2-13% over one frame on the
-  visual-heavy plates. Nothing clips — the reel snaps by proximity — but it's
-  the one width where a frame is not a frame.
+- ~~Clamped copy on the reel~~ — done: every clamp is gone, nothing is
+  truncated, and all 12 frames still read inside one screen at 390-430px wide
+  (Nod's frame box runs 24px long but its last line lands at 654 of 660).
+- **Very small phones** (375×629 and below) run over on the two plates with a
+  dense paragraph — Smart Airport +60, Nod +49 — now that nothing is clamped.
+  Nothing clips, the reel snaps by proximity, but that width is where a frame
+  stops being a frame. The fix, if it's wanted, is shorter copy on those two
+  cards, not a clamp.
+- **GitHub Pages caches HTML for 10 minutes** (`cache-control: max-age=600`) and
+  Safari holds it longer, so a deploy can look like it didn't land. `?v=N` on
+  the URL is a different URL and always fetches fresh — use that to check a
+  deploy, not a reload.
 - **Real WebKit** — the August fit pass was verified on Chromium mobile
   emulation only; this environment can't run Playwright's WebKit (host libs
   missing). iOS-specific layout bugs (see the flexbug history in the git log)
