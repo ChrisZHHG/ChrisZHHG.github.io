@@ -99,7 +99,13 @@ export function createScroll({ isReducedMotion, native }) {
       if (rafId !== null) cancelAnimationFrame(rafId);
       document.removeEventListener('click', onAnchorClick);
       document.documentElement.style.scrollBehavior = prevScrollBehavior;
+      // Lenis arms a 400ms velocity-reset timer on every native scroll; if it
+      // fires after destroy() it re-adds the `lenis` class to <html>. Cancel
+      // it and silence the dead instance so a rebuilt reel starts clean.
+      clearTimeout(lenis._resetVelocityTimeout);
       lenis.destroy();
+      lenis.updateClassName = () => {};
+      lenis.cleanUpClassName();
     },
   };
 }

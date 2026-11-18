@@ -49,22 +49,17 @@ export function createFold({ build, isReducedMotion }) {
   veil.className = 'fold-veil';
   veil.setAttribute('aria-hidden', 'true');
   document.body.appendChild(veil);
-  let openRaf = 0;
 
+  // A CSS animation, not a frame-counted transition: its clock starts on the
+  // swap frame itself, so the veil is closed exactly there and fully open
+  // 280ms later however long that frame takes to paint.
   function closeShutter() {
     if (isReducedMotion()) return;
-    cancelAnimationFrame(openRaf);
-    veil.classList.remove('is-opening');
-    veil.classList.add('is-closed');
-    // Two frames: the first paints the closed veil over the new layout, the
-    // second starts the opening transition from that painted state.
-    openRaf = requestAnimationFrame(() => {
-      openRaf = requestAnimationFrame(() => {
-        veil.classList.remove('is-closed');
-        veil.classList.add('is-opening');
-      });
-    });
+    veil.classList.remove('is-folding');
+    void veil.offsetWidth;
+    veil.classList.add('is-folding');
   }
+  veil.addEventListener('animationend', () => veil.classList.remove('is-folding'));
 
   // ── Anchor: which logical frame sits at the viewport center ───────────────
   const isCarousel = (m) => !m.reel && !m.reduced;
@@ -209,7 +204,14 @@ export function createFold({ build, isReducedMotion }) {
 
   window.addEventListener('scroll', capture, { passive: true });
   window.addEventListener('resize', onViewportChange);
-  const offQueries = onLayoutQueryChange(onViewportChange);
+  // Chromium can deliver a media-query `change` event before every list's
+  // `matches` has been re-evaluated; check again on the next frame.
+  let queryRaf = 0;
+  const offQueries = onLayoutQueryChange(() => {
+    onViewportChange();
+    cancelAnimationFrame(queryRaf);
+    queryRaf = requestAnimationFrame(onViewportChange);
+  });
   capture();
 
   return {
@@ -219,7 +221,7 @@ export function createFold({ build, isReducedMotion }) {
       window.removeEventListener('scroll', capture);
       window.removeEventListener('resize', onViewportChange);
       offQueries();
-      cancelAnimationFrame(openRaf);
+      cancelAnimationFrame(queryRaf);
       disposeParts();
       veil.remove();
     },

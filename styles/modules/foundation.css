@@ -676,13 +676,11 @@ html.perf-lite *::after {
   opacity: 0;
   visibility: hidden;
 }
-.fold-veil.is-closed {
-  opacity: 1;
+.fold-veil.is-folding {
   visibility: visible;
-  transition: none;
+  animation: foldShutter 280ms var(--ease-out) both;
 }
-.fold-veil.is-opening {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 280ms var(--ease-out), visibility 0s linear 280ms;
+@keyframes foldShutter {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }

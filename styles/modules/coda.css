@@ -359,12 +359,13 @@
    ========================================================================== */
 @media (max-width: 620px) {
   .act.act-hero { padding: 40px 20px 48px; }
-  .act { padding: 56px 20px; }
+  /* The archive stays full-bleed: on the reel each card is its own frame cell,
+     edge to edge like every other frame (mobile-film.css). */
+  .act:not(.act-archive) { padding: 56px 20px; }
   .bg-grid { grid-template-columns: 1fr; }
   .interest-grid { grid-template-columns: 1fr; }
   .interest-flip-card { min-height: 320px; }
 
-  .card-stack { width: 95vw; height: min(74vh, 700px); max-height: 720px; }
   .card-front { padding: 30px 26px; }
   .card-name { font-size: clamp(36px, 10vw, 52px); }
   .archive-nav.prev { left: 14px; }
@@ -389,7 +390,7 @@
   .act-archive { height: auto; background: var(--paper); color: var(--ink); }
   .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; perspective: none; }
   .archive-label, .archive-skip, .archive-plate-num, .archive-nav { display: none; }
-  .card-stack { width: 100%; max-width: 640px; height: auto; display: flex; flex-direction: column; gap: 24px; }
+  .card-stack { width: 100%; max-width: 640px; margin-inline: auto; height: auto; display: flex; flex-direction: column; gap: 24px; }
   .card { position: static; opacity: 1; pointer-events: auto; transform: none; }
   .card.is-flipped { transform: none; }
   .card-face { position: static; height: auto; }
@@ -404,7 +405,7 @@ html:not(.js) .act-archive { height: auto; background: var(--paper); color: var(
 html:not(.js) .archive-viewport { position: static; height: auto; padding: 48px 20px; flex-direction: column; gap: 24px; }
 html:not(.js) .archive-label, html:not(.js) .archive-skip,
 html:not(.js) .archive-plate-num, html:not(.js) .archive-nav { display: none; }
-html:not(.js) .card-stack { width: 100%; max-width: 640px; height: auto; display: flex; flex-direction: column; gap: 24px; }
+html:not(.js) .card-stack { width: 100%; max-width: 640px; margin-inline: auto; height: auto; display: flex; flex-direction: column; gap: 24px; }
 html:not(.js) .card { position: static; opacity: 1; pointer-events: auto; transform: none; }
 html:not(.js) .card-face { position: static; height: auto; }
 html:not(.js) .card-back { display: none; }

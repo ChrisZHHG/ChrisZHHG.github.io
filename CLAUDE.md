@@ -1,7 +1,8 @@
 # CLAUDE.md — chriszhang.me Action Manifesto
 
 > This is the north-star document for the site. Read it before touching anything.
-> **Last updated: August 2026 — added §4 "Mobile — the 35mm reel" (the touch
+> **Last updated: November 2026 — §4 Foundation: Windows centering + fold
+> continuity (live cinema ↔ reel switching) + `tests/adaptive.mjs`. August 2026: added §4 "Mobile — the 35mm reel" (the touch
 > path had shipped undocumented) and refreshed §6. Earlier July reconciliation:
 > hero carries the thesis, tunnel rhythm rebalanced, embeds click-to-load,
 > `#thread` manifesto confirmed removed, "flip cards" clarified. §0–§1 stay
@@ -89,6 +90,20 @@ Each section is a separate tunnel exit — its own moment of emergence.
   as macOS overlay scrollbars already behave. The old `--scrollbar-w` padding hack is
   gone: it pushed the carousel ~8px left of the window center. Size centered frames in
   `%`, never `vw` — `vw` includes a classic scrollbar, `%` does not.
+- **Fold continuity** (`scripts/core/fold.js`) — the cinema (coverflow + Lenis) and
+  the reel (static stack + native scroll-snap) are chosen by ONE media query,
+  `REEL_QUERY` in `scripts/lib/env.js`, the same one the CSS uses. The fold
+  controller owns every mode-bound module (scroll spine, archive, sections, film
+  reel): on resize / rotation / unfold / pointer or reduced-motion change it
+  rebuilds them for the live mode, re-seats the reader on the same logical frame
+  (hero, project N, section), and covers the swap frame with a 280ms dark
+  shutter (`.fold-veil`). It all runs inside the resize event, before paint, so
+  no frame of the old layout ever shows. Never decide a layout at load time:
+  add mode-dependent code to `buildModeBound()` in `main.js` and give it
+  `dispose()` (and `sync()` if it derives state from scroll).
+- **Verification** — `node tests/adaptive.mjs [--shots DIR] [--only NAME]` serves
+  the repo and checks 19 device profiles plus live switching; the pass criteria
+  are in the file header. Run it after any layout change.
 
 ### Hero (`#intro`)
 - **Carries the thesis** — the page `<h1>` is *Time is currency.* + *Attention is where you spend it.* (the gate's line, now persistent). This is the subject shot.

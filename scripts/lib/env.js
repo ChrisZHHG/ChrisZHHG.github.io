@@ -16,22 +16,29 @@ export const isCoarsePointer = () => coarseQuery.matches;
 export const REEL_QUERY = '(max-width: 880px), (hover: none) and (pointer: coarse)';
 const reelQuery = window.matchMedia(REEL_QUERY);
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+// Last value read by readLayoutMode(); every module reads reduced motion
+// through this, so they all agree with the mode the fold controller built.
+let reducedNow = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
- * readLayoutMode — the layout the CSS is rendering right now.
- * `MediaQueryList.matches` is evaluated on read, so this is correct inside a
- * resize handler, before the matching `change` event has fired.
+ * readLayoutMode — the layout the CSS is rendering right now. A fresh
+ * MediaQueryList evaluates against the current viewport, so this is correct
+ * inside a resize handler, before the matching `change` event has fired.
  *   reel    → touch or narrow: static stack, native scroll, scroll-snap
  *   reduced → prefers-reduced-motion: no flash, no inertia
  *   key     → changes exactly when the mode-bound modules must be rebuilt
  */
 export function readLayoutMode() {
-  const reel = reelQuery.matches;
-  const reduced = reducedQuery.matches;
+  // Fresh lists, not the cached ones: Chromium has been seen to leave a
+  // long-lived list's `matches` stale after an emulated preference change,
+  // even across frames. A matchMedia() call costs microseconds.
+  const reel = window.matchMedia(REEL_QUERY).matches;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  reducedNow = reduced;
   return {
     reel,
     reduced,
-    coarse: coarseQuery.matches,
+    coarse: window.matchMedia('(hover: none) and (pointer: coarse)').matches,
     key: `${reel ? 'reel' : 'cinema'}${reduced ? '-still' : ''}`,
   };
 }
@@ -54,7 +61,7 @@ export function setVar(name, value) {
 
 export function createReducedMotionController() {
   return {
-    isReduced: () => reducedQuery.matches,
+    isReduced: () => reducedNow,
     dispose() {},
   };
 }
