@@ -84,7 +84,11 @@ Each section is a separate tunnel exit — its own moment of emergence.
 - **Lenis smooth scroll** (`scripts/lib/lenis.mjs`) — lerp 0.13, wheelMultiplier 1.1. Disabled on coarse-pointer and reduced-motion.
 - **Palette deepen** — darker periphery, leather bellows, amber-only accent.
 - **Gate tunnel mouth** — `developReveal` keyframe; light orb grows from a pinpoint via `tunnelLightIn`, pulses with `tunnelGlowPulse`.
-- **Windows scrollbar fix** — `--scrollbar-w` compensates centering on Windows.
+- **Windows centering** — the viewport scrollbar is hidden (`scrollbar-width: none` +
+  `::-webkit-scrollbar`, foundation.css), so layout width = window width on every OS,
+  as macOS overlay scrollbars already behave. The old `--scrollbar-w` padding hack is
+  gone: it pushed the carousel ~8px left of the window center. Size centered frames in
+  `%`, never `vw` — `vw` includes a classic scrollbar, `%` does not.
 
 ### Hero (`#intro`)
 - **Carries the thesis** — the page `<h1>` is *Time is currency.* + *Attention is where you spend it.* (the gate's line, now persistent). This is the subject shot.
