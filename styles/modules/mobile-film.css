@@ -255,6 +255,12 @@
   .demo-open-tab,
   .chrome-index,
   .chrome-brand { position: relative; }
+  /* On desktop .card-back-open is pinned with top/right; once it is relative
+     those turn into offsets that shove it 18px left, past the screen edge. */
+  .card-back-open { top: auto; right: auto; }
+  /* Its hit area reaches up over the "Live demo" label, a flex item whose
+     z-index: 4 applies even though it is static; lift the link above it. */
+  .demo-open-tab { z-index: 5; }
   .contact-link::after,
   .writing-item-link::after,
   .card-back-open::after,
