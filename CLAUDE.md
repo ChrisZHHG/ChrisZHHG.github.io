@@ -217,8 +217,8 @@ overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
   Safari holds it longer, so a deploy can look like it didn't land. `?v=N` on
   the URL is a different URL and always fetches fresh — use that to check a
   deploy, not a reload.
-- **Real WebKit** — the August fit pass was verified on Chromium mobile
-  emulation only; this environment can't run Playwright's WebKit (host libs
+- **Real WebKit / Firefox** — the August fit pass and the November fold pass
+  (`tests/adaptive.mjs`, 1528/1528) were verified on Chromium only; this environment can't run Playwright's WebKit (host libs
   missing). iOS-specific layout bugs (see the flexbug history in the git log)
   can only be caught on real WebKit or a device.
 
