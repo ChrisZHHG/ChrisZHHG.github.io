@@ -659,3 +659,30 @@ html.perf-lite *::after {
   margin-right: 7px;
   opacity: 0.8;
 }
+
+/* ==========================================================================
+   FOLD SHUTTER — the swap frame between the desktop cinema and the mobile
+   reel (core/fold.js). When a resize, rotation or unfold flips the layout, the
+   veil is closed for the frame the new layout lands in, then opens over
+   280ms: the shutter closes, the next image forms. Never shown on resizes
+   that keep the layout, and never under reduced motion.
+   ========================================================================== */
+.fold-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  background: var(--paper-edge);
+  opacity: 0;
+  visibility: hidden;
+}
+.fold-veil.is-closed {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+.fold-veil.is-opening {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 280ms var(--ease-out), visibility 0s linear 280ms;
+}

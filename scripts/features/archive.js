@@ -5,7 +5,7 @@ export const Capture = {
   maybeCaptureAtPoint() {},
 };
 
-export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, clamp, scrollTo }) {
+export function initArchive({ Audio, Stage, isReducedMotion, isStatic, clamp, scrollTo }) {
   // Route programmatic scrolls through the Lenis spine when provided, so the
   // smooth-scroll engine stays the single source of truth (no native/Lenis fight).
   const scrollToY = typeof scrollTo === 'function'
@@ -34,11 +34,9 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
   // internals) and hijacks scroll. Here we run NO carousel at all — the CSS
   // lays every card out as a plain vertical document — and only lazy-load each
   // card's demo iframes as it scrolls into view.
-  const staticStack =
-    isCoarsePointer ||
-    isReducedMotion() ||
-    window.matchMedia('(max-width: 880px)').matches;
-  if (staticStack) {
+  // Mode-bound: core/fold.js rebuilds this module whenever the layout mode
+  // flips, so `isStatic` is decided by the live mode, never cached at load.
+  if (isStatic || isReducedMotion()) {
     let io = null;
     if ('IntersectionObserver' in window) {
       io = new IntersectionObserver((entries) => {
@@ -61,11 +59,16 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
         const card = cards[clamp(idx, 0, cards.length - 1)];
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
+      sync() {},
       dispose() { if (io) io.disconnect(); },
     };
   }
 
   // ── CAROUSEL PATH: fine pointer, wide screen, motion allowed ────────────────
+  // Snapshot the markup's own card state so dispose() can hand the static stack
+  // exactly what a fresh load would give it (no leftover --o / .is-prev).
+  const markupActive = cards.map((card) => card.classList.contains('is-active'));
+  const markupPlate = plateNum ? plateNum.textContent : null;
   let current = -1;
   let inArchive = false;
   let archiveDwellT = null;
@@ -199,8 +202,19 @@ export function initArchive({ Audio, Stage, isReducedMotion, isCoarsePointer, cl
     setActive,
     flipActive,
     navigateTo,
+    // Re-derive the focal card from the current scroll position, right now.
+    sync: updateFromScroll,
     dispose() {
       clearTimeout(initTimer);
+      cards.forEach((card, i) => {
+        card.classList.remove('is-prev', 'is-flipped');
+        card.classList.toggle('is-active', markupActive[i]);
+        card.style.removeProperty('--o');
+        card.style.removeProperty('--ao');
+      });
+      threadItems.forEach((li) => li.classList.remove('is-lit'));
+      if (plateNum && markupPlate !== null) plateNum.textContent = markupPlate;
+      if (inArchive) Stage.set('paper');
       if (archiveDwellT) clearTimeout(archiveDwellT);
       prevBtn?.removeEventListener('click', onPrev);
       nextBtn?.removeEventListener('click', onNext);

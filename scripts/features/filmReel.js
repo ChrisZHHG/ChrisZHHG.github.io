@@ -39,9 +39,8 @@ export function initReelProgress() {
   };
 }
 
-export function initFilmReel({ isCoarsePointer, isReducedMotion } = {}) {
-  const isMobileReel = isCoarsePointer || window.matchMedia('(max-width: 880px)').matches;
-  if (!isMobileReel) return { status: 'skipped', reason: 'not the mobile reel' };
+export function initFilmReel({ isReel, isReducedMotion } = {}) {
+  if (!isReel) return { status: 'skipped', reason: 'not the mobile reel' };
   if (isReducedMotion && isReducedMotion()) return { status: 'skipped', reason: 'reduced motion' };
   if (!('IntersectionObserver' in window)) return { status: 'skipped', reason: 'no IntersectionObserver' };
 
@@ -62,5 +61,10 @@ export function initFilmReel({ isCoarsePointer, isReducedMotion } = {}) {
   );
 
   frames.forEach((f) => io.observe(f));
-  return { dispose() { io.disconnect(); } };
+  return {
+    dispose() {
+      io.disconnect();
+      frames.forEach((f) => f.classList.remove('film-seat'));
+    },
+  };
 }
