@@ -241,9 +241,10 @@ overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
   (Nod's frame box runs 24px long but its last line lands at 654 of 660).
 - **Very small phones** — since the cards went full-bleed (November 2026)
   every frame fits one screen from 375×629 up. Only 320px-wide screens still
-  run over: iPhone SE 1st gen (320×568) on 6 of 12 frames (Smart Airport +109,
-  Nod +80), Galaxy S9+ at 320×658 on Smart Airport (+19). Nothing clips, the
-  reel snaps by proximity. The fix, if it's wanted, is shorter copy, not a clamp.
+  run over: iPhone SE 1st gen (320×568) on 7 of 12 frames (Smart Airport +109,
+  Nod +80, Background +6), Galaxy S9+ at 320×658 on Smart Airport (+19).
+  Nothing clips, the reel snaps by proximity. **Won't fix** (Chris, November
+  2026): 320px phones are no longer mainstream; don't trim copy for them.
 - **GitHub Pages caches HTML for 10 minutes** (`cache-control: max-age=600`) and
   Safari holds it longer, so a deploy can look like it didn't land. `?v=N` on
   the URL is a different URL and always fetches fresh — use that to check a

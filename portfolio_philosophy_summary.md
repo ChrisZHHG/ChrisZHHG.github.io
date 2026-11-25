@@ -16,7 +16,7 @@
 | **Friction** | The tax on attention — every window switch, every re-entry, every approval wait is draining your focus |
 | **Tools** | Everything I build exists to remove that tax |
 
-### Key insight (from 8 years in Big 4 audit)
+### Key insight (from 8+ years as the examiner — audit at Deloitte, internal control at Vanke, technology risk at KPMG)
 In audit work the most expensive thing is not bad debt, not fraud, but **human attention disappearing inside process**. Switching, waiting, repeating, confirming — these frictions have no line item, but the cost is real.
 
 ---
@@ -114,7 +114,7 @@ total hunt time ~6 s
 |---|---|---|
 | 01 ORIGIN | You are a camera. | Dark-box metaphor; attention as lens |
 | 02 REFLECTION | AI is humanity recognizing itself. | Human evolution → AI mimics humans → Empathy |
-| 03 MEASURE | Friction is the tax on your focal plane. | Big 4 background, DevValue |
+| 03 MEASURE | Friction is the tax on your focal plane. | Audit & internal-control background, DevValue |
 | 04 REMOVE | Give the focal plane back to what matters. | Cleanroll, Nod, FFP |
 | 05 NEXT | This lens, pointed at enterprise AI. | AI auditing direction |
 
@@ -147,11 +147,13 @@ Primary input is **Super Whisper** voice-to-text:
 ## 8. Positioning
 
 **One-line bio:**
-> Former Big 4 auditor turned builder. At the intersection of AI, financial systems, and product — building tools that eliminate friction so your attention flows toward what actually matters.
+> Auditor by training, builder by habit. At the intersection of AI, financial systems, and product — building tools that eliminate friction so your attention flows toward what actually matters.
 
 **Background tags:**
-- MS CS @ Northeastern University Vancouver
-- 8 years Tech Risk & Data Governance @ Deloitte / KPMG
+- MS CS @ Northeastern University Vancouver, 2026
+- Technology Risk (SOX ITGC, SOC 1 / SOC 2) @ KPMG
+- Operations Lead · Internal Control @ Nanjing Vanke
+- Audit & Assurance (ICFR, US-SOX / PCAOB) @ Deloitte
 - Career Peer Advisor @ CDEL
 - MS Student Advisory Board
 
