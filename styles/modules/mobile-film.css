@@ -36,6 +36,9 @@
     border-top: 1px solid rgba(233, 198, 120, 0.16);
     box-shadow: inset 0 14px 22px -14px rgba(0, 0, 0, 0.9),
                 inset 0 -14px 22px -14px rgba(0, 0, 0, 0.9);
+    /* Every cell is edge to edge, like the strip itself (the .act column cap
+       would make sections narrower than cards on a wide touch screen). */
+    max-width: none !important;
     /* leave room so text never runs under the perforation rails */
     padding-left: 30px !important;
     padding-right: 30px !important;
@@ -130,16 +133,19 @@
      ~281px of a 393px screen — wasted width, more wrapping, more length, worse
      reading. Flatten the nested padding to ONE step so the frame is actually
      used: ~341px of copy (+21%), fewer wrapped lines, shorter reel. */
+  /* On a wide touch screen (iPad, an unfolded Fold) the gutter grows so the
+     words keep a centred column no wider than 680px; on a phone it is the
+     plain 20px / 16px below. */
   .act-hero,
   .act-quiet,
   .act-coda {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-left: max(20px, calc((100% - 680px) / 2)) !important;
+    padding-right: max(20px, calc((100% - 680px) / 2)) !important;
   }
   /* 3vh top+bottom was 40px of a 660px frame. The cells are flex-centred, so
      the ones that already fit look identical — this only buys the long ones
      their last 24px. The film base + frame line still read as the frame. */
-  #archive .card { padding: 8px 16px !important; }
+  #archive .card { padding: 8px max(16px, calc((100% - 680px) / 2)) !important; }
   #archive .card-front { padding: 12px 10px !important; }
   .card-spec { padding: 16px 12px !important; }
   .phone-notes,
@@ -255,6 +261,12 @@
   .demo-open-tab,
   .chrome-index,
   .chrome-brand { position: relative; }
+  /* On desktop .card-back-open is pinned with top/right; once it is relative
+     those turn into offsets that shove it 18px left, past the screen edge. */
+  .card-back-open { top: auto; right: auto; }
+  /* Its hit area reaches up over the "Live demo" label, a flex item whose
+     z-index: 4 applies even though it is static; lift the link above it. */
+  .demo-open-tab { z-index: 5; }
   .contact-link::after,
   .writing-item-link::after,
   .card-back-open::after,
@@ -268,6 +280,18 @@
     top: 50%;
     transform: translateY(-50%);
     height: 44px;
+  }
+  /* Nod's phone hotspots are sized in % of the screenshot, so on phones 375px
+     wide and under they shrink to 38px. They sit side by side, never stacked,
+     so growing the hit area vertically can't reach a neighbour. */
+  .nod-hotspot::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: max(100%, 44px);
+    transform: translateY(-50%);
   }
   /* Coda row: widen the gap so each link can also grow sideways without
      poaching its neighbour's taps (26px gap − 24px of expansion = 2px clear). */

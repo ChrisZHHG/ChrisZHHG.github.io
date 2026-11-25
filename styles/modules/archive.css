@@ -29,9 +29,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Shift centering left on Windows to account for the classic scrollbar
-     occupying space on the right. --scrollbar-w is set by main.js (0 on Mac). */
-  padding-right: var(--scrollbar-w, 0px);
 }
 @media (max-width: 880px) {
   .archive-viewport { top: 0; height: 100vh; }
@@ -87,7 +84,7 @@
   position: relative;
   /* Narrower than the viewport so the flanking film cells have room to peek
      at the sides — the carousel needs side gutters to read. */
-  width: min(1180px, 66vw);
+  width: min(1180px, 66%);
   height: min(820px, 84vh);
   max-height: 920px;
   /* Perspective lives here so transform-style: preserve-3d on children works */
@@ -96,7 +93,7 @@
 /* At 1440px+ allow cards to grow taller to fill the bigger viewport height */
 @media (min-width: 1440px) {
   .card-stack {
-    width: min(1260px, 66vw);
+    width: min(1260px, 66%);
     height: min(900px, 84vh);
   }
 }

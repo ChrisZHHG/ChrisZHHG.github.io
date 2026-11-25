@@ -32,7 +32,7 @@ export function initCursor({ Stage, FocalPlane, isCoarsePointer, isReducedMotion
   }
 
   function scheduleDwell() {
-    if (isReducedMotion() || isCoarsePointer) return;
+    if (isReducedMotion() || isCoarsePointer()) return;
     if (Stage.current === 'archive') return;
     if (dwellTimer) return;
     dwellTimer = setTimeout(() => {

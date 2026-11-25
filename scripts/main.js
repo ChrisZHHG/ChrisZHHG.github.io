@@ -1,4 +1,5 @@
 import { body, root, isCoarsePointer, clamp, createReducedMotionController } from './lib/env.js';
+import { createFold } from './core/fold.js';
 import { safeInit } from './lib/safe.js';
 import { createAudio, initAudioToggle } from './core/audio.js';
 import { initGrain } from './core/grain.js';
@@ -23,14 +24,6 @@ import { runSmokeChecks } from './features/smoke.js';
 import { renderDebugHealthBadge } from './features/debugBadge.js';
 
 document.documentElement.classList.add('js');
-
-// Compensate for Windows classic scrollbar (takes ~17px of layout width).
-// vw units include the scrollbar; this variable lets CSS subtract half of it
-// so elements using vw for centering stay visually centered.
-const scrollbarW = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
-if (scrollbarW > 0) {
-  document.documentElement.style.setProperty('--scrollbar-w', scrollbarW + 'px');
-}
 
 const health = createHealthMonitor();
 const hooks = { onOk: health.onOk, onSkip: health.onSkip, onError: health.onError };
@@ -67,13 +60,6 @@ trackDisposable(safeInit('cursor', () => initCursor({
   isReducedMotion: reducedMotion.isReduced,
 }), hooks));
 
-// Smooth-scroll spine (Lenis). Created before the archive so its scrollTo can be
-// injected into the archive's programmatic navigation.
-const Scroll = trackDisposable(safeInit('scroll', () => createScroll({
-  isReducedMotion: reducedMotion.isReduced,
-  isCoarsePointer,
-}), hooks)) || { lenis: null, scrollTo() {}, dispose() {} };
-
 // Bellows oscillator: subtle ±1.5% scale breathing on the leather frame.
 // Starts after cursor (so --cx/--cy are writable) and before gate.
 const Bellows = trackDisposable(safeInit('bellows', () => createBellows({
@@ -101,22 +87,42 @@ trackDisposable(safeInit('gate', () => initGate({
   },
 }), hooks));
 
-trackDisposable(safeInit('archive', () => initArchive({
-  Audio,
-  Stage,
+// Mode-bound modules: everything that differs between the desktop cinema and
+// the mobile reel. core/fold.js builds them for the live layout mode and
+// rebuilds them whenever a resize, rotation, unfold or pointer change flips it.
+const nativeJump = (top) => window.scrollTo(0, top);
+function buildModeBound(mode) {
+  // Smooth-scroll spine (Lenis) first, so its scrollTo can be injected into
+  // the archive's programmatic navigation.
+  const scroll = safeInit('scroll', () => createScroll({
+    isReducedMotion: reducedMotion.isReduced,
+    native: mode.reel,
+  }), hooks) || { lenis: null, scrollTo() {}, jumpTo: nativeJump, dispose() {} };
+  const parts = [
+    scroll,
+    safeInit('archive', () => initArchive({
+      Audio,
+      Stage,
+      isReducedMotion: reducedMotion.isReduced,
+      isStatic: mode.reel,
+      clamp,
+      scrollTo: scroll.scrollTo,
+    }), hooks),
+    safeInit('sections', () => initSections({ isReducedMotion: reducedMotion.isReduced }), hooks),
+    safeInit('film-reel', () => initFilmReel({ isReel: mode.reel, isReducedMotion: reducedMotion.isReduced }), hooks),
+  ];
+  return { scroll, parts };
+}
+trackDisposable(safeInit('fold', () => createFold({
+  build: buildModeBound,
   isReducedMotion: reducedMotion.isReduced,
-  isCoarsePointer,
-  clamp,
-  scrollTo: Scroll.scrollTo,
 }), hooks));
 
 trackDisposable(safeInit('embeds', () => initEmbeds(), hooks));
 trackDisposable(safeInit('nod:hotspots', () => initNodHotspots(), hooks));
 trackDisposable(safeInit('nod:panel', () => initNodDemoPanel(Audio), hooks));
 trackDisposable(safeInit('interests', () => initInterestFlips(Audio), hooks));
-trackDisposable(safeInit('sections', () => initSections({ isReducedMotion: reducedMotion.isReduced }), hooks));
 trackDisposable(safeInit('reel-progress', () => initReelProgress(), hooks));
-trackDisposable(safeInit('film-reel', () => initFilmReel({ isCoarsePointer, isReducedMotion: reducedMotion.isReduced }), hooks));
 trackDisposable(safeInit('index-menu', () => initIndexMenu(), hooks));
 trackDisposable(safeInit('scroll-spy', () => initScrollSpy(), hooks));
 trackDisposable(safeInit('beforeunload', () => initBeforeUnloadFade(), hooks));

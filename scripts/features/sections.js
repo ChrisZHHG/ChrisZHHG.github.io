@@ -5,7 +5,7 @@ export function initSections({ isReducedMotion }) {
 
   if (isReducedMotion()) {
     [...quietSections, ...codaSections].forEach((s) => s.style.setProperty('--focus', '1'));
-    return { dispose() {} };
+    return { sync() {}, dispose() {} };
   }
 
   // Track which sections have already fired their flash this pass.
@@ -73,9 +73,11 @@ export function initSections({ isReducedMotion }) {
   update();
 
   return {
+    sync: update,
     dispose() {
       window.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
+      quietSections.forEach((s) => s.classList.remove('is-entering'));
     },
   };
 }

@@ -1,7 +1,8 @@
 # CLAUDE.md — chriszhang.me Action Manifesto
 
 > This is the north-star document for the site. Read it before touching anything.
-> **Last updated: August 2026 — added §4 "Mobile — the 35mm reel" (the touch
+> **Last updated: November 2026 — §4 Foundation: Windows centering + fold
+> continuity (live cinema ↔ reel switching) + `tests/adaptive.mjs`. August 2026: added §4 "Mobile — the 35mm reel" (the touch
 > path had shipped undocumented) and refreshed §6. Earlier July reconciliation:
 > hero carries the thesis, tunnel rhythm rebalanced, embeds click-to-load,
 > `#thread` manifesto confirmed removed, "flip cards" clarified. §0–§1 stay
@@ -84,7 +85,25 @@ Each section is a separate tunnel exit — its own moment of emergence.
 - **Lenis smooth scroll** (`scripts/lib/lenis.mjs`) — lerp 0.13, wheelMultiplier 1.1. Disabled on coarse-pointer and reduced-motion.
 - **Palette deepen** — darker periphery, leather bellows, amber-only accent.
 - **Gate tunnel mouth** — `developReveal` keyframe; light orb grows from a pinpoint via `tunnelLightIn`, pulses with `tunnelGlowPulse`.
-- **Windows scrollbar fix** — `--scrollbar-w` compensates centering on Windows.
+- **Windows centering** — the viewport scrollbar is hidden (`scrollbar-width: none` +
+  `::-webkit-scrollbar`, foundation.css), so layout width = window width on every OS,
+  as macOS overlay scrollbars already behave. The old `--scrollbar-w` padding hack is
+  gone: it pushed the carousel ~8px left of the window center. Size centered frames in
+  `%`, never `vw` — `vw` includes a classic scrollbar, `%` does not.
+- **Fold continuity** (`scripts/core/fold.js`) — the cinema (coverflow + Lenis) and
+  the reel (static stack + native scroll-snap) are chosen by ONE media query,
+  `REEL_QUERY` in `scripts/lib/env.js`, the same one the CSS uses. The fold
+  controller owns every mode-bound module (scroll spine, archive, sections, film
+  reel): on resize / rotation / unfold / pointer or reduced-motion change it
+  rebuilds them for the live mode, re-seats the reader on the same logical frame
+  (hero, project N, section), and covers the swap frame with a 280ms dark
+  shutter (`.fold-veil`). It all runs inside the resize event, before paint, so
+  no frame of the old layout ever shows. Never decide a layout at load time:
+  add mode-dependent code to `buildModeBound()` in `main.js` and give it
+  `dispose()` (and `sync()` if it derives state from scroll).
+- **Verification** — `node tests/adaptive.mjs [--shots DIR] [--only NAME]` serves
+  the repo and checks 19 device profiles plus live switching; the pass criteria
+  are in the file header. Run it after any layout change.
 
 ### Hero (`#intro`)
 - **Carries the thesis** — the page `<h1>` is *Time is currency.* + *Attention is where you spend it.* (the gate's line, now persistent). This is the subject shot.
@@ -145,6 +164,36 @@ ticks are pinned to the viewport. Every section is one frame cell
   markup's initial `is-active` (plate 01) must not keep its desktop focal
   styling — archive.css's static-stack block resets it.
 - Fallback within the fallback: reduced-motion drops `filmSeat` + smooth scroll.
+- **Wide touch screens** (iPad, an unfolded Fold): every cell stays edge to edge,
+  the words keep a centred column ≤680px — the gutter is
+  `max(20px | 16px, (100% − 680px) / 2)`. On a phone that is the plain 20/16px.
+- **Know the resolution you design to.** Phone browsers show between two
+  heights: toolbars shown (= `100svh`, the smallest) and toolbars collapsed (at
+  most the full screen); WeChat's in-app browser sits in between. The
+  toolbars-shown number is the budget. Measured CSS viewports (Playwright 1.63
+  descriptors — the source of truth, not guesses):
+
+  | Phone | toolbars shown | full screen | DPR |
+  |---|---|---|---|
+  | iPhone SE (1st) | 320×568 | 320×568 | 2 |
+  | iPhone SE (3rd) | 375×667 | 375×667 | 2 |
+  | iPhone 12/13 mini | 375×629 | 375×812 | 3 |
+  | iPhone 12–14, 16e/17e | 390×664 / 390×651 | 390×844 | 3 |
+  | iPhone 14 Pro, 15, 16 | 393×659 | 393×852 | 3 |
+  | iPhone 16 Pro, 17, 17 Pro | 402×681 | 402×874 | 3 |
+  | iPhone 15 Plus, 16 Plus | 430×739 | 430×932 | 3 |
+  | iPhone 16/17 Pro Max | 440×763 | 440×956 | 3 |
+  | Galaxy S24, Pixel 9 | 360×780 / 360×732 | 360×780 / 360×808 | 3 |
+  | Pixel 7/8 | 412×839 | 412×915 | 2.625 |
+  | Pixel 9 Pro XL | 448×921 | 448×997 | 3 |
+  | Galaxy Z Flip 7 / Fold 7 cover | 360×764 | 360×840 | 3 |
+  | Galaxy Z Fold 7 (open) | 984×1016 | 984×1092 | 2 |
+
+- **Phone verification** — `node tests/mobile.mjs [--shots DIR] [--only NAME]`
+  runs 24 phones at both heights + landscape + live rotation; gated criteria
+  (edges, symmetry, no truncation, 44px taps, rotation, toolbar collapse) are in
+  the file header. Chromium emulation recomputes `svh` on every resize — real
+  phones don't — so the toolbar check inspects the CSS, not scrollY.
 
 ---
 
@@ -182,24 +231,25 @@ overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
 
 ### Remaining / nice-to-have
 - ~~"Former Big 4 auditor" wording~~ — done: `#background` now lists the roles
-  plainly (Technology Risk — KPMG / Audit & Assurance — Deloitte / Finance
-  Controller — Nanjing Vanke), no "Big 4" claim to mis-read.
+  plainly, matching the CV (November 2026): Technology Risk — KPMG / Operations
+  Lead — Nanjing Vanke / Internal Control — Nanjing Vanke / Audit & Assurance —
+  Deloitte. Never "Finance Controller" — that was not the title.
 - **`--iris-t`** — declared in `tunnel.css` for a `scripts/core/iris.js` that
   does not exist and read by nothing. Delete both the var and its doc comment.
 - ~~Clamped copy on the reel~~ — done: every clamp is gone, nothing is
   truncated, and all 12 frames still read inside one screen at 390-430px wide
   (Nod's frame box runs 24px long but its last line lands at 654 of 660).
-- **Very small phones** (375×629 and below) run over on the two plates with a
-  dense paragraph — Smart Airport +60, Nod +49 — now that nothing is clamped.
-  Nothing clips, the reel snaps by proximity, but that width is where a frame
-  stops being a frame. The fix, if it's wanted, is shorter copy on those two
-  cards, not a clamp.
+- **Very small phones** — since the cards went full-bleed (November 2026)
+  every frame fits one screen from 375×629 up. Only 320px-wide screens still
+  run over: iPhone SE 1st gen (320×568) on 6 of 12 frames (Smart Airport +109,
+  Nod +80), Galaxy S9+ at 320×658 on Smart Airport (+19). Nothing clips, the
+  reel snaps by proximity. The fix, if it's wanted, is shorter copy, not a clamp.
 - **GitHub Pages caches HTML for 10 minutes** (`cache-control: max-age=600`) and
   Safari holds it longer, so a deploy can look like it didn't land. `?v=N` on
   the URL is a different URL and always fetches fresh — use that to check a
   deploy, not a reload.
-- **Real WebKit** — the August fit pass was verified on Chromium mobile
-  emulation only; this environment can't run Playwright's WebKit (host libs
+- **Real WebKit / Firefox** — the August fit pass and the November fold pass
+  (`tests/adaptive.mjs`, 1528/1528) were verified on Chromium only; this environment can't run Playwright's WebKit (host libs
   missing). iOS-specific layout bugs (see the flexbug history in the git log)
   can only be caught on real WebKit or a device.
 
@@ -226,4 +276,4 @@ P0 (blockers):
 - No competing metaphor (no light-meter, timecode, fps HUD, particle system).
 - No background color-ramp that sacrifices text contrast.
 - No `#advising` section.
-- Do not write "8 yrs Big 4" — Chris is Deloitte → Vanke → KPMG, MS grad 2026.
+- Do not write "8 yrs Big 4" — Chris is Deloitte (Senior Auditor) → Vanke (Internal Control Specialist, then Operations Lead) → KPMG (Technology Risk), MS grad 2026.

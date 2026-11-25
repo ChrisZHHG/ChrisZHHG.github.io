@@ -53,7 +53,15 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Hide the viewport scrollbar. A classic (Windows) scrollbar takes ~17px of
+     layout width on the right only, so every centered frame sits left of the
+     window's center. With it hidden, layout width = window width on every OS,
+     exactly as macOS overlay scrollbars already behave. Wheel, trackpad,
+     keyboard and touch scrolling are unaffected. */
+  scrollbar-width: none;
 }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { display: none; width: 0; height: 0; }
 /* Native-path anchor smoothing only when motion is welcome. The Lenis path sets
    scroll-behavior:auto inline; reduced-motion users get instant jumps (CLAUDE.md §2.8). */
 @media (prefers-reduced-motion: no-preference) {
@@ -430,7 +438,7 @@ html.perf-lite *::after {
     bottom: 0;
     /* the gutter beside the reading column, plus a little overlap so the wall
        kisses the column edge with no hard seam */
-    width: calc((100vw - var(--content-max)) / 2 + 48px);
+    width: calc((100% - var(--content-max)) / 2 + 48px);
   }
   .pillarbox::before {
     left: 0;
@@ -650,4 +658,29 @@ html.perf-lite *::after {
   vertical-align: middle;
   margin-right: 7px;
   opacity: 0.8;
+}
+
+/* ==========================================================================
+   FOLD SHUTTER — the swap frame between the desktop cinema and the mobile
+   reel (core/fold.js). When a resize, rotation or unfold flips the layout, the
+   veil is closed for the frame the new layout lands in, then opens over
+   280ms: the shutter closes, the next image forms. Never shown on resizes
+   that keep the layout, and never under reduced motion.
+   ========================================================================== */
+.fold-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  background: var(--paper-edge);
+  opacity: 0;
+  visibility: hidden;
+}
+.fold-veil.is-folding {
+  visibility: visible;
+  animation: foldShutter 280ms var(--ease-out) both;
+}
+@keyframes foldShutter {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
