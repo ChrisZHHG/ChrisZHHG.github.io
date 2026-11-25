@@ -231,8 +231,9 @@ overflow, every link ≥44px tall. See §4 "Mobile — the 35mm reel".
 
 ### Remaining / nice-to-have
 - ~~"Former Big 4 auditor" wording~~ — done: `#background` now lists the roles
-  plainly (Technology Risk — KPMG / Audit & Assurance — Deloitte / Finance
-  Controller — Nanjing Vanke), no "Big 4" claim to mis-read.
+  plainly, matching the CV (November 2026): Technology Risk — KPMG / Operations
+  Lead — Nanjing Vanke / Internal Control — Nanjing Vanke / Audit & Assurance —
+  Deloitte. Never "Finance Controller" — that was not the title.
 - **`--iris-t`** — declared in `tunnel.css` for a `scripts/core/iris.js` that
   does not exist and read by nothing. Delete both the var and its doc comment.
 - ~~Clamped copy on the reel~~ — done: every clamp is gone, nothing is
@@ -275,4 +276,4 @@ P0 (blockers):
 - No competing metaphor (no light-meter, timecode, fps HUD, particle system).
 - No background color-ramp that sacrifices text contrast.
 - No `#advising` section.
-- Do not write "8 yrs Big 4" — Chris is Deloitte → Vanke → KPMG, MS grad 2026.
+- Do not write "8 yrs Big 4" — Chris is Deloitte (Senior Auditor) → Vanke (Internal Control Specialist, then Operations Lead) → KPMG (Technology Risk), MS grad 2026.
